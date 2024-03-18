@@ -83,7 +83,7 @@ const Header: React.FC = () => {
                 <Image src={Logo} alt="" className="w-[49px] " priority />
               </Link>
 
-              <div className="relative list head-nav md:flex items-center  nav_font_fmaily font-bold text-sm min-[992px]:gap-8 gap-4">
+              <div className="relative list head-nav md:flex items-center  nav_font_fmaily font-normal text-sm min-[992px]:gap-8 gap-4">
                 <Link
                   href="/home"
                   passHref
