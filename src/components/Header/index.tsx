@@ -9,7 +9,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { PiSignOutBold } from "react-icons/pi";
 
-import router from "next/router";
+import router, { useRouter } from "next/router";
+import { AiOutlineDown } from "react-icons/ai";
 const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -17,27 +18,25 @@ const Header: React.FC = () => {
   const [activeLink, setActiveLink] = useState<string>("");
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [testnet, setTestnet] = useState(false);
+
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowDropdown(false);
+    const handleClickOutside = (event: { target: any }) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setTestnet(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownRef]);
+
   const handleClick = (link: any) => {
     setActiveLink(link);
   };
-
+ const handleLinkClick = () => {
+  setShowDropdown(false);
+ };
   useEffect(() => {
     // Extract the first segment of the pathname to determine the active link
     const segments = router.pathname.split("/");
@@ -102,10 +101,10 @@ const Header: React.FC = () => {
                 </Link>
 
                 <div className="flex items-center gap-[10px]">
-                  <div className="relative" ref={dropdownRef}>
+                  <div className="relative">
                     <div
                       onClick={() => setShowDropdown(!showDropdown)}
-                      className=" items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
+                      className="cursor-pointer items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
                     >
                       <Image
                         src={Profile}
@@ -120,26 +119,32 @@ const Header: React.FC = () => {
                         <RiArrowDownSFill />
                       </span>
                     </div>
-                    {showDropdown && (
-                      <div className="absolute top-[50px] left-0  w-[187px]    bg-[#161515]">
-                        <div className="flex flex-col  w-full">
+
+                    <div
+                      className={`${
+                        showDropdown ? "block" : "hidden"
+                      } absolute top-[50px] left-0  w-[187px] z-[50]   bg-[#161515]`}
+                    >
+                      <div className="flex flex-col  w-full">
+                        <Link href="/profile" onClick={handleLinkClick}>
                           <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold">
                             <span>
                               <CgProfile className="text-lg" />
                             </span>
                             <span> Profile</span>
                           </div>
-                          <div className="border-b-[0.5px] border-solid border-[#9CE1D3]"></div>
-                          <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold">
-                            <span>
-                              <PiSignOutBold />
-                            </span>
-                            <span> Sign out</span>
-                          </div>
+                        </Link>
+                        <div className="border-b-[0.5px] border-solid border-[#9CE1D3]"></div>
+                        <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold">
+                          <span>
+                            <PiSignOutBold />
+                          </span>
+                          <span> Sign out</span>
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
+                 
                   <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
                     Connect Wallet
                   </button>

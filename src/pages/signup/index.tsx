@@ -53,7 +53,7 @@ const Signup = () => {
 
   return (
     <>
-      <section className="flex py-[100px] justify-center  ">
+      <section className="flex py-[100px] justify-center items-center min-h-[100vh] ">
         <div className="  container px-4 lg:w-[844px]">
           <div className="bg-[#262726] p-[35px]">
             <div className="">

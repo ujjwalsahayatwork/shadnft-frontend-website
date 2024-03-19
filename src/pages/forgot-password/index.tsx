@@ -33,7 +33,7 @@ const ForgotPassword = () => {
 
   return (
     <div>
-      <section className="flex py-[100px] justify-center h-[100vh] items-center">
+      <section className="flex py-[100px] justify-center min-h-[100vh] items-center">
         <div className="  container px-4 lg:w-[844px]  ">
           <div className="bg-[#262726] p-[35px]">
             <div className="">

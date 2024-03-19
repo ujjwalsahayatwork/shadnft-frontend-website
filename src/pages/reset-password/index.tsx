@@ -35,7 +35,7 @@ const PasswordReset = () => {
 
   return (
     <div>
-      <section className="flex py-[100px] lg:justify-center lg:h-[100vh] lg:items-center">
+      <section className="flex py-[100px] lg:justify-center lg:min-h-[100vh] lg:items-center">
         <div className="  container px-4 lg:w-[844px]  ">
           <div className="bg-[#262726] p-[35px]">
             <div className="">
