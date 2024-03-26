@@ -6,7 +6,7 @@ import xverseimg from "../../../../public/assest/xverse.png";
 import { Dialog, Transition } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { HiMiniInformationCircle } from "react-icons/hi2";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 
 import { getAddress } from "sats-connect";
 import { sendBtcTransaction, BitcoinNetworkType } from "sats-connect";
@@ -38,8 +38,6 @@ interface SendBtcOptions {
 }
 
 async function usdToSatoshi(usdAmount: number): Promise<number> {
-  console.log(usdAmount, "jwehuvwgj");
-
   // Fetching the data from the API
   const response = await fetch(
     "https://api.coingecko.com/api/v3/exchange_rates"
@@ -67,20 +65,17 @@ async function usdToSatoshi(usdAmount: number): Promise<number> {
 const Popuppage: React.FC<PopuppageProps> = ({
   isOpen,
   onClose,
-  price
+  price,
   ///setShowWalletPopup,
 }) => {
   const [showPopuppage, setShowPopuppage] = useState(false);
-  const notify = (Msg: string, type: any) => toast(Msg, {
-    type: type,
-  });
-  useEffect(() => {
-    
-    console.log(usdToSatoshi(1));
-  });
+  const notify = (Msg: string, type: any) =>
+    toast(Msg, {
+      type: type,
+    });
 
   const payUsingWallet = async (usdAmount: number) => {
-    console.log(usdAmount, "in payUsingWallet")
+    console.log(usdAmount, "in payUsingWallet");
     let paymentAddress;
     // connect with wallet
     const getAddressOptions: any = {
