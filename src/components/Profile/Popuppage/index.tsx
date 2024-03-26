@@ -6,6 +6,7 @@ import xverseimg from "../../../../public/assest/xverse.png";
 import { Dialog, Transition } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { HiMiniInformationCircle } from "react-icons/hi2";
+import { ToastContainer, toast } from 'react-toastify';
 
 import { getAddress } from "sats-connect";
 import { sendBtcTransaction, BitcoinNetworkType } from "sats-connect";
@@ -15,6 +16,7 @@ import Successfulpage from "../Successfulpage";
 interface PopuppageProps {
   isOpen: boolean;
   onClose: () => void;
+  price: number;
   //setShowWalletPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -65,11 +67,15 @@ async function usdToSatoshi(usdAmount: number): Promise<number> {
 const Popuppage: React.FC<PopuppageProps> = ({
   isOpen,
   onClose,
+  price
   ///setShowWalletPopup,
 }) => {
   const [showPopuppage, setShowPopuppage] = useState(false);
-
+  const notify = (Msg: string, type: any) => toast(Msg, {
+    type: type,
+  });
   useEffect(() => {
+    
     console.log(usdToSatoshi(1));
   });
 
@@ -89,7 +95,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
         console.log(response);
         paymentAddress = response.addresses[1].address;
       },
-      onCancel: () => alert("Request canceled"),
+      onCancel: () => notify("Request canceled", "error"),
     };
 
     await getAddress(getAddressOptions);
@@ -109,11 +115,11 @@ const Popuppage: React.FC<PopuppageProps> = ({
         senderAddress: paymentAddress!,
       },
       onFinish: async (response: any) => {
-        alert(response);
+        notify(response, "success");
         console.log(response, "response of sending btc");
         // send this response(txHash) to backend using API
       },
-      onCancel: () => alert("Canceled bitcoin transaction"),
+      onCancel: () => notify("Canceled bitcoin transaction", "error"),
     };
 
     console.log(paymentAddress, "paymentAddress");
@@ -124,6 +130,17 @@ const Popuppage: React.FC<PopuppageProps> = ({
   return (
     <>
       <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-[90]" onClose={onClose}>
             <Transition.Child
@@ -163,7 +180,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
 
                     <div className="px-5">
                       <div
-                        onClick={() => payUsingWallet(1.5)}
+                        onClick={() => payUsingWallet(price)}
                         className="bg-[#181818] cursor-pointer py-[15px] flex items-center justify-center gap-[5px] my-5"
                       >
                         <p className="text-sm font-medium text-[#FFFFFF]">

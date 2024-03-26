@@ -24,7 +24,7 @@ const Profile = () => {
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
 
-  const [showPopuppage, setShowPopuppage] = useState(false);
+  const [showPopuppage, setShowPopuppage] = useState(0);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -484,7 +484,7 @@ const Profile = () => {
                                   </p>
                                   <div className="flex justify-center mt-5">
                                     <button
-                                      onClick={() => setShowPopuppage(true)}
+                                      onClick={() => setShowPopuppage(Number(item.price))}
                                       className=" items-center w-full  text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs"
                                     >
                                       Buy
@@ -505,8 +505,9 @@ const Profile = () => {
         </div>
       </section>
       <Popuppage
-        isOpen={showPopuppage}
-        onClose={() => setShowPopuppage(false)}
+        isOpen={showPopuppage ? true : false}
+        onClose={() => setShowPopuppage(0)}
+        price={showPopuppage}
       />
     </>
   );
