@@ -2,11 +2,18 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import {GetServerSideProps} from "next";
 
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { API_CALL } from "@/API/Routes";
+import Loader from "@/components/extras/loader";
+
+
+
 
 const Signin = ({ showMessage = "" }) => {
+    
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -16,6 +23,7 @@ const Signin = ({ showMessage = "" }) => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   //const [data, setData] = useState(null);
   // const { setUser } = useUserContext();
   const handleChange = (
@@ -35,31 +43,39 @@ const Signin = ({ showMessage = "" }) => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  function parseCookies(cookieString: string) {
+    return cookieString.split(';').reduce((cookies: Record<string, string>, cookie) => {
+      const [name, value] = cookie.trim().split('=');
+      cookies[name] = decodeURIComponent(value);
+      return cookies;
+    }, {});
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    {
-      /* try {
-      const response = await API_CALL.SIGNIN.post({
-        email: formData.email,
-        password: formData.password,
+    // Remove agreeToTerms from formData
+    const { agreeToTerms, ...rest } = formData;
+    const formDataWithoutAgreeToTerms = rest;
+
+    API_CALL.LOGIN.post(formDataWithoutAgreeToTerms)
+      .then((response) => {
+        // Get header cookies
+        console.log(response.headers);
+        
+        if (response.data.success) {
+          const cookies = parseCookies(document.cookie);
+          console.log(cookies);
+          setLoading(false);
+          router.push("/profile");
+        }
+      })
+      .catch((err) => {
+        let error = err.response?.data?.data?.[0]?.message || err?.response?.data?.message || err?.message || "Something went wrong";
+        setErrorMessage(error);
+        setLoading(false);
       });
-      if (!response.data.success)
-        return toast.error(response.data.message, TOAST_OPTION.ERROR);
-      setUser(response.data.data);
-      setLoading(false);
-      // toast.success("User Signin successfully!", TOAST_OPTION.SUCCESS);
-      router.push("/dashboard");
-    } catch (error: any) {
-      console.log(error);
-      setLoading(false);
-      // toast.error(error.response.data.message, TOAST_OPTION.ERROR);
-    } finally {
-      setLoading(false);
-    }*/
-    }
   };
   return (
     <>
@@ -103,7 +119,7 @@ const Signin = ({ showMessage = "" }) => {
                       </span>
                     </div>
                   </div>
-
+                  {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>}
                   <div className="my-[30px] ">
                     <div className="flex items-center w-[350px] justify-between gap-2">
                       <div className="flex items-center">
@@ -127,12 +143,12 @@ const Signin = ({ showMessage = "" }) => {
                   </div>
                 </div>
 
-                <button
+                {loading ? <Loader /> : <button
                   type="submit"
                   className="mb-5 bg-[#FEC801] text-[#000] px-[14px] py-3 rounded-[4px] text-sm font-medium w-[350px]"
                 >
                   Login
-                </button>
+                </button>}
 
                 <div>
                   <span className="text-sm font-normal text-[#ffffff96]">

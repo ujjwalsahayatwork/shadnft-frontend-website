@@ -1,7 +1,9 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import Profileimg from "../../../public/assest/Profile.png";
 import Popuppage from "./Popuppage";
+import { API_CALL } from "@/API/Routes";
+import CookieComponent from "./Cookie";
 const tabs = [
   {
     title: "Edit Profile",
@@ -17,7 +19,12 @@ const Profile = () => {
   const [selectedTab, setSelectedTab] = useState("editprofile");
   const [profile, setProfile] = useState<string | null>(null);
   const [showpage, setShowPage] = useState(false);
-    const [showPopuppage, setShowPopuppage] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  const [subscription, setSubscription] = useState<any>(null);
+  const [plans, setPlans] = useState<any>([]);
+
+  const [showPopuppage, setShowPopuppage] = useState(false);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -25,24 +32,74 @@ const Profile = () => {
       reader.onloadend = () => {
         const imageDataUrl = reader.result as string;
         setProfile(imageDataUrl);
+
       };
       reader.readAsDataURL(file);
     }
   };
-  const [formData, setFormData] = useState({
-    userName: "",
-    name: "",
 
+  interface FormDataCustom {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    mobile: string;
+  }
+
+  interface FormDataCustomAvatar {
+    profilePicture: any;
+  }
+
+
+
+  const [formData, setFormDataCustom] = useState<FormDataCustom>({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     mobile: "",
   });
+
+  const getUserData = () => {
+    API_CALL.INFO.get().then((res) => {
+      console.log(res.data.data)
+      let { email, firstName, lastName, role, mobile, profilePicture } = res.data.data
+      if (profilePicture) {
+        setImgUrl(profilePicture);
+      }
+      else {
+        setImgUrl("")
+      }
+      setFormDataCustom((prevData) => ({
+        ...prevData,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        // role: role,
+        mobile: mobile || "",
+      }));
+    }).catch((err) => { });
+
+  }
+
+  const getPlans = () => {
+    API_CALL.PLAN.get().then((res) => {
+      setPlans(res.data.data)
+    }).catch((err) => {
+      console.log(err)
+     });
+  }
+
+  useEffect(() => {
+    getUserData()
+    getPlans()
+  }, [])
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
 
-    setFormData((prevData) => ({
+    setFormDataCustom((prevData) => ({
       ...prevData,
       [name]:
         type === "checkbox"
@@ -53,7 +110,41 @@ const Profile = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const filteredFormDataCustom = Object.fromEntries(
+      Object.entries(formData).filter(([key, value]) => value !== '')
+    );
+
+    // if profile is not null, update profile
+    if (profile) {
+      // html form data
+      const formDataCustomHtml = new FormData();
+      // Add file to form data
+      formDataCustomHtml.append('profilePicture', new Blob([profile], { type: 'image/png' }), 'profile.png');
+
+      API_CALL.AVATAR.put(formDataCustomHtml).then((res) => {
+        console.log(res)
+        getUserData()
+      }).catch((err) => {
+        console.log(err)
+      })
+    }
+    // Remove empty fields
+    API_CALL.UPDATE.put(filteredFormDataCustom).then((res) => {
+      console.log(res)
+    }).catch((err) => {
+      console.log(err)
+    })
   };
+  const handleDelete = () => {
+    API_CALL.AVATAR.delete().then((res) => {
+      console.log(res)
+      getUserData()
+    }).catch((err) => {
+      console.log(err)
+    })
+  }
+
   return (
     <>
       <section className="flex py-[100px] justify-center items-center min-h-[100vh] ">
@@ -61,12 +152,17 @@ const Profile = () => {
           <div className="bg-[#262726]">
             <div className="flex flex-col items-center justify-center p-[32px]">
               <Image
-                src={Profileimg}
+                src={imgUrl || Profileimg}
                 alt="Profile"
+                width={0}
+                height={0}
+                sizes="100vw"
+                style={{ width: '75px', height: '75px', objectFit: 'cover' }}
                 className="w-[75px] border-[2px] border-solid border-[#FFB701] rounded-full"
                 priority
               />
               <p className="text-lg text-[#FFFFFF] font-medium">Steve smith</p>
+              {/* <CookieComponent /> */}
             </div>
             <div className="border-b-[1px] border-solid border-[#303030]"></div>
             <div className="flex w-full px-[30px] md:flex-row flex-col">
@@ -77,11 +173,10 @@ const Profile = () => {
                       return (
                         <button
                           onClick={() => setSelectedTab(tab.key)}
-                          className={`py-3  text-left sm:text-base text-sm ${
-                            tab.key == selectedTab
-                              ? "text-[#fff] md:border-r max-[767px]:border-b border-solid border-[#FFB701] font-semibold  "
-                              : "text-[#FFFFFF33] font-semibold"
-                          }`}
+                          className={`py-3  text-left sm:text-base text-sm ${tab.key == selectedTab
+                            ? "text-[#fff] md:border-r max-[767px]:border-b border-solid border-[#FFB701] font-semibold  "
+                            : "text-[#FFFFFF33] font-semibold"
+                            }`}
                           key={index}
                         >
                           <span>{tab.title}</span>
@@ -99,16 +194,22 @@ const Profile = () => {
                         <Image
                           src={profile}
                           alt="Profile"
-                          width={52}
-                          height={52}
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                          style={{ width: '52px', height: '52px', objectFit: 'cover' }}
                           className="w-[52px] rounded-full"
                           priority
                         />
                       ) : (
                         <Image
-                          src={Profileimg}
+                          src={imgUrl || Profileimg}
                           alt="Profile"
                           className="w-[52px] rounded-full"
+                          width={0}
+                          height={0}
+                          sizes="100vw"
+                          style={{ width: '52px', height: '52px', objectFit: 'cover' }}
                           priority
                         />
                       )}
@@ -126,7 +227,7 @@ const Profile = () => {
                     >
                       Upload new picture
                     </label>
-                    <button className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs">
+                    <button className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs" onClick={handleDelete}>
                       Delete
                     </button>
                   </div>
@@ -134,12 +235,12 @@ const Profile = () => {
                     <div className="flex items-center  max-[400px]:flex-col justify-between w-full min-[401px]:gap-[30px]">
                       <div className="mb-4 w-[50%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
-                          User Name
+                          First Name
                         </span>
                         <input
                           type="text"
-                          name="userName"
-                          value={formData.userName}
+                          name="firstName"
+                          value={formData.firstName}
                           onChange={handleChange}
                           placeholder=""
                           className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
@@ -148,12 +249,12 @@ const Profile = () => {
                       </div>
                       <div className="mb-4 w-[50%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
-                          Name
+                          Last Name
                         </span>
                         <input
                           type="text"
-                          name="name"
-                          value={formData.name}
+                          name="lastName"
+                          value={formData.lastName}
                           onChange={handleChange}
                           placeholder=""
                           className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
@@ -210,7 +311,7 @@ const Profile = () => {
                         Cancel
                       </button>
                       <button
-                        onSubmit={handleSubmit}
+                        onClick={handleSubmit}
                         className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs"
                       >
                         Save
@@ -221,15 +322,15 @@ const Profile = () => {
               )}
               {selectedTab === "subscription" && (
                 <div className="lg:w-[82%] md:w-[80%] w-full md:px-[25px] pt-[15px]">
-                  {/* <div className="flex flex-col items-center justify-center py-[50px]">
-                  <p className="text-[#FFFFFF] text-lg font-medium mb-5">
-                    Currently You don’t have any subscription
-                  </p>
-                  <button className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs">
-                    Buy plan
-                  </button>
-                </div>*/}
-                  {!showpage && (
+                  {!subscription && !showpage && <div className="flex flex-col items-center justify-center py-[50px]">
+                    <p className="text-[#FFFFFF] text-lg font-medium mb-5">
+                      Currently You don’t have any subscription
+                    </p>
+                    <button className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"  onClick={() => setShowPage(true)}>
+                      Buy plan
+                    </button>
+                  </div>}
+                  {!showpage  && subscription && (
                     <div className=" my-5">
                       <p className="text-[#FFFFFF] text-lg font-medium mb-5">
                         Your current Subscription
@@ -269,7 +370,7 @@ const Profile = () => {
                   {showpage && (
                     <div className=" ">
                       <div className="grid sm:grid-cols-3 grid-cols-1 max-[420px]:grid-cols-1 gap-5 max-[767px]:my-5">
-                        <div className="bg-[#181818] rounded-[2.5px]">
+                        {/* <div className="bg-[#181818] rounded-[2.5px]">
                           <div className="flex flex-col  p-[17px]">
                             <button className=" items-center lg:w-[70%]  text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF]  rounded-[7px] px-[10px] py-[5px]   font-medium text-xs">
                               The Elites
@@ -358,7 +459,42 @@ const Profile = () => {
                               </button>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
+                        {
+                          plans?.map((item: any) => {
+                            return (
+                              <div className="bg-[#181818] rounded-[2.5px]">
+                                <div className="flex flex-col  p-[17px]">
+                                  <button className=" items-center lg:w-[70%]  text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF]  rounded-[7px] px-[10px] py-[5px]   font-medium text-xs">
+                                    {item.name}
+                                  </button>
+                                  <div className="flex items-baseline gap-1 mt-[11px]">
+                                    <p className="text-[#FFFFFF] lg:text-4xl  text-2xl font-normal">
+                                      ${item.price}
+                                    </p>
+                                    <p className="text-[#FFFFFF] text-[10px] font-normal">
+                                      {item.time}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="border-b-[1px] border-solid border-[#303030]"></div>
+                                <div className="p-[17px]">
+                                  <p className="text-[#FFFFFF] lg:text-xs text-[10px] font-normal sm:h-[80px]">
+                                    {item.description}
+                                  </p>
+                                  <div className="flex justify-center mt-5">
+                                    <button
+                                      onClick={() => setShowPopuppage(true)}
+                                      className=" items-center w-full  text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs"
+                                    >
+                                      Buy
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })
+                        }
                       </div>
                     </div>
                   )}
