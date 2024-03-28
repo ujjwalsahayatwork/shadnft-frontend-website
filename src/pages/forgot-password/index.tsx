@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { API_CALL } from "@/API/Routes";
+import Loader from "@/components/extras/loader";
 
 const ForgotPassword = () => {
   const router = useRouter();
@@ -11,7 +13,8 @@ const ForgotPassword = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -22,6 +25,17 @@ const ForgotPassword = () => {
     setLoading(true);
     console.log(localStorage.getItem("user"));
 
+  API_CALL.FORGOT.post({email}).then((res) => {
+      setSuccessMessage(res.data.message)
+      setErrorMessage("")
+      setLoading(false);
+      setShowConfirmation(true);
+    }).catch((err) => {
+      console.log(err)
+      setErrorMessage(err.response.data.message ||"Please try again later")
+      setSuccessMessage("")
+      setLoading(false);
+    })
     // Add logic to handle password reset initiation
   };
 
@@ -57,13 +71,14 @@ const ForgotPassword = () => {
                     />
                   </div>
                 </div>
-
-                <button
+                {loading ? <Loader /> : <button
                   type="submit"
                   className="mb-5 bg-[#FEC801] text-[#000] px-[14px] py-3 rounded-[4px] text-sm font-medium w-[350px]"
                 >
                   Confirm your Email
-                </button>
+                </button>}
+                {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>}
+                {successMessage && <p className="text-green-500 text-sm mt-1">{successMessage}</p>}
               </form>
             </div>
           </div>

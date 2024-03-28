@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Fragment } from "react";
 import Image from "next/image";
 import payemstimg from "../../../../public/assest/payemst.png";
@@ -6,25 +6,144 @@ import xverseimg from "../../../../public/assest/xverse.png";
 import { Dialog, Transition } from "@headlessui/react";
 import { RxCross2 } from "react-icons/rx";
 import { HiMiniInformationCircle } from "react-icons/hi2";
+import { ToastContainer, toast } from 'react-toastify';
+
+import { getAddress } from "sats-connect";
+import { sendBtcTransaction, BitcoinNetworkType } from "sats-connect";
 
 import { useRouter } from "next/router";
 import Successfulpage from "../Successfulpage";
 interface PopuppageProps {
   isOpen: boolean;
   onClose: () => void;
+  price: number;
   //setShowWalletPopup: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+interface Recipient {
+  address: string;
+  amountSats: bigint;
+}
+
+interface SendBtcOptions {
+  payload: {
+    network: {
+      type: BitcoinNetworkType;
+    };
+    recipients: Recipient[];
+    senderAddress: string;
+  };
+  onFinish: (response: any) => void;
+  onCancel: () => void;
+}
+
+async function usdToSatoshi(usdAmount: number): Promise<number | any> {
+  console.log(usdAmount, "jwehuvwgj");
+  // Fetching the data from the API
+  const response = await fetch(
+    "https://api.coingecko.com/api/v3/exchange_rates"
+  ).then(async(response)=>{
+
+    const data = await response?.json();
+     // Extracting the value of 1 USD in BTC
+  const usdToBtc: number = data.rates.usd.value;
+
+  console.log(usdToBtc, "btc value");
+
+  // Converting USD to BTC
+  const btcAmount: number = usdAmount / usdToBtc;
+
+  console.log(btcAmount, "btcAmount");
+
+  // Converting BTC to satoshi (1 BTC = 100,000,000 satoshi)
+  const satoshiAmount: number = btcAmount * 10 ** 8;
+
+  console.log(Math.round(satoshiAmount), "satoshiAmount");
+
+  return Math.round(satoshiAmount);
+  })
+
+
+ 
 }
 
 const Popuppage: React.FC<PopuppageProps> = ({
   isOpen,
   onClose,
+  price
   ///setShowWalletPopup,
 }) => {
-        const [showPopuppage, setShowPopuppage] = useState(false);
+  const [showPopuppage, setShowPopuppage] = useState(false);
+  const notify = (Msg: string, type: any) => toast(Msg, {
+    type: type,
+  });
+  useEffect(() => {
     
+    console.log(usdToSatoshi(1));
+  });
+
+  const payUsingWallet = async (usdAmount: number) => {
+    console.log(usdAmount, "in payUsingWallet")
+    let paymentAddress;
+    // connect with wallet
+    const getAddressOptions: any = {
+      payload: {
+        purposes: ["ordinals", "payment"],
+        message: "Address for receiving Ordinals and payments",
+        network: {
+          type: "Testnet",
+        },
+      },
+      onFinish: (response: any) => {
+        console.log(response);
+        paymentAddress = response.addresses[1].address;
+      },
+      onCancel: () => notify("Request canceled", "error"),
+    };
+
+    await getAddress(getAddressOptions);
+
+    // send transaction i have to check if the address is there then only send the yransaction or it will show error
+    const sendBtcOptions: SendBtcOptions = {
+      payload: {
+        network: {
+          type: BitcoinNetworkType.Testnet,
+        },
+        recipients: [
+          {
+            address: "2N5GJA2EDhnZ5vr4bRohbJQUfNngzG366Du",
+            amountSats: BigInt(await usdToSatoshi(usdAmount)),
+          },
+        ],
+        senderAddress: paymentAddress!,
+      },
+      onFinish: async (response: any) => {
+        notify(response, "success");
+        console.log(response, "response of sending btc");
+        // send this response(txHash) to backend using API
+      },
+      onCancel: () => notify("Canceled bitcoin transaction", "error"),
+    };
+
+    console.log(paymentAddress, "paymentAddress");
+
+    paymentAddress && (await sendBtcTransaction(sendBtcOptions));
+  };
+
   return (
     <>
       <div>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-[90]" onClose={onClose}>
             <Transition.Child
@@ -64,7 +183,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
 
                     <div className="px-5">
                       <div
-                        onClick={() => setShowPopuppage(true)}
+                        onClick={() => payUsingWallet(price)}
                         className="bg-[#181818] cursor-pointer py-[15px] flex items-center justify-center gap-[5px] my-5"
                       >
                         <p className="text-sm font-medium text-[#FFFFFF]">

@@ -8,9 +8,11 @@ import { CgProfile } from "react-icons/cg";
 import Link from "next/link";
 import Image from "next/image";
 import { PiSignOutBold } from "react-icons/pi";
-
-import router, { useRouter } from "next/router";
+import router from "next/router";
+import { useRouter } from "next/navigation";
 import { AiOutlineDown } from "react-icons/ai";
+import { API_CALL } from "../../API/Routes.js";
+
 const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -19,7 +21,7 @@ const Header: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [testnet, setTestnet] = useState(false);
-
+  const Router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
@@ -34,9 +36,9 @@ const Header: React.FC = () => {
   const handleClick = (link: any) => {
     setActiveLink(link);
   };
- const handleLinkClick = () => {
-  setShowDropdown(false);
- };
+  const handleLinkClick = () => {
+    setShowDropdown(false);
+  };
   useEffect(() => {
     // Extract the first segment of the pathname to determine the active link
     const segments = router.pathname.split("/");
@@ -69,6 +71,21 @@ const Header: React.FC = () => {
     setShowDropNav(false);
   }
 
+  const handleLogout = async() => {
+    try {
+
+      // await API_CALL.LOGOUT.get().then((response)=>{
+      //  console.log(response,'res');
+    //  })
+
+     
+      Router.push('/signin')
+    } catch (error) {
+      console.log(error,'errror');
+      
+    }
+  };
+
   return (
     <div>
       <>
@@ -84,7 +101,7 @@ const Header: React.FC = () => {
 
               <div className="relative list head-nav md:flex items-center  nav_font_fmaily font-normal text-sm min-[992px]:gap-8 gap-4">
                 <Link
-                  href="/home"
+                  href="/"
                   passHref
                   onClick={() => handleClick("home")}
                   style={homeLinkStyles("home")}
@@ -135,19 +152,19 @@ const Header: React.FC = () => {
                           </div>
                         </Link>
                         <div className="border-b-[0.5px] border-solid border-[#9CE1D3]"></div>
-                        <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold">
+                        <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold"  onClick={handleLogout}>
                           <span>
                             <PiSignOutBold />
                           </span>
-                          <span> Sign out</span>
+                          <span > Sign out</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                 
-                  <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
+
+                  {/* <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
                     Connect Wallet
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
@@ -213,7 +230,7 @@ const Header: React.FC = () => {
                   </span>
                 </div>
                 {showDropdown && (
-                  <div className="absolute top-[50px] left-0  w-[187px]    bg-[#161515]">
+                  <div className="absolute top-[50px] left-0  w-[187px]    bg-[#161515] ">
                     <div className="flex flex-col  w-full">
                       <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold">
                         <span>
@@ -232,9 +249,9 @@ const Header: React.FC = () => {
                   </div>
                 )}
               </div>
-              <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
+              {/* <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
                 Connect Wallet
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

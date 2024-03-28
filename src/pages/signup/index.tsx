@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
+
+
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
+import config from "../../config/config";
+import axios from "axios";
+import { useRouter } from "next/router";
+import Loader from "@/components/extras/loader";
+import {API_CALL} from "../../API/Routes";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -13,17 +20,28 @@ const Signup = () => {
     password: "",
     confirmPassword: "",
   });
+
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
-
+    if (name === "confirmPassword") {
+      // check if password and confirm password match
+      if (value !== formData.password) {
+        setErrorMessage("Passwords do not match");
+      }
+      else {
+        setErrorMessage("");
+      }
+    }
     setFormData((prevData) => ({
       ...prevData,
       [name]:
@@ -47,8 +65,56 @@ const Signup = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setErrorMessage("Passwords do not match");
+      return;
+    }
     setLoading(true);
-   
+
+    // Delete confirmPassword field from formData as backend does not accept it
+    const { confirmPassword, ...rest } = formData;
+    const formDataWithoutConfirmPassword = rest;
+
+    // submit form data
+    // axios
+    //   .post(`${config.baseURL}/user/createWithEmail`, formDataWithoutConfirmPassword).then((res) => {
+    //     let success = res.data?.success;
+    //     if (success) {
+    //       router.push("/signin");
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     // console.log(err);
+    //     // get preview error message
+    //     let error = err.response?.data?.data?.[0]?.message || "Something went wrong";
+    //     setErrorMessage(error);
+    //     setLoading(false);
+    //   });
+
+    try {
+      API_CALL.SIGNUP.post(formDataWithoutConfirmPassword).then((res) => {
+        const cookies = res.headers;
+        let success = res.data?.success;
+
+        console.log(cookies);
+        if (success) {
+          router.push("/signin");
+        }
+      })
+        .catch((err) => {
+          // console.log(err);
+          // get preview error message
+          let error = err.response?.data?.data?.[0]?.message || "Something went wrong";
+          setErrorMessage(error);
+          setLoading(false);
+        });
+
+    } catch (error) {
+      console.log(error);
+    }
+
   };
 
   return (
@@ -59,7 +125,6 @@ const Signup = () => {
             <div className="">
               <h3 className="text-[#FFFFFF] text-3xl font-medium">Sign Up</h3>
             </div>
-
             <div className="flex flex-col items-center justify-center my-5">
               <form onSubmit={handleSubmit}>
                 <div className="">
@@ -138,16 +203,17 @@ const Signup = () => {
                         )}
                       </span>
                     </div>
+                    {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>}
                   </div>
                 </div>
 
-                <button
+                {loading ? <Loader /> : <button
                   type="submit"
                   className="mb-5 bg-[#FEC801] text-[#000] px-[14px] py-3 rounded-[4px] text-sm font-medium w-[350px]"
                 >
                   Sign Up
                 </button>
-
+                }
                 <div>
                   <span className="text-sm font-normal text-[#ffffff96]">
                     Already have an account?{" "}
@@ -160,7 +226,9 @@ const Signup = () => {
             </div>
           </div>
         </div>
+
       </section>
+
     </>
   );
 };

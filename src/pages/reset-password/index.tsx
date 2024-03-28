@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
+import { API_CALL } from "@/API/Routes";
 
 const PasswordReset = () => {
   const router = useRouter();
@@ -29,7 +30,15 @@ const PasswordReset = () => {
     e.preventDefault();
 
    
-
+    API_CALL.RESET.post({
+      password,
+      confirmPassword
+    }, token).then((res) => {
+      setisPasswordChanged(true);
+      router.push("/signin");
+    }).catch((err) => {
+      console.log(err);
+    });
     // Add further logic as needed
   };
 
