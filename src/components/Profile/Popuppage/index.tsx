@@ -93,7 +93,16 @@ const Popuppage: React.FC<PopuppageProps> = ({
       onCancel: () => notify("Request canceled", "error"),
     };
 
-    await getAddress(getAddressOptions);
+    try {
+      await getAddress(getAddressOptions);
+    } catch (error:any) {
+      console.log(error.message);
+
+      if(error.message === "No Bitcoin wallet installed"){
+        alert("please install xverse wallet");
+        return
+      }
+    }
 
     // send transaction i have to check if the address is there then only send the yransaction or it will show error
     const sendBtcOptions: SendBtcOptions = {
@@ -110,7 +119,11 @@ const Popuppage: React.FC<PopuppageProps> = ({
         senderAddress: paymentAddress!,
       },
       onFinish: async (response: any) => {
-        notify(response, "success");
+        // notify(response, "success");
+        notify(
+          `Transaction sucessfull, your txId is: ${response}, it will take some time to be verified.`,
+          "success"
+        );
         console.log(response, "response of sending btc");
         // send this response(txHash) to backend using API
       },
