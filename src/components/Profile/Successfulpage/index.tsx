@@ -11,12 +11,14 @@ import { useRouter } from "next/router";
 interface SuccessfulpageProps {
   isOpen: boolean;
   onClose: () => void;
+  message?:string
   //setShowWalletPopup: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Successfulpage: React.FC<SuccessfulpageProps> = ({
   isOpen,
   onClose,
+  message
   ///setShowWalletPopup,
 }) => {
   return (
@@ -63,12 +65,11 @@ const Successfulpage: React.FC<SuccessfulpageProps> = ({
                         className="w-[29px] "
                         priority
                       />
-                      <p className="text-lg font-medium text-[#FFFFFF] my-2">
+                      {/* <p className="text-lg font-medium text-[#FFFFFF] my-2">
                         Successful
-                      </p>
+                      </p> */}
                       <p className="text-xs font-normal text-center text-[#FFFFFF] mb-2">
-                        Lorem ipsum dolor sit amet consectetur. Ut massa commodo
-                        non risus eu.
+                        {message}
                       </p>
                       <button
                        
