@@ -101,9 +101,11 @@ const Popuppage: React.FC<PopuppageProps> = ({
       onCancel: () => notify("Request canceled", "error"),
     };
 
-    await getAddress(getAddressOptions);
+    const adress = await getAddress(getAddressOptions);
 
-    // send transaction i have to check if the address is there then only send the yransaction or it will show error
+    console.log(adress, "address");
+
+    // send transaction i have to check if the address is there then only send the transaction or it will show error
     const sendBtcOptions: SendBtcOptions = {
       payload: {
         network: {

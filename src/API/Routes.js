@@ -13,7 +13,7 @@ export const API_CALL = {
   UPDATE: {
     put: async (payload) => await BASE_CALL.put("/user/update", payload),
   },
-  
+
   GET_LOGGEDIN_USER: async (token) => await BASE_CALL.get("/user/me", {token}),
 
   INFO: {

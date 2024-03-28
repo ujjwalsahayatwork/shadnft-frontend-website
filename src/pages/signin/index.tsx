@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -8,8 +8,6 @@ import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { API_CALL } from "@/API/Routes";
 import Loader from "@/components/extras/loader";
-
-
 
 
 const Signin = ({ showMessage = "" }) => {
@@ -77,6 +75,8 @@ const Signin = ({ showMessage = "" }) => {
         setLoading(false);
       });
   };
+
+  
   return (
     <>
       <section className="flex py-[100px] justify-center h-[100vh] items-center">

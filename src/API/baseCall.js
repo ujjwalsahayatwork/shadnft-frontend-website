@@ -16,3 +16,4 @@ export const BASE_CALL = {
   get: async (url) => await axiosInstance.get(url),
   delete: async (url) => await axiosInstance.delete(url),
 };
+
