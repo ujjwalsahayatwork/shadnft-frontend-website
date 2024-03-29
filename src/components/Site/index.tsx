@@ -1,9 +1,10 @@
 import Footer from "../Footer";
-import Header from "../Header";
+import Header from "@/components/Header";
 
 
 const Sites = ({ children }: any) => {
   return (
+    
     <div className="">
       <Header />
       {children}

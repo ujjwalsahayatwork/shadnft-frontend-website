@@ -9,10 +9,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { PiSignOutBold } from "react-icons/pi";
 import router from "next/router";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { AiOutlineDown } from "react-icons/ai";
 import { API_CALL } from "../../API/Routes.js";
+import Cookies from  'js-cookie';
+import { deleteCookie } from "cookies-next";
 
+// import { getCookies, setCookie, deleteCookie, getCookie } from 'cookies-next';
+
+export const removeToken = async ()=>{
+  // Cookies.remove('loggedIn')
+   await API_CALL.LOGOUT.get().then((res: any) => {
+   console.log("DATA from API", res.data)
+   if(res.data.success){
+    deleteCookie('loggedIn')
+    router.push('/signin')
+   }else{
+    alert('Error Logout')
+   }
+   
+  })
+    // deleteCookie('token')  
+  // window.location.href = window.location.href;
+  
+}
 const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -21,8 +41,9 @@ const Header: React.FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [testnet, setTestnet] = useState(false);
-  const Router = useRouter();
+  const router = useRouter();
 
+ 
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -73,16 +94,10 @@ const Header: React.FC = () => {
 
   const handleLogout = async() => {
     try {
-
-      // await API_CALL.LOGOUT.get().then((response)=>{
-      //  console.log(response,'res');
-    //  })
-
-     
-      Router.push('/signin')
+      await removeToken()
+      setShowDropNav(false);
     } catch (error) {
       console.log(error,'errror');
-      
     }
   };
 
@@ -261,3 +276,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+

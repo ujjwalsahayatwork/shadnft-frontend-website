@@ -4,9 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 // import { setCookie } from 'cookies-next'
 import { toast } from "react-toastify";
 // import TOAST_OPTION from "../CustomToast";
-import { usePathname, useRouter } from "next/navigation";
-// import Cookies from  'js-cookie';
-import { useCookies } from 'next-client-cookies';
+import {  useRouter } from "next/router";
+import Cookies from  'js-cookie';
 
 interface UserData {
     data: UserData | null;
@@ -39,8 +38,10 @@ export const useUserContext = () => useContext(UserContext);
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    let pathname = usePathname()
-    const router = useRouter()
+    //let pathname = usePathname()
+   
+    let router = useRouter()
+    const { pathname } = router;
     const [user, setUser] = useState<UserData | null>(null);
 
     const updateUser = (userData: UserData | null) => {
@@ -54,16 +55,22 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             localStorage.clear();
         }
     };
+    
+
     const handleNavigate = () => {
-        if (pathname != "/signin" && pathname != "/signup" && pathname != "/forgot-password" && pathname != "/reset-password")
+        console.log('called');
+        
+        if (router.pathname != "/signin" && router.pathname != "/signup" && router.pathname != "/forgot-password" && router.pathname != "/reset-password")
             router.push("/signin");
     }
     const getUserFromToken = async () => {
         try {
             if (typeof window === 'undefined') return null
-            let token = useCookies();
-             let userToken = token.get('token')
-            console.log(userToken, "<<<thisistoken")
+            let token =  Cookies.get('loggedIn');
+            //  let userToken = token.get('token')
+            if(token){
+               router.push('/')
+            }
             if (!token) return handleNavigate()
             let { data } = await API_CALL.GET_LOGGEDIN_USER()
             if (!data.success) {
