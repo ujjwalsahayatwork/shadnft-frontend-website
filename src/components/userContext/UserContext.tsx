@@ -60,7 +60,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const handleNavigate = () => {
         console.log('called');
         
-        if (router.pathname != "/signin" && router.pathname != "/signup" && router.pathname != "/forgot-password" && router.pathname != "/reset-password")
+        if (router.pathname!= '/' && router.pathname != '/app' && router.pathname != "/signin" && router.pathname != "/signup" && router.pathname != "/forgot-password" && router.pathname != "/reset-password")
             router.push("/signin");
     }
     const getUserFromToken = async () => {
