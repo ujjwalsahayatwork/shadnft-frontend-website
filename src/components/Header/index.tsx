@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import Logo from "../../../public/assest/Logo.png";
 import Profile from "../../../public/assest/Profile.png";
 import { RiArrowDownSLine } from "react-icons/ri";
@@ -14,6 +14,7 @@ import { AiOutlineDown } from "react-icons/ai";
 import { API_CALL } from "../../API/Routes.js";
 import Cookies from  'js-cookie';
 import { deleteCookie } from "cookies-next";
+import { useUserContext } from "../userContext/UserContext";
 
 // import { getCookies, setCookie, deleteCookie, getCookie } from 'cookies-next';
 
@@ -43,6 +44,7 @@ const Header: React.FC = () => {
   const [testnet, setTestnet] = useState(false);
   const router = useRouter();
 
+ const {user} = useUserContext();
  
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
@@ -145,7 +147,7 @@ const Header: React.FC = () => {
                         priority
                       />
                       <span className="text-[#7B6E2D] text-sm font-medium">
-                        Steve Smi.
+                        {user?.firstName ? user.firstName : 'Steve Smith'}
                       </span>
                       <span className="text-[#7B6E2D] text-sm font-medium">
                         <RiArrowDownSFill />
@@ -167,11 +169,12 @@ const Header: React.FC = () => {
                           </div>
                         </Link>
                         <div className="border-b-[0.5px] border-solid border-[#9CE1D3]"></div>
-                        <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold"  onClick={handleLogout}>
+                        <div className="text-[#FFF] text-base cursor-pointer p-3  flex items-center gap-[15px] font-semibold"  >
                           <span>
                             <PiSignOutBold />
                           </span>
-                          <span > Sign out</span>
+                          {user ? <span onClick={handleLogout}>Signout</span> :<Link href='/signin'><span >Signin</span></Link>}
+                          
                         </div>
                       </div>
                     </div>
@@ -238,7 +241,7 @@ const Header: React.FC = () => {
                     priority
                   />
                   <span className="text-[#7B6E2D] text-sm font-medium">
-                    Steve Smi.
+                  {user?.firstName ? user.firstName : 'Steve Smith'}
                   </span>
                   <span className="text-[#7B6E2D] text-sm font-medium">
                     <RiArrowDownSFill />

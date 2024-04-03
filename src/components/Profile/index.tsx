@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Profileimg from "../../../public/assest/Profile.png";
 import Popuppage from "./Popuppage";
 import { API_CALL } from "@/API/Routes";
 import CookieComponent from "./Cookie";
+import { useUserContext } from "../userContext/UserContext";
 const tabs = [
   {
     title: "Edit Profile",
@@ -15,6 +16,19 @@ const tabs = [
     key: "subscription",
   },
 ];
+interface User {
+  current_plan: {
+    name: string;
+    price: number;
+  } | null;
+  expiration_date: string; // Assuming expiration date is a string
+}
+
+interface UserContextType {
+  user: User;
+  showPage: boolean;
+  setShowPage: React.Dispatch<React.SetStateAction<boolean>>;
+}
 const Profile = () => {
   const [selectedTab, setSelectedTab] = useState("editprofile");
   const [profile, setProfile] = useState<string | null>(null);
@@ -23,6 +37,8 @@ const Profile = () => {
   const [imgUrl, setImgUrl] = useState("");
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
+
+  const {user }  = useUserContext();
 
   const [showPopuppage, setShowPopuppage] = useState(0);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -50,6 +66,7 @@ const Profile = () => {
     profilePicture: any;
   }
 
+ 
 
 
   const [formData, setFormDataCustom] = useState<FormDataCustom>({
@@ -143,6 +160,28 @@ const Profile = () => {
     }).catch((err) => {
       console.log(err)
     })
+  }
+
+  const getDate = (date: string | number | Date)=>{
+    try {
+     const expiry_date : any = new Date(date);
+
+     const current_Date : any = new Date();
+
+     const expirationDate : any = new Date(expiry_date);
+
+     const timeDifferenceMs = expirationDate - current_Date;
+
+     const daysRemaining = Math.ceil(timeDifferenceMs / (1000 * 60 * 60 * 24));
+
+
+     return daysRemaining;
+     
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
 
   return (
@@ -322,7 +361,7 @@ const Profile = () => {
               )}
               {selectedTab === "subscription" && (
                 <div className="lg:w-[82%] md:w-[80%] w-full md:px-[25px] pt-[15px]">
-                  {!subscription && !showpage && <div className="flex flex-col items-center justify-center py-[50px]">
+                  {!user.current_plan && !showpage && <div className="flex flex-col items-center justify-center py-[50px]">
                     <p className="text-[#FFFFFF] text-lg font-medium mb-5">
                       Currently You don’t have any subscription
                     </p>
@@ -330,7 +369,7 @@ const Profile = () => {
                       Buy plan
                     </button>
                   </div>}
-                  {!showpage  && subscription && (
+                  {!showpage  && user.current_plan && (
                     <div className=" my-5">
                       <p className="text-[#FFFFFF] text-lg font-medium mb-5">
                         Your current Subscription
@@ -338,32 +377,32 @@ const Profile = () => {
                       <div className="bg-[#181818] rounded-[2.5px] sm:w-[350px]">
                         <div className="flex items-center gap-5  p-[17px]">
                           <button className=" items-center   text-[#FFB501] bg-[#292B29] border-[1px] border-solid border-[#FFB501]  rounded-[7px] px-[8px] py-[8px]   font-medium text-xs">
-                            The Alpha
+                          {user.current_plan.name}
                           </button>
                           <div className="flex items-baseline">
                             <p className="text-[#FFFFFF] text-4xl font-normal">
-                              $49
+                              ${user.current_plan.price}
                             </p>
-                            <p className="text-[#FF0000] text-[10px] font-normal">
-                              15 day left
+                            <p className="text-[#FF0000] text-[10px] font-normal ml-5">
+                              {getDate(user.expiration_date)} days left
                             </p>
                           </div>
                         </div>
                         <div className="border-b-[1px] border-solid border-[#303030]"></div>
-                        <div className="p-[17px]">
-                          <p className="text-[#FFFFFF] text-xs font-normal">
-                            The Elites package in addition to gaining access to
-                            The Alpha channel within the Illuminals Discord
-                          </p>
-                          <div className="flex justify-end mt-5">
-                            <button
+                        {/* <div className="p-[17px]"> */}
+                          {/* <p className="text-[#FFFFFF] text-xs font-normal"> */}
+                            {/* The Elites package in addition to gaining access to
+                            The Alpha channel within the Illuminals Discord */}
+                          {/* </p> */}
+                          {/* <div className="flex justify-end mt-5"> */}
+                            {/* <button
                               onClick={() => setShowPage(true)}
                               className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
-                            >
-                              Buy plan
-                            </button>
-                          </div>
-                        </div>
+                            > */}
+                              {/* Buy plan */}
+                            {/* </button> */}
+                          {/* </div> */}
+                        {/* </div> */}
                       </div>
                     </div>
                   )}
@@ -461,9 +500,9 @@ const Profile = () => {
                           </div>
                         </div> */}
                         {
-                          plans?.map((item: any) => {
+                          plans?.map((item: any,index:number) => {
                             return (
-                              <div className="bg-[#181818] rounded-[2.5px]">
+                              <div className="bg-[#181818] rounded-[2.5px]" key={index}>
                                 <div className="flex flex-col  p-[17px]">
                                   <button className=" items-center lg:w-[70%]  text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF]  rounded-[7px] px-[10px] py-[5px]   font-medium text-xs">
                                     {item?.name}

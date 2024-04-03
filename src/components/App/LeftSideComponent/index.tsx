@@ -109,11 +109,11 @@ const LeftSideComponent = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-[10px] mt-[18px] px-4 ">
+        {/* <div className="flex items-center gap-[10px] mt-[18px] px-4 ">
           <p className="text-xs text-[#FFFFFF] font-semibold">Filters</p>
           <Image src={Filter} alt="Filter" className="w-[9px] " priority />
-        </div>
-        <div className="mt-3 px-4 ">
+        </div> */}
+        {/* <div className="mt-3 px-4 ">
           <label className="inline-flex items-center">
             <input
               type="checkbox"
@@ -136,7 +136,7 @@ const LeftSideComponent = () => {
               Cheaf Off
             </span>
           </label>
-        </div>
+        </div> */}
         <div className=" mt-[17px] px-4 ">
           <p className="text-xs text-[#FFFFFF] font-semibold">Label</p>
           <div className="flex items-center gap-2 mt-[17px]">
