@@ -10,16 +10,21 @@ const Footer = () => {
         <div className=" flex items-center justify-between gap-2 py-[11px] ">
           <div className="flex items-center gap-5">
             <span>
+              <Link href='https://twitter.com/illuminals' target="_blank">
               <FaXTwitter className="text-[#FFFFFF] text-base" />
+              </Link>
             </span>
 
             <span>
+            <Link href='https://discord.com/invite/illuminals' target="_blank">
               <FaDiscord className="text-[#FFFFFF] text-base" />
+              </Link>
+
             </span>
           </div>
 
           <div className="">
-            <div className="flex items-center gap-[25px] justify-end">
+            {/* <div className="flex items-center gap-[25px] justify-end">
               <Link href={""} className="text-[#fff] text-xs font-medium">
                 About
               </Link>
@@ -29,7 +34,7 @@ const Footer = () => {
               <Link href={""} className="text-[#fff] text-xs font-medium">
                 Terms
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
