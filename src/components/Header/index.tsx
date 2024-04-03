@@ -104,9 +104,7 @@ const Header: React.FC = () => {
     }
   };
 
-  useEffect(()=>{
-    handleLogout()
-  },[])
+  
 
   return (
     <div>
@@ -141,10 +139,10 @@ const Header: React.FC = () => {
 
                 <div className="flex items-center gap-[10px]">
                   <div className="relative">
-                    <div
+                    {/* <div
                       onClick={() => setShowDropdown(!showDropdown)}
                       className="cursor-pointer items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
-                    >
+                     >
                       <Image
                         src={Profile}
                         alt="Profile"
@@ -157,7 +155,7 @@ const Header: React.FC = () => {
                       <span className="text-[#7B6E2D] text-sm font-medium">
                         <RiArrowDownSFill />
                       </span>
-                    </div>
+                    </div> */}
                   {showDropdown && 
                     <div
                       className={`${

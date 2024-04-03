@@ -3,6 +3,8 @@ import Image from "next/image";
 import Heroimg from "../../../public/assest/heroimg.png";
 import Nftimg from "../../../public/assest/nft.png";
 import Mapimg from "../../../public/assest/map.png";
+import imageAsset from '../../../public/assest/unnamed.jpg';
+
 const Home = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
 
@@ -130,7 +132,7 @@ const Home = () => {
               <div className="lg:w-[45%] w-full">
                 <div>
                   <h1 className="text-[#FFFFFF] xl:text-5xl lg:text-4xl text-3xl font-semibold">
-                  Empower your journey with Our Chart, igniting Aspirations and refining your Trading Finesse to Epitome of Excellence.
+                  Illuminals is founded on 8th April 2024.
                   </h1>
                   <p className="text-[#FFFFFF] text-base font-normal my-3">
                     {/* A collection of 10,000 avatars that give you membership
@@ -142,20 +144,22 @@ const Home = () => {
                     together. */}
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
-                  Illuminate your trading journey with Illuminals chart powered by TradingView 
-                   This powerful tool enhances and guides you to make better
-                    more prudent decisions in your financial investments 
-                   elevating your trading of ordinal NFTs to unprecedented heights.
+                  As the founder of Illuminals, I am deeply honored to serve as the bridge for both the Eastern and Western communities on our platform. Our mission is to foster collaboration and mutual understanding in this vibrant web3 landscape. By coming together, we can unlock limitless opportunities and propel our collective success to new horizons by embracing each other's perspectives towards projects.
+Let's embark on this journey together, united in our pursuit of greatness and boundless achievement.
+As the founder of Illuminals, I am deeply honored to serve as the bridge for both the Eastern and Western communities on our platform. Our mission is to foster collaboration and mutual understanding in this vibrant web3 landscape. By coming together, we can unlock limitless opportunities and propel our collective success to new horizons by embracing each other's perspectives towards projects.
+Let's embark on this journey together, united in our pursuit of greatness and boundless achievement.
+
                   </p>
                 </div>
               </div>
               <div className="lg:w-[55%] w-full">
                 <div className="flex lg:justify-end">
                   <Image
-                    src={Mapimg}
+                    src={imageAsset}
                     alt="Mapimg"
                     className="w-[658px]"
                     priority
+                    
                   />
                 </div>
               </div>
