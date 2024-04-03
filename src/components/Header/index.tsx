@@ -96,12 +96,17 @@ const Header: React.FC = () => {
 
   const handleLogout = async() => {
     try {
+      setShowDropdown(false);
       await removeToken()
-      setShowDropNav(false);
+      window.location.reload()
     } catch (error) {
       console.log(error,'errror');
     }
   };
+
+  useEffect(()=>{
+    handleLogout()
+  },[])
 
   return (
     <div>
@@ -147,13 +152,13 @@ const Header: React.FC = () => {
                         priority
                       />
                       <span className="text-[#7B6E2D] text-sm font-medium">
-                        {user?.firstName ? user.firstName : 'Steve Smith'}
+                        {user?.firstName ? user.firstName  + user.lastName: 'Steve Smith'}
                       </span>
                       <span className="text-[#7B6E2D] text-sm font-medium">
                         <RiArrowDownSFill />
                       </span>
                     </div>
-
+                  {showDropdown && 
                     <div
                       className={`${
                         showDropdown ? "block" : "hidden"
@@ -173,13 +178,13 @@ const Header: React.FC = () => {
                           <span>
                             <PiSignOutBold />
                           </span>
-                          {user ? <span onClick={handleLogout}>Signout</span> :<Link href='/signin'><span >Signin</span></Link>}
+                          {user  ? <span onClick={handleLogout}>Signout</span> :<Link href='/signin'><span >Signin</span></Link>}
                           
                         </div>
                       </div>
                     </div>
+                    }
                   </div>
-
                   {/* <button className=" items-center bg-[#FEC801]  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
                     Connect Wallet
                   </button> */}
@@ -261,7 +266,7 @@ const Header: React.FC = () => {
                         <span>
                           <PiSignOutBold />
                         </span>
-                        <span> Sign out</span>
+                        {user ? <span onClick={handleLogout}>Signout</span> :<Link href='/signin'><span >Signin</span></Link>}
                       </div>
                     </div>
                   </div>

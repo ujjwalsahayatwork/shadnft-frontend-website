@@ -12,8 +12,8 @@ export default function MyApp() {
 
 
   return(
-    <UserProvider>
+    // <UserProvider>
     <Home />
-    </UserProvider>
+    // </UserProvider>
   );
 }
