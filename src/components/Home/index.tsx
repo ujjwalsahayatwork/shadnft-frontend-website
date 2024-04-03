@@ -16,25 +16,19 @@ const Home = () => {
               <div className="lg:w-[45%] w-full">
                 <div>
                   <h1 className="text-[#FFFFFF] xl:text-5xl lg:text-4xl text-3xl font-semibold">
-                    FROM THE ALLEY TO THE GARDEN
+                  Persona of Prestige: Crafting Your Digital Aristocracy Identity
                   </h1>
                   <p className="text-[#FFFFFF] text-base font-normal my-3">
-                    A collection of 10,000 avatars that give you membership
+                    {/* A collection of 10,000 avatars that give you membership
                     access to The Garden. It starts with exclusive streetwear
                     collabs, NFT drops, live events, and much more that will be
                     revealed over time. Community ownership in Azuki allows for
                     a new genre of media which the world has yet to explore. An
                     Azuki is your identity in the metaverse — let&apos;s build
-                    together.
+                    together. */}
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
-                    Lorem ipsum dolor sit amet consectetur. Et neque faucibus
-                    turpis sed. Massa augue maecenas elementum non varius. Eu
-                    ante egestas dui morbi nascetur vitae egestas. Nunc donec
-                    euismod sit nibh scelerisque mollis id in interdum. Praesent
-                    facilisi cursus lorem vestibulum tempor. Id eu magna at
-                    tortor consectetur in. Sed rutrum natoque tempus ut
-                    volutpat.
+                  Crafting an online presence of refined exclusivity. It exudes sophistication, grace, and authority, resonating with timeless elegance. Reflecting unparalleled excellence, it positions you as a paramount figure in your domain.
                   </p>
                 </div>
               </div>
@@ -62,25 +56,13 @@ const Home = () => {
               <div className="lg:w-[45%] w-full">
                 <div>
                   <h1 className="text-[#FFFFFF] xl:text-5xl lg:text-4xl text-3xl font-semibold">
-                    Created by Many
+                  Coveted by Connoisseurs of Distinction
                   </h1>
                   <p className="text-[#FFFFFF] text-base font-normal my-3">
-                    A collection of 10,000 avatars that give you membership
-                    access to The Garden. It starts with exclusive streetwear
-                    collabs, NFT drops, live events, and much more that will be
-                    revealed over time. Community ownership in Azuki allows for
-                    a new genre of media which the world has yet to explore. An
-                    Azuki is your identity in the metaverse — let&apos;s build
-                    together.
+                  Illuminals
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
-                    Lorem ipsum dolor sit amet consectetur. Et neque faucibus
-                    turpis sed. Massa augue maecenas elementum non varius. Eu
-                    ante egestas dui morbi nascetur vitae egestas. Nunc donec
-                    euismod sit nibh scelerisque mollis id in interdum. Praesent
-                    facilisi cursus lorem vestibulum tempor. Id eu magna at
-                    tortor consectetur in. Sed rutrum natoque tempus ut
-                    volutpat.
+                  Introducing the Illuminals: an exclusive collection of 3,333 meticulously curated anime-based profile pictures. Each image embodies sophistication and artistry, meticulously crafted to epitomize your digital presence in the esteemed realm of web3.
                   </p>
                 </div>
               </div>
@@ -108,25 +90,19 @@ const Home = () => {
               <div className="lg:w-[45%] w-full">
                 <div>
                   <h1 className="text-[#FFFFFF] xl:text-5xl lg:text-4xl text-3xl font-semibold">
-                    Owned by All
+                  Beyond the aforementioned, venture further; what secrets lie beyond the known
                   </h1>
                   <p className="text-[#FFFFFF] text-base font-normal my-3">
-                    A collection of 10,000 avatars that give you membership
+                    {/* A collection of 10,000 avatars that give you membership
                     access to The Garden. It starts with exclusive streetwear
                     collabs, NFT drops, live events, and much more that will be
                     revealed over time. Community ownership in Azuki allows for
                     a new genre of media which the world has yet to explore. An
                     Azuki is your identity in the metaverse — let&apos;s build
-                    together.
+                    together. */}
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
-                    Lorem ipsum dolor sit amet consectetur. Et neque faucibus
-                    turpis sed. Massa augue maecenas elementum non varius. Eu
-                    ante egestas dui morbi nascetur vitae egestas. Nunc donec
-                    euismod sit nibh scelerisque mollis id in interdum. Praesent
-                    facilisi cursus lorem vestibulum tempor. Id eu magna at
-                    tortor consectetur in. Sed rutrum natoque tempus ut
-                    volutpat.
+                  Aims to serve as the premier nexus, the eminent bridge, where our platform unites the esteemed Eastern and Western communities converge across the dynamic web3 sphere, engaging and facilitating financial discussion and trades of unparalleled prestige.
                   </p>
                 </div>
               </div>
@@ -154,25 +130,22 @@ const Home = () => {
               <div className="lg:w-[45%] w-full">
                 <div>
                   <h1 className="text-[#FFFFFF] xl:text-5xl lg:text-4xl text-3xl font-semibold">
-                    Into the Rabbit Hole
+                  Empower your journey with Our Chart, igniting Aspirations and refining your Trading Finesse to Epitome of Excellence.
                   </h1>
                   <p className="text-[#FFFFFF] text-base font-normal my-3">
-                    A collection of 10,000 avatars that give you membership
+                    {/* A collection of 10,000 avatars that give you membership
                     access to The Garden. It starts with exclusive streetwear
                     collabs, NFT drops, live events, and much more that will be
                     revealed over time. Community ownership in Azuki allows for
                     a new genre of media which the world has yet to explore. An
                     Azuki is your identity in the metaverse — let&apos;s build
-                    together.
+                    together. */}
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
-                    Lorem ipsum dolor sit amet consectetur. Et neque faucibus
-                    turpis sed. Massa augue maecenas elementum non varius. Eu
-                    ante egestas dui morbi nascetur vitae egestas. Nunc donec
-                    euismod sit nibh scelerisque mollis id in interdum. Praesent
-                    facilisi cursus lorem vestibulum tempor. Id eu magna at
-                    tortor consectetur in. Sed rutrum natoque tempus ut
-                    volutpat.
+                  Illuminate your trading journey with Illuminals chart powered by TradingView 
+                   This powerful tool enhances and guides you to make better
+                    more prudent decisions in your financial investments 
+                   elevating your trading of ordinal NFTs to unprecedented heights.
                   </p>
                 </div>
               </div>

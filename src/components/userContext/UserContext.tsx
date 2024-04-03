@@ -21,10 +21,13 @@ interface UserData {
     createdAt: string;
     updatedAt: string;
     adminApprovalStatus: string;
+    current_plan : {
+        name:string
+    }
 }
 
 interface UserContextType {
-    user: UserData | null;
+    user: UserData | any;
     setUser: (userData: UserData | null) => void;
 }
 
@@ -73,6 +76,8 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             }
             if (!token) return handleNavigate()
             let { data } = await API_CALL.GET_LOGGEDIN_USER()
+        
+        
             if (!data.success) {
                 // toast.error(data.message, TOAST_OPTION.ERROR)
                 updateUser(null)
