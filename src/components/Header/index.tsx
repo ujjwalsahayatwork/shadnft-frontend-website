@@ -147,7 +147,7 @@ const Header: React.FC = () => {
                         priority
                       />
                       <span className="text-[#7B6E2D] text-sm font-medium">
-                        {user?.firstName ? user.firstName : 'Steve Smith'}
+                        {user?.firstName ? user.firstName  + user.lastName: 'Steve Smith'}
                       </span>
                       <span className="text-[#7B6E2D] text-sm font-medium">
                         <RiArrowDownSFill />
@@ -261,7 +261,7 @@ const Header: React.FC = () => {
                         <span>
                           <PiSignOutBold />
                         </span>
-                        <span> Sign out</span>
+                        {user ? <span onClick={handleLogout}>Signout</span> :<Link href='/signin'><span >Signin</span></Link>}
                       </div>
                     </div>
                   </div>
