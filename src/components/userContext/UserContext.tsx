@@ -61,7 +61,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     
 
     const handleNavigate = () => {
-        console.log('called');
+        console.log('called again');
         
         if (router.pathname!= '/' && router.pathname != '/app' && router.pathname != "/signin" && router.pathname != "/signup" && router.pathname != "/forgot-password" && router.pathname != "/reset-password")
             router.push("/signin");

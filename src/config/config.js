@@ -1,5 +1,5 @@
 const config = {
-    baseURL: 'http://localhost:5001/api'
+    baseURL: 'http://illuminals.io:5001/api'
 };
 
 export default config;
