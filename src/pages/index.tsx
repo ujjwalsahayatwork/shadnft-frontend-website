@@ -10,24 +10,17 @@ import Head from "next/head";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function MyApp() {
-
-
-return(
+  return (
     // <UserProvider>
     <>
-    <Head>
-    <title>
-      ShadNFT
-    </title>
-    <meta
-      name=""
-     content=""
-    />
-    <meta name="viewport" content="width=device-width" initial-scale="1" />
-    <link rel="icon" href="/assest/Logo.png" />
-  </Head>
-  <Home />
-  </>
+      <Head>
+        <title>Illuminals</title>
+        <meta name="" content="" />
+        <meta name="viewport" content="width=device-width" initial-scale="1" />
+        <link rel="icon" href="/assest/Logo.png" />
+      </Head>
+      <Home />
+    </>
     // </UserProvider>
   );
 }

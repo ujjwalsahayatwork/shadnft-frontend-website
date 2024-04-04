@@ -26,7 +26,7 @@ const Home = () => {
         });
         containerRef.current.scrollTop = 0
         setTimer(false)
-        setTimeout(() => setTimer(true), 1000)
+        setTimeout(() => setTimer(true), 200)
       }
     }
     
@@ -138,7 +138,7 @@ const Home = () => {
                   </p>
                   <p className="text-[#FFFFFF] text-base font-normal">
                     Aims to serve as the premier nexus, the eminent bridge,
-                    where our platform unites the esteemed Eastern and Western
+                    where our platform unites the distinguished Eastern and Western
                     communities converge across the dynamic web3 sphere,
                     engaging and facilitating financial discussion and trades of
                     unparalleled prestige.
