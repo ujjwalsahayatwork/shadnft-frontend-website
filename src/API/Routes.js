@@ -31,5 +31,11 @@ export const API_CALL = {
   },
   RESET: {
     post: async (payload, token) => await BASE_CALL.post("/user/reset-password?token=" + token, payload),
+  },
+  MagicEidenData :{
+    get:async() => await BASE_CALL.get('/ordinals/popular-collections')
+  },
+  MagicEidenCollection:{
+    get:async() => await BASE_CALL.get('/ordinals/collections')
   }
 };

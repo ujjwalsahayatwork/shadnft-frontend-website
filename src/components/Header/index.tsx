@@ -139,7 +139,7 @@ const Header: React.FC = () => {
 
                 <div className="flex items-center gap-[10px]">
                   <div className="relative">
-                    {/* <div
+                    <div
                       onClick={() => setShowDropdown(!showDropdown)}
                       className="cursor-pointer items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
                      >
@@ -155,7 +155,7 @@ const Header: React.FC = () => {
                       <span className="text-[#7B6E2D] text-sm font-medium">
                         <RiArrowDownSFill />
                       </span>
-                    </div> */}
+                    </div>
                   {showDropdown && 
                     <div
                       className={`${
@@ -226,14 +226,15 @@ const Header: React.FC = () => {
               </Link>
             </div>
             <div className="pb-4">
-              <Link href="#" onClick={handleLink}>
+              <Link href="/app" onClick={handleLink}>
                 App
               </Link>
+              
             </div>
 
             <div className="flex items-center gap-[10px]">
               <div className="relative" ref={dropdownRef}>
-                {/* <div
+                <div
                   onClick={() => setShowDropdown(!showDropdown)}
                   className=" items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
                 >
@@ -249,7 +250,7 @@ const Header: React.FC = () => {
                   <span className="text-[#7B6E2D] text-sm font-medium">
                     <RiArrowDownSFill />
                   </span>
-                </div> */}
+                </div>
                 {showDropdown && (
                   <div className="absolute top-[50px] left-0  w-[187px]    bg-[#161515] ">
                     <div className="flex flex-col  w-full">

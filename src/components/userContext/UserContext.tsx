@@ -72,13 +72,13 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             let token =  Cookies.get('loggedIn');
             //  let userToken = token.get('token')
             if(token){
-               router.push('/')
+               router.push(router.pathname)
             }
             if (!token) return handleNavigate()
             let { data } = await API_CALL.GET_LOGGEDIN_USER()
-          console.log(data,'hiiioi');
+        
              if(data.success){
-                console.log('hiii');
+              
                 
                 setUser(data.data)
                 return ;
@@ -103,7 +103,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         // const storedUser = localStorage.getItem("user");
         
         if (!user || user==null) {
-            console.log("inside user");
+       
             getUserFromToken()
             
         }

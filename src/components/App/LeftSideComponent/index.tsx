@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { RiArrowDownSFill } from "react-icons/ri";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
@@ -7,6 +7,10 @@ import Currency from "../../../../public/assest/Currency.png";
 import Filter from "../../../../public/assest/Filter.png";
 import { CgArrowsExchange } from "react-icons/cg";
 import { tableData } from "./Data/data";
+import Link from "next/link";
+import { useUserContext } from "@/components/userContext/UserContext";
+import { API_CALL } from "@/API/Routes";
+import Loader from "@/components/extras/loader";
 const tabs = [
   {
     title: "Ordinal",
@@ -33,12 +37,21 @@ const GridTabs = [
     key: "usdt",
   },
 ];
+interface MegicEden {
+  name: string;
+  floorPrice: number;
+  volume: number;
+}
 const LeftSideComponent = () => {
   const [selectedTab, setSelectedTab] = useState("ordinal");
   const [gridSelectedTab, setGridSelectedTab] = useState("btc");
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { user } = useUserContext();
+  const [collections, setCollections] = useState<MegicEden[]>([]);
+  const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
+
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
@@ -51,6 +64,35 @@ const LeftSideComponent = () => {
   const handleCheckbox2Change = () => {
     setIsChecked2(!isChecked2);
   };
+
+  const fetchMagicEidenData = async () => {
+  try {
+    const response = await API_CALL.MagicEidenData.get();
+    console.log(response, "MagicEidenData");
+    setPopularCollections(response.data.data);
+  } catch (error) {
+    console.log(error);
+    
+  }
+  };
+
+  const fetchMagicEidenCollection = async () => {
+     try {
+      const response = await API_CALL.MagicEidenCollection.get();
+      console.log(response, "MagicEidenCollectios");
+      setCollections(response.data.data);
+     } catch (error) {
+      console.log(error);
+     }
+  };
+
+  useEffect(() => {
+   
+    user ? fetchMagicEidenCollection() : fetchMagicEidenData();
+  
+  }, [user]);
+ 
+
   return (
     <div className=" md:sticky md:top-0 no-scrollbar  overflow-y-auto md:height md:border-r-[1px] max-[767px]:border-b-[1px] border-[#FFDA83]">
       <div className="mt-[100px] mb-[50px]">
@@ -150,7 +192,7 @@ const LeftSideComponent = () => {
         </div>
         <div className="border-b-[1px] border-solid border-[#303030] my-[15px] w-full"></div>
         <div className="flex items-center gap-3 px-4 mb-[15px]">
-          <div className="">
+          {/* <div className="">
             <input
               type="text"
               placeholder="Login to search..."
@@ -158,8 +200,8 @@ const LeftSideComponent = () => {
               onChange={handleSearchChange}
               className="block w-full text-[#57472F] border-[0.5px] rounded-[2.5px]  border-[#57472F] p-[9px] text-xs font-normal text-left h-[30px] bg-transparent border-solid outline-none focus:ring-0 placeholder-[#57472F]"
             />
-          </div>
-          <div className="flex items-center gap-[6px]">
+          </div> */}
+          {/* <div className="flex items-center gap-[6px]">
             <span>
               <MdOutlineKeyboardArrowLeft className="text-[#fff] text-xs" />
             </span>
@@ -175,7 +217,7 @@ const LeftSideComponent = () => {
             <span>
               <MdOutlineKeyboardArrowRight className="text-[#fff] text-xs" />
             </span>
-          </div>
+          </div> */}
         </div>
         <div className=" overflow-auto no-scrollbar h-full">
           <table className="w-full  h-full">
@@ -192,37 +234,73 @@ const LeftSideComponent = () => {
                 </th>
               </tr>
             </thead>
+            {/* {
+             collections.length ==0 || popularCollections.length==0 ?
+               (
+               <Loader />
+              ):( */}
 
+             
             <tbody className="my-4">
-              {tableData.map((item, index) => (
-                <tr
-                  key={index}
-                  className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
-                >
-                  <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ">
-                    {item.name}
-                  </td>
-                  <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[#FF0000] text-sm font-medium">
-                        <RiArrowDownSFill />
-                      </span>
-                      <span> {item.price}</span>
-                    </div>
-                  </td>
-                  <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                    {item.Volume}
-                  </td>
-                </tr>
-              ))}
+         
+              {user
+                ? collections.map((item, index) => (
+                    <tr
+                      key={index}
+                      className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
+                    >
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ">
+                        {item.name}
+                      </td>
+                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
+                        <div className="flex items-center gap-1">
+                          <span className="text-[#FF0000] text-sm font-medium">
+                            <RiArrowDownSFill />
+                          </span>
+                          <span> {item.floorPrice / 100000000}</span>
+                        </div>
+                      </td>
+                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
+                        {item.volume}
+                      </td>
+                    </tr>
+                  ))
+                : popularCollections.map((item, index) => (
+                    <tr
+                      key={index}
+                      className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
+                    >
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ">
+                        {item.name}
+                      </td>
+                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
+                        <div className="flex items-center gap-1">
+                          <span className="text-[#FF0000] text-sm font-medium">
+                            <RiArrowDownSFill />
+                          </span>
+                          <span> {item.floorPrice / 100000000}</span>
+                        </div>
+                      </td>
+                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
+                        {item.volume}
+                      </td>
+                    </tr>
+                  ))}
             </tbody>
+             {/* )
+            
+            } */}
           </table>
         </div>
-        <div className="px-4 mt-[20px]">
-          <button className=" items-center bg-[#FEC801] w-full  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
-            Login to see more...
-          </button>
-        </div>
+        {!user && (
+          <div className="px-4 mt-[20px]">
+            <Link href="/signin">
+              <button className=" items-center bg-[#FEC801] w-full  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
+                Login to see more...
+              </button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
