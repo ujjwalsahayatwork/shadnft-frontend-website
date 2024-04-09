@@ -18,8 +18,11 @@ export default function MyApp() {
         <meta name="" content="" />
         <meta name="viewport" content="width=device-width" initial-scale="1" />
         <link rel="icon" href="/assest/Logo.png" />
+        
       </Head>
+    
       <Home />
+      
     </>
     // </UserProvider>
   );

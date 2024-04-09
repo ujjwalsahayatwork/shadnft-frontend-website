@@ -72,10 +72,18 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             let token =  Cookies.get('loggedIn');
             //  let userToken = token.get('token')
             if(token){
+                let { data } = await API_CALL.GET_LOGGEDIN_USER() 
+                if(data.success){
+              
+                
+                    setUser(data.data)
+                    return ;
+                 }
+            
                router.push(router.pathname)
             }
             if (!token) return handleNavigate()
-            let { data } = await API_CALL.GET_LOGGEDIN_USER()
+            let { data } = await API_CALL.GET_LOGGEDIN_USER() 
         
              if(data.success){
               

@@ -1,11 +1,16 @@
 import AppCharts from '@/components/App'
-import React from 'react'
+import Head from 'next/head'
+import React from 'react';
+// import f from ''
+
 
 const index = () => {
+  
+  
   return (
-    <div>
+    <>
       <AppCharts />
-    </div>
+    </>
   )
 }
 

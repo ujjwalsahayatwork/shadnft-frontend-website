@@ -87,6 +87,8 @@ const LeftSideComponent = () => {
   };
 
   useEffect(() => {
+ 
+   console.log(window,"<<<<this iswjasdfs");
    
     user ? fetchMagicEidenCollection() : fetchMagicEidenData();
   

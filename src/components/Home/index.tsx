@@ -16,7 +16,6 @@ const Home = () => {
     if (!timer) return
     if (containerRef.current) {
       let scrollTop = containerRef.current.scrollTop;
-      console.log("Scrolled:", scrollTop);
       if (scrollTop > 2) {
         setActiveTab((prev) => {
           if (prev < tabs.length - 1) {
