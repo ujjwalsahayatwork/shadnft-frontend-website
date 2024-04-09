@@ -15,16 +15,10 @@ const RightSideComponent = () => {
   //   message: "Not initialised",
   //   data: []
   // } });
-
-  
-console.log('inside right');
-
   return (
     <>
-    jk
       <div id='tv_chart_container'>
-  
-      </div> 
+      </div>
     </>
   );
 };
