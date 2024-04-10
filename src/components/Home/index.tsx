@@ -186,7 +186,7 @@ const Home = () => {
                     mutual understanding in this vibrant web3 landscape. By
                     coming together, we can unlock limitless opportunities and
                     propel our collective success to new horizons by embracing
-                    each other's perspectives towards projects. Let's embark on
+                    each others perspectives towards projects. Lets embark on
                     this journey together, united in our pursuit of greatness
                     and boundless achievement.
                   </p>

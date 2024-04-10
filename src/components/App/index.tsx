@@ -5,13 +5,42 @@ import RightSideComponent from "./RightSideComponent";
 import Script from "next/script";
 import Datafeed from "../../datafeed.js"
 // const LazyRightSideComponent = React.lazy(() => import('./RightSideComponent'));
+
+interface TradingView {
+  widget(options: TradingViewOptions): any; // Adjust 'any' if you know the exact return type
+}
+
+interface TradingViewOptions {
+  symbol: string;
+  interval: IntervalType;
+  fullscreen: boolean;
+  container: string;
+  datafeed: any; // Adjust this type according to your datafeed implementation
+  library_path: string;
+  theme: "dark" | "light"; // Assuming only two themes are possible
+  overrides?: {
+    [key: string]: string;
+  };
+}
+
+type IntervalType = '1' | '3' | '5' | '15' | '30' | '60' | '120' | '240' | '1D' | '1W' | '1M';
+
+declare let window: {
+  tvWidget: any; // Adjust 'any' if you know the exact type
+};
+
+declare let TradingView: {
+  widget: any; // Adjust 'any' if you know the exact type
+};
+
+
 const AppCharts = () => {
   const [isClient, setIsClient] = useState(false)
   useEffect(() => {
     if (typeof window != 'undefined') {
       // alert("window")
       setTimeout(() => {
-        window?.myFunction()
+        // window?.myFunction()
         window.tvWidget = new TradingView.widget({
           symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
           interval: '1D',                        // Default interval
