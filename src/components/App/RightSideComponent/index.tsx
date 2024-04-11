@@ -15,9 +15,10 @@ const RightSideComponent = () => {
   //   message: "Not initialised",
   //   data: []
   // } });
+  
   return (
     <>
-      <div id='tv_chart_container'>
+      <div id='tv_chart_container' className="h-[800px]" >
       </div>
     </>
   );

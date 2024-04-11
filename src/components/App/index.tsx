@@ -40,11 +40,14 @@ const AppCharts = () => {
     if (typeof window != 'undefined') {
       // alert("window")
       setTimeout(() => {
+        
         // window?.myFunction()
         window.tvWidget = new TradingView.widget({
           symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
-          interval: '1D',                        // Default interval
-          fullscreen: true,                      // Displays the chart in the fullscreen mode
+          interval: '1D', 
+          width:'100%',
+          height: '100%',                       // Default interval
+         // fullscreen: true,                      // Displays the chart in the fullscreen mode
           container: 'tv_chart_container',       // Reference to an attribute of a DOM element
           datafeed: Datafeed,
           library_path: 'http://127.0.0.1:5501/charting_library/charting_library.js',
@@ -68,12 +71,9 @@ const AppCharts = () => {
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full">
             <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%]   w-full">
               <LeftSideComponent />
-              {!isClient && <div style={{ color: "white" }}>
-                {isClient}
-              </div>}
             </div>
-            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full">
-              <div className="h-[650px]  md:my-[100px] max-[767px]:px-4 "  >
+            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[50px]">
+              <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 "  >
 
 
                 {isClient && (

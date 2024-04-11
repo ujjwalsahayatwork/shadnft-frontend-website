@@ -96,7 +96,7 @@ const LeftSideComponent = () => {
  
 
   return (
-    <div className=" md:sticky md:top-0 no-scrollbar  overflow-y-auto md:height md:border-r-[1px] max-[767px]:border-b-[1px] border-[#FFDA83]">
+    <div className=" md:sticky md:top-0 no-scrollbar md:h-[100vh] overflow-y-auto md:height md:border-r-[1px] max-[767px]:border-b-[1px] border-[#FFDA83]">
       <div className="mt-[100px] mb-[50px]">
         <div className="flex items-center  gap-2 px-4 ">
           <div className="flex flex-col ">
