@@ -143,20 +143,27 @@ const Header: React.FC = () => {
                       onClick={() => setShowDropdown(!showDropdown)}
                       className="cursor-pointer items-center relative border-[1px] border-solid border-[#7B6E2D] flex  gap-[5px]  rounded-[5px]  px-[5px] py-[5px]  text-[#000000] font-medium text-sm"
                      >
-                      <Image
+                      {
+                        user && ( <Image
                         src={Profile}
                         alt="Profile"
                         className="w-[30px]"
                         priority
                       />
+                        ) 
+                      }
                       <span className="text-[#7B6E2D] text-sm font-medium">
-                        {user?.firstName ? user.firstName  + user.lastName: 'Steve Smith'}
+                        {user?.firstName ? user.firstName  + user.lastName: <Link href='/signin'>
+                          <button className="p-1">Login</button>
+                          </Link>}
                       </span>
-                      <span className="text-[#7B6E2D] text-sm font-medium">
-                        <RiArrowDownSFill />
-                      </span>
+                     {
+                      user &&  <span className="text-[#7B6E2D] text-sm font-medium">
+                      <RiArrowDownSFill />
+                    </span>
+                     }
                     </div>
-                  {showDropdown && 
+                  {user && showDropdown && 
                     <div
                       className={`${
                         showDropdown ? "block" : "hidden"
