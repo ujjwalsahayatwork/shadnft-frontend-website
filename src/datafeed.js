@@ -2,7 +2,7 @@ import { makeApiRequest, generateSymbol, parseFullSymbol,makeApiRequestLocal  } 
 
 const configurationData = {
     // Represents the resolutions for bars supported by your datafeed
-    supported_resolutions: ['1D', '1W', '1M'],
+    supported_resolutions: ['1','5','15','30','60','240','1440'],
     // The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
     exchanges: [
         { value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
@@ -83,11 +83,12 @@ export default {
             description: symbolItem.description,
             type: symbolItem.type,
             session: '24x7',
-            timezone: 'Etc/UTC',
+            timezone: 'Asia/Kolkata',
             exchange: symbolItem.exchange,
+            intraday_multipliers:['1','5','15','30','240'],
             minmov: 1,
-            pricescale: 100,
-            has_intraday: false,
+            pricescale: 1000,
+            has_intraday: true,
             visible_plots_set: 'ohlc',
             has_weekly_and_monthly: false,
             supported_resolutions: configurationData.supported_resolutions,
@@ -98,23 +99,25 @@ export default {
         onSymbolResolvedCallback(symbolInfo);
     },
     getBars: async (symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) => {
-        const { from, to, firstDataRequest } = periodParams;
-        // console.log('[getBars]: Method call', symbolInfo, resolution, from, to);
-        const parsedSymbol = parseFullSymbol(symbolInfo.ticker);
-        const urlParameters = {
-            e: parsedSymbol.exchange,
-            fsym: parsedSymbol.fromSymbol,
-            tsym: parsedSymbol.toSymbol,
-            toTs: to,
-            limit: 2000,
-        };
-        const query = Object.keys(urlParameters)
-            .map(name => `${name}=${encodeURIComponent(urlParameters[name])}`)
-                .join('&');
+        const { from , to, firstDataRequest } = periodParams;
+
+        console.log('[getBars]: Method call'    , from, to);
+        // const parsedSymbol = parseFullSymbol(symbolInfo.ticker);
+        // const urlParameters = {
+        //     e: parsedSymbol.exchange,
+        //     fsym: parsedSymbol.fromSymbol,
+        //     tsym: parsedSymbol.toSymbol,
+        //     toTs: to,
+        //     limit: 2000,
+        // };
+        // const query = Object.keys(urlParameters)
+        //     .map(name => `${name}=${encodeURIComponent(urlParameters[name])}`)
+        //         .join('&');
         try {
-            let data = await makeApiRequestLocal();
-            data = data.data
-            // console.log("My data", data)
+            const res = await makeApiRequestLocal();
+            // console.log(res,"<<<thisisresponse")
+            const data = res.data
+
             if (data.length === 0) {
                 console.log("No data error")
                 // "noData" should be set if there is no data in the requested period
@@ -123,18 +126,19 @@ export default {
             }
             let bars = [];
             data.forEach(bar => {
-                if (bar.time/ 1000 >= from && bar.time / 1000 < to) {
+                if (bar.time / 1000 >= from && bar.time / 1000 < to) {
                     bars = [...bars, {
-                        time: bar.time * 1000,
+                        time: bar.time,
                         low: bar.low,
                         high: bar.high,
                         open: bar.open,
-                        close: bar.close,
+                        close: bar.close
                     }];
                 }
             });
             console.log(`[getBars]: returned ${bars.length} bar(s)`);
-            onHistoryCallback(bars, { noData: false });
+            // console.log('inside---data',data);
+           return onHistoryCallback(bars, { noData: false });
         } catch (error) {
             console.log('[getBars]: Get error', error);
             onErrorCallback(error);

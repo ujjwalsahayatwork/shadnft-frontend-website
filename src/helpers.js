@@ -1,4 +1,4 @@
-
+import bars from './datafeed.js'
 
 // Makes requests to CryptoCompare API
 export async function makeApiRequest(path) {
@@ -11,8 +11,14 @@ export async function makeApiRequest(path) {
 }
 export async function makeApiRequestLocal() {
     try {
-        const response = await fetch(`http://localhost:5001/api/ordinals/charts-data/btc`);
-        return response.json();
+        // let seacrchSymbol = text?text:'Runestone';
+       let seacrchSymbol = localStorage.getItem('key')
+        seacrchSymbol = seacrchSymbol?seacrchSymbol:'Runestone'
+        const response = await fetch(`http://localhost:5001/api/ordinals/charts-data/${seacrchSymbol}`);
+        const data=await response.json()
+        console.log(data,"<<<<insidemakeapirequestlocal");
+        // bars.getBars(data);
+        return data
     } catch(error) {
         throw new Error(`CryptoCompare request error: ${error.status}`);
     }

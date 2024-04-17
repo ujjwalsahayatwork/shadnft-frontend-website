@@ -4,6 +4,7 @@ import LeftSideComponent from "./LeftSideComponent";
 import RightSideComponent from "./RightSideComponent";
 import Script from "next/script";
 import Datafeed from "../../datafeed.js"
+import { makeApiRequestLocal } from "@/helpers.js";
 // const LazyRightSideComponent = React.lazy(() => import('./RightSideComponent'));
 
 interface TradingView {
@@ -35,16 +36,20 @@ declare let TradingView: {
 
 
 const AppCharts = () => {
-  const [isClient, setIsClient] = useState(false)
+  const [isClient, setIsClient] = useState(false);
+  const [clicked,setClicked] = useState(false)
   useEffect(() => {
-    if (typeof window != 'undefined') {
+    if (typeof window != 'undefined' || clicked) {
+      console.log('worked==>><<>><<>><< useeffe ct');
+      
       // alert("window")
       setTimeout(() => {
         
         // window?.myFunction()
         window.tvWidget = new TradingView.widget({
+          // symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
           symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
-          interval: '1D', 
+          interval: '60', 
           width:'100%',
           height: '100%',                       // Default interval
          // fullscreen: true,                      // Displays the chart in the fullscreen mode
@@ -54,23 +59,32 @@ const AppCharts = () => {
           theme: "dark",
           overrides: {
             "paneProperties.background": "black",
-            "paneProperties.backgroundType": "solid"
+            "paneProperties.backgroundType": "solid",
+            
           },
+
         });
       }, 1000);
+      
       setIsClient(true);
+      setClicked(false)
     }
-  }, [])
+  }, [clicked]);
 
-  console.log('inside window', isClient);
+  const handleDataFetch = () => {
+    setClicked(true); 
+  };
+
+
+  // console.log('inside window', isClient);
   return (
     <>
       <Script src="http://127.0.0.1:5501/charting_library/charting_library.js" />
-      <section className="">
+      <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto">
-          <div className="flex md:flex-row flex-col justify-between gap-5 w-full">
+          <div className="flex md:flex-row flex-col justify-between gap-5 w-full  ">
             <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%]   w-full">
-              <LeftSideComponent />
+              <LeftSideComponent handleDataFetch={handleDataFetch}/>
             </div>
             <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[50px]">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 "  >

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useUserContext } from "@/components/userContext/UserContext";
 import { API_CALL } from "@/API/Routes";
 import Loader from "@/components/extras/loader";
+import { makeApiRequestLocal } from "@/helpers";
 const tabs = [
   {
     title: "Ordinal",
@@ -42,7 +43,9 @@ interface MegicEden {
   floorPrice: number;
   volume: number;
 }
-const LeftSideComponent = () => {
+type HandleDataFetch = () => void;
+
+const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({handleDataFetch}) => {
   const [selectedTab, setSelectedTab] = useState("ordinal");
   const [gridSelectedTab, setGridSelectedTab] = useState("btc");
   const [isChecked1, setIsChecked1] = useState(false);
@@ -93,7 +96,15 @@ const LeftSideComponent = () => {
     user ? fetchMagicEidenCollection() : fetchMagicEidenData();
   
   }, [user]);
- 
+
+  
+  const fetchData = async (name: string) => {
+    const Text = name.replace(/\s+/g, '');
+    localStorage.setItem('key',Text)
+    const response = await makeApiRequestLocal();
+    console.log(response, 'response');
+    handleDataFetch(); // Trigger the useEffect in AppCharts
+  };
 
   return (
     <div className=" md:sticky md:top-0 no-scrollbar md:h-[100vh] overflow-y-auto md:height md:border-r-[1px] max-[767px]:border-b-[1px] border-[#FFDA83]">
@@ -251,7 +262,7 @@ const LeftSideComponent = () => {
                       key={index}
                       className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
                     >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ">
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)} >
                         {item.name}
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
@@ -272,7 +283,7 @@ const LeftSideComponent = () => {
                       key={index}
                       className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
                     >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ">
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)}>
                         {item.name}
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
