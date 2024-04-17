@@ -100,11 +100,11 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
 
   
   const fetchData = async (name: string) => {
+    setClickedItem(name);   
     const Text = name.replace(/\s+/g, '');
     localStorage.setItem('key',Text)
     const response = await makeApiRequestLocal();
     console.log(response, 'response');
-    setClickedItem(name);
     handleDataFetch(); // Trigger the useEffect in AppCharts
   };
 
