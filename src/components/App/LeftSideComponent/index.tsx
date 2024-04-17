@@ -54,6 +54,7 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
   const { user } = useUserContext();
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
+  const [clickedItem, setClickedItem] = useState('Runestone');
 
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -103,6 +104,7 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
     localStorage.setItem('key',Text)
     const response = await makeApiRequestLocal();
     console.log(response, 'response');
+    setClickedItem(name);
     handleDataFetch(); // Trigger the useEffect in AppCharts
   };
 
@@ -260,7 +262,10 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                 ? collections.map((item, index) => (
                     <tr
                       key={index}
-                      className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
+                      className={`${
+                        clickedItem === item.name ? 'bg-[#FEC801] ' : ''
+                      }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
+                      
                     >
                       <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)} >
                         {item.name}
@@ -281,7 +286,9 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                 : popularCollections.map((item, index) => (
                     <tr
                       key={index}
-                      className=" border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px]  hover:bg-[#80808033]"
+                      className={`${
+                        clickedItem === item.name ? 'bg-[#FEC801] ' : ''
+                      }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                     >
                       <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)}>
                         {item.name}
