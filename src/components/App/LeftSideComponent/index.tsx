@@ -39,7 +39,7 @@ const GridTabs = [
   },
 ];
 interface MegicEden {
-  name: string;
+  symbol: string;
   floorPrice: number;
   volume: number;
 }
@@ -101,8 +101,8 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
   
   const fetchData = async (name: string) => {
     setClickedItem(name);   
-    const Text = name.replace(/\s+/g, '');
-    localStorage.setItem('key',Text)
+    // const Text = name.replace(/\s+/g, '');
+    localStorage.setItem('key',name)
     const response = await makeApiRequestLocal();
     console.log(response, 'response');
     handleDataFetch(); // Trigger the useEffect in AppCharts
@@ -263,12 +263,12 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                     <tr
                       key={index}
                       className={`${
-                        clickedItem === item.name ? 'bg-[#FEC801] ' : ''
+                        clickedItem === item.symbol ? 'bg-[#FEC801] ' : ''
                       }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                       
                     >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)} >
-                        {item.name}
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.symbol)} >
+                        {item.symbol}
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
                         <div className="flex items-center gap-1">
@@ -287,11 +287,11 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                     <tr
                       key={index}
                       className={`${
-                        clickedItem === item.name ? 'bg-[#FEC801] ' : ''
+                        clickedItem === item.symbol ? 'bg-[#FEC801] ' : ''
                       }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                     >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.name)}>
-                        {item.name}
+                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.symbol)}>
+                        {item.symbol}
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
                         <div className="flex items-center gap-1">
