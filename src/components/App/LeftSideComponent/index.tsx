@@ -364,7 +364,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
               <>
                {/* Pagination controls */}
            <div className="p-2 flex justify-center items-center flex-row mt-5 ">
-           <button onClick={prevPage} disabled={currentPage === 1} className="p-2  bg-gray-500 rounded border-[1px] border-solid border-[#303030]" >
+           <button onClick={prevPage} disabled={currentPage === 1} className="p-2  bg-gray-950 rounded border-[1px] border-solid border-[#303030]" >
                         Prev
                       </button>
                     
