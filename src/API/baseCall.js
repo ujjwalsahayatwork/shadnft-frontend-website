@@ -1,9 +1,11 @@
 import axios from "axios";
 
+export let URL = process.env.NEXT_PUBLIC_API_KEY
+
 // Create a custom Axios instance with the desired configuration
 const axiosInstance = axios.create({
   // baseURL: "http://64.176.167.246:3000/api/", // Set the base URL for all requests
-  baseURL: "https://illuminals.io/api/api", // Set the base URL for all requests
+  baseURL: URL, // Set the base URL for all requests
   
   withCredentials: true,
   crossDomain:true, // Allow credentials to be sent with cross-origin requests

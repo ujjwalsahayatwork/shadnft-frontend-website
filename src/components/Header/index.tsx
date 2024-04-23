@@ -38,7 +38,7 @@ const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string>("");
+  const [activeLink, setActiveLink] = useState<string>("home");
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [testnet, setTestnet] = useState(false);
@@ -65,7 +65,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     // Extract the first segment of the pathname to determine the active link
     const segments = router.pathname.split("/");
-    setActiveLink(segments[1]);
+    setActiveLink('home');
   }, []);
 
   const homeLinkStyles = (link: any) => {
