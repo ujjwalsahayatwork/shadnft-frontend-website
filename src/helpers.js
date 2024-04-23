@@ -14,7 +14,7 @@ export async function makeApiRequestLocal() {
         // let seacrchSymbol = text?text:'Runestone';
        let seacrchSymbol = localStorage.getItem('key')
         seacrchSymbol = seacrchSymbol?seacrchSymbol:'Runestone'
-        const response = await fetch(`http://localhost:5001/api/ordinals/charts-data/${seacrchSymbol}`);
+        const response = await fetch(`https://illuminals.io/api/api/ordinals/charts-data/${seacrchSymbol}`);
         const data=await response.json()
         console.log(data,"<<<<insidemakeapirequestlocal");
         // bars.getBars(data);
