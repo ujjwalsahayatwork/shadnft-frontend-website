@@ -18,7 +18,7 @@ const RightSideComponent = () => {
   
   return (
     <>
-      <div id='tv_chart_container' className="md:h-[800px] h-[600px] " >
+      <div id='tv_chart_container' className="md:h-[500px] h-[600px] " >
       </div>
     </>
   );

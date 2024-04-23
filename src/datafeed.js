@@ -2,7 +2,7 @@ import { makeApiRequest, generateSymbol, parseFullSymbol,makeApiRequestLocal  } 
 
 const configurationData = {
     // Represents the resolutions for bars supported by your datafeed
-    supported_resolutions: ['1','5','15','30','60','240','1440'],
+    supported_resolutions: ['60'],
     // The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
     exchanges: [
         { value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
@@ -18,26 +18,31 @@ const configurationData = {
 // ...
 // Obtains all symbols for all exchanges supported by CryptoCompare API
 async function getAllSymbols() {
-    const data = await makeApiRequest('data/v3/all/exchanges');
+    const {data} = await makeApiRequest('data/v3/all/exchanges');
     let allSymbols = [];
+ if(data){
+    data.data.filter((item)=>{
+        allSymbols.push(item.symbol)
+    })
+ }
+    // for (const exchange of configurationData.exchanges) {
+    //     const pairs = data.Data[exchange.value].pairs;
 
-    for (const exchange of configurationData.exchanges) {
-        const pairs = data.Data[exchange.value].pairs;
-
-        for (const leftPairPart of Object.keys(pairs)) {
-            const symbols = pairs[leftPairPart].map(rightPairPart => {
-                const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
-                return {
-                    symbol: symbol.short,
-                    ticker: symbol.full,
-                    description: symbol.short,
-                    exchange: exchange.value,
-                    type: 'crypto',
-                };
-            });
-            allSymbols = [...allSymbols, ...symbols];
-        }
-    }
+    //     for (const leftPairPart of Object.keys(pairs)) {
+    //         const symbols = pairs[leftPairPart].map(rightPairPart => {
+    //             const symbol = generateSymbol(exchange.value, leftPairPart, rightPairPart);
+    //             return {
+    //                 symbol: symbol.short,
+    //                 ticker: symbol.full,
+    //                 description: symbol.short,
+    //                 exchange: exchange.value,
+    //                 type: 'crypto',
+    //             };
+    //         });
+    //         allSymbols = [...allSymbols, ...symbols];
+    //     }
+    // }
+    // console.log(allSymbols);
     return allSymbols;
 }
 export default {
@@ -52,15 +57,14 @@ export default {
         onResultReadyCallback
     ) => {
         console.log('[searchSymbols]: Method call');
-        const symbols = await getAllSymbols();
-        const newSymbols = symbols.filter(symbol => {
-            const isExchangeValid = exchange === '' || symbol.exchange === exchange;
-            const isFullSymbolContainsInput = symbol.ticker
-                .toLowerCase()
-                .indexOf(userInput.toLowerCase()) !== -1;
-            return isExchangeValid && isFullSymbolContainsInput;
-        });
-        onResultReadyCallback(newSymbols);
+        const {data} = await getAllSymbols();
+        let allSymbols = [];
+        if(data){
+            data.data.filter((item)=>{
+                allSymbols.push(item.symbol)
+            })
+         }
+        onResultReadyCallback(allSymbols);
     },
     resolveSymbol: async (
         symbolName,
@@ -70,7 +74,7 @@ export default {
     ) => {
         console.log('[resolveSymbol]: Method call', symbolName);
         const symbols = await getAllSymbols();
-        const symbolItem = symbols.find(({ ticker }) => ticker === symbolName);
+        const symbolItem = symbols.find((ticker ) => ticker === symbolName);
         if (!symbolItem) {
             console.log('[resolveSymbol]: Cannot resolve symbol', symbolName);
             onResolveErrorCallback('Cannot resolve symbol');
@@ -79,7 +83,7 @@ export default {
         // Symbol information object
         const symbolInfo = {
             ticker: symbolItem.ticker,
-            name: symbolItem.symbol,
+            name: symbolName.toUpperCase(),
             description: symbolItem.description,
             type: symbolItem.type,
             session: '24x7',

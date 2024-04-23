@@ -37,58 +37,59 @@ declare let TradingView: {
 
 const AppCharts = () => {
   const [isClient, setIsClient] = useState(false);
-  const [clicked,setClicked] = useState(false)
+  const [clicked,setClicked] = useState(false);
+
   useEffect(() => {
-    if (typeof window != 'undefined' || clicked) {
-      console.log('worked==>><<>><<>><< useeffe ct');
-      
-      // alert("window")
-      setTimeout(() => {
-        
-        // window?.myFunction()
+  if (typeof window !== 'undefined' || clicked) {
+    let newSymbol = localStorage.getItem('key');
+    
+    setTimeout(() => {
+      if (window.tvWidget) {
+        // Update only the symbol without recreating the widget
+        window.tvWidget.chart().setSymbol(newSymbol);
+      } else {
         window.tvWidget = new TradingView.widget({
-          // symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
-          symbol: 'Bitfinex:BTC/USD',            // Default symbol pair
+          symbol: newSymbol,
           interval: '60', 
-          width:'100%',
-          height: '100%',                       // Default interval
-         // fullscreen: true,                      // Displays the chart in the fullscreen mode
-          container: 'tv_chart_container',       // Reference to an attribute of a DOM element
+          width: '100%',
+          height: '100%',
+          fullscreen: true,
+          container: 'tv_chart_container',
           datafeed: Datafeed,
           library_path: 'http://127.0.0.1:5501/charting_library/charting_library.js',
           theme: "dark",
           overrides: {
             "paneProperties.background": "black",
             "paneProperties.backgroundType": "solid",
-            
           },
-
         });
-      }, 1000);
-      
-      setIsClient(true);
-      setClicked(false)
-    }
-  }, [clicked]);
+      }
+    }, 1000);
+    
+    setIsClient(true);
+    setClicked(false);
+  }
+}, [clicked]);
+
 
   const handleDataFetch = () => {
     setClicked(true); 
   };
 
 
-  // console.log('inside window', isClient);
+  console.log('inside window', isClient);
   return (
     <>
       <Script src="http://127.0.0.1:5501/charting_library/charting_library.js" />
       <section className="max-[767px]:my-[50px]">
-        <div className="container mx-auto">
+        <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  ">
-            <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%]   w-full">
+            <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%] w-full">
               <LeftSideComponent handleDataFetch={handleDataFetch}/>
             </div>
-            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[50px]">
+            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] ">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 "  >
-
+                
 
                 {isClient && (
                   <>

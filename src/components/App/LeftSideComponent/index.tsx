@@ -42,10 +42,15 @@ interface MegicEden {
   symbol: string;
   floorPrice: number;
   volume: number;
+  name: string;
 }
 type HandleDataFetch = () => void;
 
-const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({handleDataFetch}) => {
+const ItemsPerPage = 15;
+
+const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
+  handleDataFetch,
+}) => {
   const [selectedTab, setSelectedTab] = useState("ordinal");
   const [gridSelectedTab, setGridSelectedTab] = useState("btc");
   const [isChecked1, setIsChecked1] = useState(false);
@@ -54,7 +59,30 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
   const { user } = useUserContext();
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
-  const [clickedItem, setClickedItem] = useState('Runestone');
+  const [clickedItem, setClickedItem] = useState("runestone");
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalItems = collections?.length;
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * ItemsPerPage;
+  const endIndex = Math.min(startIndex + ItemsPerPage, totalItems);
+
+  // Slice collections array to display only items for the current page
+  const displayedCollections = collections?.slice(startIndex, endIndex);
+
+  // Function to handle pagination
+  const nextPage = () => {
+    setCurrentPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPage = () => {
+    setCurrentPage((prevPage) => prevPage - 1);
+  };
+
+  const goToPage = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleSearchChange = (e: {
     target: { value: React.SetStateAction<string> };
@@ -70,43 +98,43 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
   };
 
   const fetchMagicEidenData = async () => {
-  try {
-    const response = await API_CALL.MagicEidenData.get();
-    console.log(response, "MagicEidenData");
-    setPopularCollections(response.data.data);
-  } catch (error) {
-    console.log(error);
-    
-  }
+    try {
+      const response = await API_CALL.MagicEidenData.get();
+      console.log(response, "MagicEidenData");
+      setPopularCollections(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchMagicEidenCollection = async () => {
-     try {
+    try {
       const response = await API_CALL.MagicEidenCollection.get();
       console.log(response, "MagicEidenCollectios");
       setCollections(response.data.data);
-     } catch (error) {
+    } catch (error) {
       console.log(error);
-     }
+    }
   };
 
   useEffect(() => {
- 
-   console.log(window,"<<<<this iswjasdfs");
-   
+    console.log(window, "<<<<this iswjasdfs");
+
     user ? fetchMagicEidenCollection() : fetchMagicEidenData();
-  
   }, [user]);
 
-  
   const fetchData = async (name: string) => {
-    setClickedItem(name);   
+    setClickedItem(name);
     // const Text = name.replace(/\s+/g, '');
-    localStorage.setItem('key',name)
+    localStorage.setItem("key", name);
     const response = await makeApiRequestLocal();
-    console.log(response, 'response');
+    console.log(response, "response");
     handleDataFetch(); // Trigger the useEffect in AppCharts
   };
+
+  useEffect(() => {
+    localStorage.setItem("key", "runestone");
+  }, []);
 
   return (
     <div className=" md:sticky md:top-0 no-scrollbar md:h-[100vh] overflow-y-auto md:height md:border-r-[1px] max-[767px]:border-b-[1px] border-[#FFDA83]">
@@ -255,50 +283,70 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                <Loader />
               ):( */}
 
-             
             <tbody className="my-4">
-         
               {user
-                ? collections.map((item, index) => (
-                    <tr
-                      key={index}
-                      className={`${
-                        clickedItem === item.symbol ? 'bg-[#FEC801] ' : ''
-                      }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
-                      
-                    >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.symbol)} >
-                        {item.symbol}
-                      </td>
-                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
-                        <div className="flex items-center gap-1">
-                          <span className="text-[#FF0000] text-sm font-medium">
+                ? displayedCollections.map((item, index) => (
+                    <>
+                      <tr
+                        key={index}
+                        className={`${
+                          clickedItem === item.symbol
+                            ? "btn  border-[#57472F]"
+                            : ""
+                        }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
+                      >
+                        <td
+                          className={`text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem]  ${
+                            clickedItem === item.symbol ? "btn text-black" : ""
+                          }  `}
+                          onClick={() => fetchData(item.symbol)}
+                        >
+                          {item.name}
+                        </td>
+                        <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
+                          <div className="flex items-center gap-1">
+                            {/* <span className="text-[#FF0000] text-sm font-medium">
                             <RiArrowDownSFill />
-                          </span>
-                          <span> {item.floorPrice / 100000000}</span>
-                        </div>
-                      </td>
-                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                        {item.volume}
-                      </td>
-                    </tr>
+                          </span> */}
+                            <span className="text-green-600">
+                              {" "}
+                              {item.floorPrice / 100000000}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
+                          {item.volume}
+                        </td>
+                      </tr>
+                     
+                    </>
                   ))
                 : popularCollections.map((item, index) => (
                     <tr
                       key={index}
                       className={`${
-                        clickedItem === item.symbol ? 'bg-[#FEC801] ' : ''
+                        clickedItem === item.symbol
+                          ? "btn border-[#57472F]"
+                          : ""
                       }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                     >
-                      <td className="text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] " onClick={()=>fetchData(item.symbol)}>
-                        {item.symbol}
+                      <td
+                        className={`text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem] ${
+                          clickedItem === item.symbol ? "btn text-black" : ""
+                        } `}
+                        onClick={() => fetchData(item.symbol)}
+                      >
+                        {item.name}
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
                         <div className="flex items-center gap-1">
-                          <span className="text-[#FF0000] text-sm font-medium">
+                          {/* <span className="text-[#FF0000] text-sm font-medium">
                             <RiArrowDownSFill />
+                          </span> */}
+                          <span className="text-green-600">
+                            {" "}
+                            {item.floorPrice / 100000000}
                           </span>
-                          <span> {item.floorPrice / 100000000}</span>
                         </div>
                       </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
@@ -307,15 +355,36 @@ const LeftSideComponent : React.FC<{ handleDataFetch: HandleDataFetch }> =  ({ha
                     </tr>
                   ))}
             </tbody>
-             {/* )
+            {/* )
             
             } */}
           </table>
+           {
+            collections.length >0 && (
+              <>
+               {/* Pagination controls */}
+           <div className="p-2 flex justify-center items-center flex-row mt-5 ">
+           <button onClick={prevPage} disabled={currentPage === 1} className="p-2  bg-gray-500 rounded border-[1px] border-solid border-[#303030]" >
+                        Prev
+                      </button>
+                    
+                      <button className="p-2 btn ml-2 rounded text-black border-b-[1px] border-solid border-[#303030]"
+                        onClick={nextPage}
+                        disabled={
+                          currentPage === Math.ceil(totalItems / ItemsPerPage)
+                        }
+                      >
+                        Next
+                      </button>
+                      </div>
+              </>
+            ) 
+           }
         </div>
         {!user && (
           <div className="px-4 mt-[20px]">
             <Link href="/signin">
-              <button className=" items-center bg-[#FEC801] w-full  rounded-[5px] px-3 xl:px-[15px] py-2 xl:py-[11px] text-[#000000] font-medium text-sm">
+              <button className="btn items-center w-full  rounded-[5px] px-3 xl:px-[15px] py-2  text-[#000000] font-medium text-sm">
                 Login to see more...
               </button>
             </Link>
