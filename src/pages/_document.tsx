@@ -11,7 +11,7 @@ export default function Document() {
           type="text/javascript"
           src="https://illuminals.io/chart/charting_library.js"
         ></script> */}
-        <script type="module" src="http://127.0.0.1:5501/src/main.js" ></script>
+        
 
 
       </Head>
