@@ -1,20 +1,26 @@
 import { API_CALL } from './API/Routes.js';
 import bars from './datafeed.js'
 import { URL } from './API/baseCall.js';
+import Cookies from 'js-cookie'
+
 
 // Makes requests to CryptoCompare API
 export async function makeApiRequest(path) {
     try {
-        const response = await API_CALL.MagicEidenCollection.get();
-       if(response) {
-        return response;
-       }
+        const user = localStorage.getItem('UserLogin');
+        const loggedIn = Cookies.get('loggedIn')
+        let response;
+        response = user && loggedIn ? await API_CALL.MagicEidenCollection.get():await API_CALL.MagicEidenData.get();
+        if(response) {
+            return response;
+           }
     } catch(error) {
         console.log(error)
         throw new Error(`Collections request error: ${error.status}`);
     }
 }
 export async function makeApiRequestLocal() {
+   
     try {
         // let seacrchSymbol = text?text:'Runestone';
        let seacrchSymbol = localStorage.getItem('key')

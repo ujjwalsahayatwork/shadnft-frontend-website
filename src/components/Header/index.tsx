@@ -96,9 +96,11 @@ const Header: React.FC = () => {
 
   const handleLogout = async() => {
     try {
-      setShowDropdown(false);
+      // setShowDropNav(!showDropNav)
+      localStorage.removeItem('UserLogin')
       await removeToken()
       window.location.reload()
+      setShowDropdown(false);
     } catch (error) {
       console.log(error,'errror');
     }

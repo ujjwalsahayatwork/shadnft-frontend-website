@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import Cookies from "js-cookie";
 import { UserProvider } from "@/components/userContext/UserContext";
 import Head from "next/head";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 

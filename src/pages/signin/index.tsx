@@ -66,6 +66,7 @@ const Signin = ({ showMessage = "" }) => {
           const cookies = parseCookies(document.cookie);
           console.log(cookies);
           setLoading(false);
+          localStorage.setItem('UserLogin',"true")
           router.push("/");
         }
       })
