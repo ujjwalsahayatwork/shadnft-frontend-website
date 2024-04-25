@@ -1,5 +1,5 @@
 "use client"
-import { API_CALL } from "../../API/Routes";
+import { API_CALL } from "../../ApiRoutes/Routes";
 import React, { createContext, useContext, useState, useEffect } from "react";
 // import { setCookie } from 'cookies-next'
 import { toast } from "react-toastify";
@@ -61,7 +61,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     
 
     const handleNavigate = () => {
-        console.log('called again');
+        // console.log('called again');
         
         if (router.pathname!= '/' && router.pathname != '/app' && router.pathname != "/signin" && router.pathname != "/signup" && router.pathname != "/forgot-password" && router.pathname != "/reset-password")
             router.push("/signin");
@@ -69,34 +69,41 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     const getUserFromToken = async () => {
         try {
             if (typeof window === 'undefined') return null
-            let token =  Cookies.get('loggedIn');
+            let token =  localStorage.getItem('token');
             //  let userToken = token.get('token')
+            console.log(token,'usecontext');
+            
+            if (!token) return handleNavigate()
             if(token){
-                let { data } = await API_CALL.GET_LOGGEDIN_USER() 
+                
+                let { data } = await API_CALL.GET_LOGGEDIN_USER() ;
+                console.log(data,'data');
+                
                 if(data.success){
               
                 
                     setUser(data.data)
+                    router.push(router.pathname)
                     return ;
                  }
+                 if (!data.success) {
+                    // toast.error(data.message, TOAST_OPTION.ERROR)
+                    updateUser(null)
+                    return null
+                }
             
-               router.push(router.pathname)
             }
-            if (!token) return handleNavigate()
-            let { data } = await API_CALL.GET_LOGGEDIN_USER() 
+           
+            // let { data } = await API_CALL.GET_LOGGEDIN_USER() 
         
-             if(data.success){
+            //  if(data.success){
               
                 
-                setUser(data.data)
-                return ;
-             }
+            //     setUser(data.data)
+            //     return ;
+            //  }
         
-            if (!data.success) {
-                // toast.error(data.message, TOAST_OPTION.ERROR)
-                updateUser(null)
-                return null
-            }
+           
             
 
         } catch (error: any) {

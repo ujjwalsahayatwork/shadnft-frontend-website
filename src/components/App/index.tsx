@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, Suspense, useState } from "react";
+import React, { useEffect, Suspense, useState, useRef } from "react";
 import LeftSideComponent from "./LeftSideComponent";
 import RightSideComponent from "./RightSideComponent";
 import Script from "next/script";
@@ -42,6 +42,16 @@ const AppCharts = () => {
   useEffect(() => {
   if (typeof window !== 'undefined') {
     let newSymbol = localStorage.getItem('key');
+    const yourRef = useRef(null);
+
+ 
+    // Access the DOM node using the ref
+    const node = yourRef.current;
+    if (node) {
+      // Do something with the DOM node
+      console.log(node);
+    }
+ 
     // console.log(window.tvWidget,clicked,'window');
     
     setTimeout(() => {
@@ -60,12 +70,33 @@ const AppCharts = () => {
           fullscreen: false,
           container: 'tv_chart_container',
           datafeed: Datafeed,
-          library_path: 'https://illuminals.io/chart/charting_library.js',
+           withdateranges: true,
+          library_path: 'https://illuminals.io/charting_library/charting_library.js',
           theme: "dark",
+          disabled_features: [
+            "header_symbol_search",
+            "header_compare",
+            // "symbol_search_hot_key",
+            // "main_series_scale_menu",
+            // "display_market_status",
+            "uppercase_instrument_names",
+            "vert_touch_drag_scroll",
+            // "side_toolbar_in_fullscreen_mode",
+            // "header_in_fullscreen_mode",
+            // "withdateranges",
+            // "show_zoom_and_move_buttons_on_touch",
+            "bottom_toolbar" // Remove bottom toolbar
+            
+          ],
+          enabled_features: [
+           
+          ],
           overrides: {
             "paneProperties.background": "black",
             "paneProperties.backgroundType": "solid",
           },
+          // hide_side_toolbar: true,
+          drawingsAccess: { type: 'black', tools: [{ name: 'TrendLine' }] }
         });
       // }
     }, 1000);
@@ -116,7 +147,7 @@ const AppCharts = () => {
   // console.log('inside window', isClient);
   return (
     <>
-      <Script src="https://illuminals.io/chart/charting_library.js" />
+      <Script src="https://illuminals.io/charting_library/charting_library.js" />
       <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  fixed ">

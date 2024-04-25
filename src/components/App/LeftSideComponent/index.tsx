@@ -9,7 +9,7 @@ import { CgArrowsExchange } from "react-icons/cg";
 import { tableData } from "./Data/data";
 import Link from "next/link";
 import { useUserContext } from "@/components/userContext/UserContext";
-import { API_CALL } from "@/API/Routes";
+import { API_CALL } from "@/ApiRoutes/Routes";
 import Loader from "@/components/extras/loader";
 import { makeApiRequestLocal } from "@/helpers";
 const tabs = [

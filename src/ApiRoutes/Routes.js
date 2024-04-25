@@ -1,5 +1,8 @@
 import { BASE_CALL } from "./baseCall";
 
+
+
+
 export const API_CALL = {
   SIGNUP: {
     post: async (payload) => await BASE_CALL.post("/user/createWithEmail", payload),
@@ -14,7 +17,7 @@ export const API_CALL = {
     put: async (payload) => await BASE_CALL.put("/user/update", payload),
   },
 
-  GET_LOGGEDIN_USER: async (token) => await BASE_CALL.get("/user/me", {token}),
+  GET_LOGGEDIN_USER: async (token) => await BASE_CALL.get(`/user/me`, {token}),
 
   INFO: {
     get: async () => await BASE_CALL.get("/user/me"),
@@ -37,5 +40,8 @@ export const API_CALL = {
   },
   MagicEidenCollection:{
     get:async() => await BASE_CALL.get('/ordinals/collections')
+  },
+  GetSingleMagicEden:{
+    get:async(seacrchSymbol) => await BASE_CALL.get(`/ordinals/charts-data/${seacrchSymbol}`)
   }
 };

@@ -10,7 +10,6 @@ const index = () => {
   return (
     <>
 
-    
     {/* <div id='tv_chart_container'> */}
       <AppCharts />
     {/* </div> */}

@@ -2,7 +2,7 @@ import React, { ChangeEvent, useContext, useEffect, useState } from "react";
 import Image from "next/image";
 import Profileimg from "../../../public/assest/Profile.png";
 import Popuppage from "./Popuppage";
-import { API_CALL } from "@/API/Routes";
+import { API_CALL } from "@/ApiRoutes/Routes";
 import CookieComponent from "./Cookie";
 import { useUserContext } from "../userContext/UserContext";
 const tabs = [

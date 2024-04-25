@@ -1,6 +1,6 @@
-import { API_CALL } from './API/Routes.js';
+import { API_CALL } from './ApiRoutes/Routes.js';
 import bars from './datafeed.js'
-import { URL } from './API/baseCall.js';
+import { URL } from './ApiRoutes/baseCall.js';
 import Cookies from 'js-cookie'
 
 
@@ -8,7 +8,7 @@ import Cookies from 'js-cookie'
 export async function makeApiRequest(path) {
     try {
         const user = localStorage.getItem('UserLogin');
-        const loggedIn = Cookies.get('loggedIn')
+        const loggedIn = localStorage.getItem('token')
         let response;
         response = user && loggedIn ? await API_CALL.MagicEidenCollection.get():await API_CALL.MagicEidenData.get();
         if(response) {
@@ -19,17 +19,32 @@ export async function makeApiRequest(path) {
         throw new Error(`Collections request error: ${error.status}`);
     }
 }
-export async function makeApiRequestLocal() {
-   
+export async function makeApiRequestLocal(from,to) {
+    
     try {
-        // let seacrchSymbol = text?text:'Runestone';
+       
+       
        let seacrchSymbol = localStorage.getItem('key')
         seacrchSymbol = seacrchSymbol?seacrchSymbol:'runestone'
-        const response = await fetch(`${URL}/ordinals/charts-data/${seacrchSymbol}`);
-        const data=await response.json()
-        console.log(data,"<<<<insidemakeapirequestlocal");
+       
+        const response = await API_CALL.GetSingleMagicEden.get(seacrchSymbol);
+        const data=await response.data.data;
+        console.log(data,'response');
+        let bars = [];
+            data.forEach(bar => {
+                if (bar.time / 1000 >= from && bar.time / 1000 < to) {
+                    bars = [...bars, {
+                        time: bar.time,
+                        low: bar.low,
+                        high: bar.high,
+                        open: bar.open,
+                        close: bar.close
+                    }];
+                }
+            });
+        console.log(bars,"<<<<insidemakeapirequestlocalmyr");
         // bars.getBars(data);
-        return data
+        return bars
     } catch(error) {
         throw new Error(`CryptoCompare request error: ${error.status}`);
     }

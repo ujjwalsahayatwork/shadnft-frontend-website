@@ -6,7 +6,7 @@ import {GetServerSideProps} from "next";
 
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { API_CALL } from "@/API/Routes";
+import { API_CALL } from "@/ApiRoutes/Routes";
 import Loader from "@/components/extras/loader";
 
 
@@ -57,14 +57,17 @@ const Signin = ({ showMessage = "" }) => {
     const { agreeToTerms, ...rest } = formData;
     const formDataWithoutAgreeToTerms = rest;
 
-    API_CALL.LOGIN.post(formDataWithoutAgreeToTerms)
+    await API_CALL.LOGIN.post(formDataWithoutAgreeToTerms)
       .then((response) => {
         // Get header cookies
-        console.log(response.headers);
+       
+      
         
         if (response.data.success) {
-          const cookies = parseCookies(document.cookie);
-          console.log(cookies);
+          // localStorage.removeItem('token')
+          localStorage.setItem('token',response.data.data.token)
+          // const cookies = parseCookies(document.cookie);
+          // console.log(cookies);
           setLoading(false);
           localStorage.setItem('UserLogin',"true")
           router.push("/");

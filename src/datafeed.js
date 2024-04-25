@@ -18,7 +18,7 @@ const configurationData = {
 // ...
 // Obtains all symbols for all exchanges supported by CryptoCompare API
 async function getAllSymbols() {
-    const {data} = await makeApiRequest('data/v3/all/exchanges');
+    const {data} = await makeApiRequest();
     let allSymbols = [];
  if(data){
     data.data.filter((item)=>{
@@ -95,6 +95,7 @@ export default {
             has_intraday: true,
             visible_plots_set: 'ohlc',
             has_weekly_and_monthly: false,
+        
             supported_resolutions: configurationData.supported_resolutions,
             volume_precision: 2,
             data_status: 'streaming',
@@ -118,9 +119,9 @@ export default {
         //     .map(name => `${name}=${encodeURIComponent(urlParameters[name])}`)
         //         .join('&');
         try {
-            const res = await makeApiRequestLocal();
+            const data = await makeApiRequestLocal(from,to);
             // console.log(res,"<<<thisisresponse")
-            const data = res.data
+           
 
             if (data.length === 0) {
                 console.log("No data error")
@@ -128,21 +129,11 @@ export default {
                 onHistoryCallback([], { noData: true });
                 return;
             }
-            let bars = [];
-            data.forEach(bar => {
-                if (bar.time / 1000 >= from && bar.time / 1000 < to) {
-                    bars = [...bars, {
-                        time: bar.time,
-                        low: bar.low,
-                        high: bar.high,
-                        open: bar.open,
-                        close: bar.close
-                    }];
-                }
-            });
-            console.log(`[getBars]: returned ${bars.length} bar(s)`);
+            
+         
+                 onHistoryCallback(data, { noData: false });
+            
             // console.log('inside---data',data);
-           return onHistoryCallback(bars, { noData: false });
         } catch (error) {
             console.log('[getBars]: Get error', error);
             onErrorCallback(error);

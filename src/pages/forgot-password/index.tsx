@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { IoEyeSharp } from "react-icons/io5";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { API_CALL } from "@/API/Routes";
+import { API_CALL } from "@/ApiRoutes/Routes";
 import Loader from "@/components/extras/loader";
 
 const ForgotPassword = () => {

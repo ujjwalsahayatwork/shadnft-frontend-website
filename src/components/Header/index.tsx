@@ -11,29 +11,35 @@ import { PiSignOutBold } from "react-icons/pi";
 import router from "next/router";
 import { useRouter } from "next/router";
 import { AiOutlineDown } from "react-icons/ai";
-import { API_CALL } from "../../API/Routes.js";
+import { API_CALL } from "../../ApiRoutes/Routes.js";
 import Cookies from  'js-cookie';
 import { deleteCookie } from "cookies-next";
 import { useUserContext } from "../userContext/UserContext";
 
+
 // import { getCookies, setCookie, deleteCookie, getCookie } from 'cookies-next';
 
-export const removeToken = async ()=>{
-  // Cookies.remove('loggedIn')
-   await API_CALL.LOGOUT.get().then((res: any) => {
-   console.log("DATA from API", res.data)
-   if(res.data.success){
-    deleteCookie('loggedIn')
-    router.push('/signin')
-   }else{
-    alert('Error Logout')
-   }
+// export const removeToken = async ()=>{
+//   // Cookies.remove('loggedIn')
+//    .then((res: any) => {
+//    console.log("DATA from API", res.data)
+//    if(res.data.success){
+     
+    
+//     return true
+//    }else{
+
+//     // alert('Error Logout')
+//     console.log('Erorr while logout');
+//     return false;
+    
+//    }
    
-  })
-    // deleteCookie('token')  
-  // window.location.href = window.location.href;
+//   })
+//     // deleteCookie('token')  
+//   // window.location.href = window.location.href;
   
-}
+// }
 const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,7 +50,8 @@ const Header: React.FC = () => {
   const [testnet, setTestnet] = useState(false);
   const router = useRouter();
 
- const {user} = useUserContext();
+  let {user,setUser} = useUserContext();
+ 
  
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
@@ -97,10 +104,18 @@ const Header: React.FC = () => {
   const handleLogout = async() => {
     try {
       // setShowDropNav(!showDropNav)
-      localStorage.removeItem('UserLogin')
-      await removeToken()
+    const res : any =  await API_CALL.LOGOUT.get()
+  
+    if(res.data.success){
       window.location.reload()
+       setUser(null)
+      localStorage.removeItem('token')
+      localStorage.removeItem('UserLogin');
+      
       setShowDropdown(false);
+      router.push('/signin')
+    }
+      
     } catch (error) {
       console.log(error,'errror');
     }

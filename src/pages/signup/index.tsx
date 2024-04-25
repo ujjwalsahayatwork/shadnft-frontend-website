@@ -10,7 +10,7 @@ import config from "../../config/config";
 import axios from "axios";
 import { useRouter } from "next/router";
 import Loader from "@/components/extras/loader";
-import {API_CALL} from "../../API/Routes";
+import {API_CALL} from "../../ApiRoutes/Routes";
 
 const Signup = () => {
   const [formData, setFormData] = useState({

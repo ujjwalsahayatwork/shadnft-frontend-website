@@ -2,9 +2,7 @@ import axios from "axios";
 
 export let URL = process.env.NEXT_PUBLIC_API_KEY;
 
-
 // console.log(URL,'url')
-
 // Create a custom Axios instance with the desired configuration
 const axiosInstance = axios.create({
   // baseURL: "http://64.176.167.246:3000/api/", // Set the base URL for all requests
@@ -12,10 +10,24 @@ const axiosInstance = axios.create({
   
   withCredentials: true,
   crossDomain:true, // Allow credentials to be sent with cross-origin requests
-  headers: {
-    'Access-Control-Expose-Headers': 'Set-Cookie',
-  },
+  // headers: {
+  //   'Access-Control-Expose-Headers': 'Set-Cookie',
+  // },
 });
+
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      console.log(config,'config');
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
 // axiosInstance.interceptors.response.use(
 //   (response) => {
@@ -28,21 +40,6 @@ const axiosInstance = axios.create({
 //     return response;
 //   },
 //   (error) => {
-//     return Promise.reject(error);
-//   }
-// );
-
-// axiosInstance.interceptors.request.use(
-//   function (config) {
-//     // Modify config here
-//     let token  = Cookies.get('token');
-//     console.log(token,'tokenmyy');
-//     config.headers.Cookie = document.cookie;
-//     console.log(config,'configmyr');
-//     return config;
-//   },
-//   function (error) {
-//     // Handle request error
 //     return Promise.reject(error);
 //   }
 // );
