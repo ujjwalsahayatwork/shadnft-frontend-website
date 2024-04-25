@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, Suspense, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import LeftSideComponent from "./LeftSideComponent";
 import RightSideComponent from "./RightSideComponent";
 import Script from "next/script";
@@ -42,16 +42,7 @@ const AppCharts = () => {
   useEffect(() => {
   if (typeof window !== 'undefined') {
     let newSymbol = localStorage.getItem('key');
-    const yourRef = useRef(null);
-
- 
-    // Access the DOM node using the ref
-    const node = yourRef.current;
-    if (node) {
-      // Do something with the DOM node
-      console.log(node);
-    }
- 
+  
     // console.log(window.tvWidget,clicked,'window');
     
     setTimeout(() => {
@@ -72,6 +63,7 @@ const AppCharts = () => {
           datafeed: Datafeed,
            withdateranges: true,
           library_path: 'https://illuminals.io/charting_library/charting_library.js',
+          // library_path: 'http://127.0.0.1:5500/charting_library.js',
           theme: "dark",
           disabled_features: [
             "header_symbol_search",
@@ -147,6 +139,7 @@ const AppCharts = () => {
   // console.log('inside window', isClient);
   return (
     <>
+      {/* <Script src="http://127.0.0.1:5500/charting_library.js" /> */}
       <Script src="https://illuminals.io/charting_library/charting_library.js" />
       <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto ">
