@@ -62,8 +62,7 @@ const AppCharts = () => {
           container: 'tv_chart_container',
           datafeed: Datafeed,
            withdateranges: true,
-          library_path: 'https://illuminals.io/charting_library/charting_library.js',
-          // library_path: 'http://127.0.0.1:5500/charting_library.js',
+          library_path: 'https://illuminals.io/chart/charting_library.js',
           theme: "dark",
           disabled_features: [
             "header_symbol_search",
@@ -139,8 +138,7 @@ const AppCharts = () => {
   // console.log('inside window', isClient);
   return (
     <>
-      {/* <Script src="http://127.0.0.1:5500/charting_library.js" /> */}
-      <Script src="https://illuminals.io/charting_library/charting_library.js" />
+      <Script src="https://illuminals.io/chart/charting_library.js" />
       <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  fixed ">

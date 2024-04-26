@@ -4,7 +4,7 @@ const nextConfig = {
     return [
       {
         source: '/chart/:path*',
-        destination: 'http://illuminals.io:45773/:path*',
+        destination: 'http://illuminals.io:44007/:path*',
       },
       {
         source: '/api/:path*',

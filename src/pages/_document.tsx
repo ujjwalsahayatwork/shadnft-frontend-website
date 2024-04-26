@@ -7,10 +7,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head ><meta property="og:image" content='/Logo.png' />
-        {/* <script
-          type="text/javascript"
-          src="https://illuminals.io/chart/charting_library.js"
-        ></script> */}
+
         
 
 
