@@ -18,14 +18,14 @@ const tabs = [
     key: "ordinal",
   },
 
-  {
-    title: "BRC-20",
-    key: "brc-20",
-  },
-  {
-    title: "TAP",
-    key: "tap",
-  },
+  // {
+  //   title: "BRC-20",
+  //   key: "brc-20",
+  // },
+  // {
+  //   title: "TAP",
+  //   key: "tap",
+  // },
 ];
 const GridTabs = [
   {
@@ -33,10 +33,10 @@ const GridTabs = [
     key: "btc",
   },
 
-  {
-    title: "USDT",
-    key: "usdt",
-  },
+  // {
+  //   title: "USDT",
+  //   key: "usdt",
+  // },
 ];
 interface MegicEden {
   symbol: string;
@@ -48,8 +48,8 @@ type HandleDataFetch = () => void;
 
 const ItemsPerPage = 15;
 
-const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
-  handleDataFetch,
+const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:any }> = ({
+  handleDataFetch,setLoading
 }) => {
   const [selectedTab, setSelectedTab] = useState("ordinal");
   const [gridSelectedTab, setGridSelectedTab] = useState("btc");
@@ -57,6 +57,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
   const [isChecked2, setIsChecked2] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useUserContext();
+  
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
   const [clickedItem, setClickedItem] = useState("runestone");
@@ -99,9 +100,11 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
 
   const fetchMagicEidenData = async () => {
     try {
+      console.log('popoular Collectionss')
+      user && localStorage.setItem('subscription_status',user.subscription_status)
       const response = await API_CALL.MagicEidenData.get();
       console.log(response, "MagicEidenData");
-      setPopularCollections(response.data.data);
+      setPopularCollections(response.data?.data);
     } catch (error) {
       console.log(error);
     }
@@ -109,27 +112,36 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
 
   const fetchMagicEidenCollection = async () => {
     try {
+      console.log('collections'); 
+     
+      user && localStorage.setItem('subscription_status',user.subscription_status)
       const response = await API_CALL.MagicEidenCollection.get();
       console.log(response, "MagicEidenCollectios");
-      setCollections(response.data.data);
+      setCollections(response.data?.data);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-    console.log(window, "<<<<this iswjasdfs");
-
-    user ? fetchMagicEidenCollection() : fetchMagicEidenData();
+     console.log(user , user?.subscription_status ,'statius');
+    
+      user && user?.subscription_status ==true? fetchMagicEidenCollection() : fetchMagicEidenData();
+     
   }, [user]);
 
   const fetchData = async (name: string) => {
+   
     setClickedItem(name);
+    setLoading(true)
     // const Text = name.replace(/\s+/g, '');
     localStorage.setItem("key", name);
     const response = await makeApiRequestLocal();
-    console.log(response, "response");
+    // console.log(response, "response");
     handleDataFetch(); // Trigger the useEffect in AppCharts
+    setTimeout(()=>{
+      setLoading(false)
+    },1000)
   };
 
   useEffect(() => {
@@ -147,7 +159,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
                 <CgArrowsExchange className="text-[#FFB501] text-sm" />
               </span>
             </div>
-            <div className="flex items-center gap-2 xl:gap-[17px] mt-2 border-[1px] border-[#57472F] rounded-[2.5px] max-[767px]:justify-between  xl:pr-0">
+            <div className="flex items-center gap-2 xl:gap-[17px] mt-2 rounded-[2.5px] max-[767px]:justify-between  xl:pr-0">
               {tabs.map((tab, index) => {
                 return (
                   <button
@@ -175,7 +187,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
                 priority
               />
             </div>
-            <div className="flex items-center gap-2  mt-2 border-[1px] border-[#57472F] rounded-[2.5px] max-[767px]:justify-between  xl:pr-0">
+            <div className="flex items-center gap-2  mt-2  rounded-[2.5px] max-[767px]:justify-between  xl:pr-0">
               {GridTabs.map((tab, index) => {
                 return (
                   <button
@@ -284,7 +296,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
               ):( */}
 
             <tbody className="my-4">
-              {user
+              {user && user.subscription_status
                 ? displayedCollections.map((item, index) => (
                     <>
                       <tr
@@ -390,9 +402,24 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch }> = ({
             </Link>
           </div>
         )}
+        {
+          user && !user.subscription_status  && (
+            <div className="px-4 mt-[20px]">
+            <Link href="/profile">
+              <button className="btn items-center w-full  rounded-[5px] px-3 xl:px-[15px] py-2  text-[#000000] font-medium text-sm">
+               Buy the plan to see more...
+              </button>
+            </Link>
+          </div>
+          )
+        }
       </div>
     </div>
   );
 };
 
 export default LeftSideComponent;
+function setLoading(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+

@@ -9,8 +9,9 @@ export async function makeApiRequest(path) {
     try {
         const user = localStorage.getItem('UserLogin');
         const loggedIn = localStorage.getItem('token')
+        const subscription_status = localStorage.getItem('subscription_status');
         let response;
-        response = user && loggedIn ? await API_CALL.MagicEidenCollection.get():await API_CALL.MagicEidenData.get();
+        response = user && loggedIn && subscription_status =='true' ? await API_CALL.MagicEidenCollection.get():await API_CALL.MagicEidenData.get();
         if(response) {
             return response;
            }
@@ -29,7 +30,6 @@ export async function makeApiRequestLocal(from,to) {
        
         const response = await API_CALL.GetSingleMagicEden.get(seacrchSymbol);
         const data=await response.data.data;
-        console.log(data,'response');
         let bars = [];
             data.forEach(bar => {
                 if (bar.time / 1000 >= from && bar.time / 1000 < to) {
@@ -42,7 +42,6 @@ export async function makeApiRequestLocal(from,to) {
                     }];
                 }
             });
-        console.log(bars,"<<<<insidemakeapirequestlocalmyr");
         // bars.getBars(data);
         return bars
     } catch(error) {
