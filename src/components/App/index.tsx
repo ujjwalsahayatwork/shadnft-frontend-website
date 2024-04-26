@@ -133,8 +133,6 @@ const AppCharts = () => {
     console.log(loading,"<<<<loading outside");
 
   // },[])
-  
-
 
   // console.log('inside window', isClient);
   return (
@@ -142,7 +140,7 @@ const AppCharts = () => {
       <Script src="https://illuminals.io/chart/charting_library.js" />
       <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto ">
-          <div className="flex md:flex-row flex-col justify-between gap-5 w-full  fixed ">
+          <div className="flex md:flex-row flex-col justify-between gap-5 w-full  lg:fixed ">
             <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%] w-full">
               <LeftSideComponent handleDataFetch={handleDataFetch} setLoading={setLoading}/>
             </div>

@@ -17,7 +17,7 @@ export async function makeApiRequest(path) {
            }
     } catch(error) {
         console.log(error)
-        throw new Error(`Collections request error: ${error.status}`);
+        // throw new Error(`Collections request error: ${error.status}`);
     }
 }
 export async function makeApiRequestLocal(from,to) {
