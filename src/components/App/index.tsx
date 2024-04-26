@@ -37,7 +37,7 @@ declare let TradingView: {
 
 const AppCharts = () => {
   const [isClient, setIsClient] = useState(false);
-  const [clicked,setClicked] = useState(false);
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
   if (typeof window !== 'undefined') {
@@ -53,6 +53,7 @@ const AppCharts = () => {
       //   // Update only the symbol without recreating the widget
       //   window.tvWidget.chart().setSymbol(newSymbol);
       // } else {
+        
         window.tvWidget = new TradingView.widget({
           symbol: newSymbol,
           interval: '60', 
@@ -65,6 +66,16 @@ const AppCharts = () => {
           library_path: 'https://illuminals.io/chart/charting_library.js',
           theme: "dark",
           disabled_features: [
+            "header_indicators",
+            "header_undo_redo",
+            "header_quick_search",
+            "timeframes_toolbar",
+            // "legend_widget",
+            "go_to_date",
+            "edit_buttons_in_legend",
+            "show_symbol_logo_for_compare_studies",
+            "show_interval_dialog_on_key_press",
+            
             "header_symbol_search",
             "header_compare",
             // "symbol_search_hot_key",
@@ -91,30 +102,10 @@ const AppCharts = () => {
         });
       // }
     }, 1000);
-    
     setIsClient(true);
+    
   }
 }, []);
-
-// useEffect(()=>{
-
-//   if (typeof window !== 'undefined') {
-//   let newSymbol = localStorage.getItem('key');
-//   console.log(window.tvWidget,clicked,'windowmyr');
-
-//   setTimeout(() => {
-//      if (window.tvWidget && clicked) {
-//       // if (false) {
-//         alert("herer")
-
-//         // Update only the symbol without recreating the widget
-//         window.tvWidget.chart().setSymbol(newSymbol);
-//      }
-//   },1000)
-//   setClicked(false);
-//   }
-// },[clicked])
-
 
   const handleDataFetch = () => {
     // setClicked(!clicked); 
@@ -122,17 +113,27 @@ const AppCharts = () => {
       let newSymbol = localStorage.getItem('key');
       // console.log(window.tvWidget,clicked,'windowmyr');
     
-      setTimeout(() => {
+      // setTimeout(() => {
+        
          if (window.tvWidget ) {
+          console.log('hello');
+          // setLoading(true)
           // if (false) {
             // Update only the symbol without recreating the widget
             window.tvWidget.chart().setSymbol(newSymbol);
-         }
-      },1000)
-      // setClicked(false);
-      }
+            // setLoading(false)
+          }
+          // },1000)
+          // setClicked(false);
+        }
+      
 
   };
+  // useEffect(()=>{
+    console.log(loading,"<<<<loading outside");
+
+  // },[])
+  
 
 
   // console.log('inside window', isClient);
@@ -143,16 +144,16 @@ const AppCharts = () => {
         <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  fixed ">
             <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%] w-full">
-              <LeftSideComponent handleDataFetch={handleDataFetch}/>
+              <LeftSideComponent handleDataFetch={handleDataFetch} setLoading={setLoading}/>
             </div>
             <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] ">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 my-40px"  >
                 
 
-                {isClient && (
+                {isClient &&(
                   <>
 
-                    <RightSideComponent />
+                    <RightSideComponent  loading={loading}/>
                   </>
 
                 )}

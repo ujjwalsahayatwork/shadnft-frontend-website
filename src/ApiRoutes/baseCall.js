@@ -21,7 +21,7 @@ const axiosInstance = axios.create({
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
-      console.log(config,'config');
+      // console.log(config,'config');
       return config;
     },
     (error) => {
