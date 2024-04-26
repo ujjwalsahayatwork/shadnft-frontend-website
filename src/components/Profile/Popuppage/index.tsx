@@ -95,12 +95,12 @@ const Popuppage: React.FC<PopuppageProps> = ({
 
     try {
       await getAddress(getAddressOptions);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error.message);
 
-      if(error.message === "No Bitcoin wallet installed"){
+      if (error.message === "No Bitcoin wallet installed") {
         alert("please install xverse wallet");
-        return
+        return;
       }
     }
 
