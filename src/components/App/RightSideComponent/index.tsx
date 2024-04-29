@@ -12,7 +12,6 @@ const RightSideComponent = ({ loading }) => {
   //   message: "Not initialised",
   //   data: []
   // } });
-  console.log(loading, 'loadingmyr');
 
 
   return (
