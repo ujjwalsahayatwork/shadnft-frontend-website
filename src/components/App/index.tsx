@@ -61,7 +61,8 @@ const AppCharts = () => {
 
     if (typeof window !== "undefined") {
      
-      let newSymbol = localStorage.getItem("key");
+      try {
+        let newSymbol = localStorage.getItem("key");
 
      
       setTimeout(() => {
@@ -121,6 +122,10 @@ const AppCharts = () => {
       }, 1000);
       
       setIsClient(true);
+      } catch (error) {
+        console.log(error);
+        
+      }
     }
   }, [label]);
   
