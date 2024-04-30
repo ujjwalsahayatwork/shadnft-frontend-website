@@ -154,9 +154,9 @@ const AppCharts = () => {
     }
   };
 
- useEffect(()=>{
+//  useEffect(()=>{
 
- },[label])
+//  },[label])
  
   return (
     <>
@@ -166,23 +166,26 @@ const AppCharts = () => {
         <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  lg:fixed ">
             <div className="md:w-[43%]  lg:w-[34%] xl:w-[27%] w-full">
+          
+           
               <LeftSideComponent
                 handleDataFetch={handleDataFetch}
                 setLoading={setLoading}
               />
+            
             </div>
             <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] ">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 my-40px">
                 {isClient && label.length ==0 ? (
                   <>
                     <h1 className="text-gray-400">
-                      MAGICEDEN / MAGICEDEN-{symbolState.toUpperCase()}{" "}
+                   MAGICEDEN / MAGICEDEN-{symbolState.toUpperCase()}{" "}
                       <i>(FLOOR PRICE)</i>
                     </h1>
                       <RightSideComponent loading={loading}  setLoading={setLoading}/> 
                      
                   </>
-                )  : (<TradingViewWidget />)  }
+                )  : (<TradingViewWidget   setLoading={setLoading} />)  }
                 
 
               </div>

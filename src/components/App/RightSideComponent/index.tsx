@@ -16,7 +16,7 @@ const RightSideComponent = ({ loading,setLoading }) => {
 
  const {label} = useUserContext()
  useEffect(()=>{
-  if(label.length==0) setLoading(false)
+  // if(label.length==0) setLoading(false)
  },[])
   return (
     <div className="relative">

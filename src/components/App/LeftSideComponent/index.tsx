@@ -309,7 +309,8 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
           <div className="flex items-center gap-2 mt-[17px]">
             <button onClick={()=>{
               return (
-                setLabel('BTCUSDT'),localStorage.setItem('symbolChange',"BTCUSDT"),setClickedItem('')
+                setLabel('BTCUSDT'),
+                localStorage.setItem('symbolChange',"BTCUSDT"),setClickedItem('')
               )
             }} className={`items-center ${label === 'BTCUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}>
               BTC/USDT
