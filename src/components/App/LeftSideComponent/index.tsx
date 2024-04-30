@@ -11,7 +11,10 @@ import Link from "next/link";
 import { useUserContext } from "@/components/userContext/UserContext";
 import { API_CALL } from "@/ApiRoutes/Routes";
 import Loader from "@/components/extras/loader";
+import { FaBitcoin } from "react-icons/fa";
 import { makeApiRequestLocal } from "@/helpers";
+import { MdArrowDropUp } from "react-icons/md";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 const tabs = [
   {
     title: "Ordinal",
@@ -43,6 +46,7 @@ interface MegicEden {
   floorPrice: number;
   volume: number;
   name: string;
+  flag:any;
 }
 type HandleDataFetch = () => void;
 
@@ -57,13 +61,16 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
   const [isChecked2, setIsChecked2] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useUserContext();
+  // const [label,setLabel] = useState('BTC/USDT');
   
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
-  const [clickedItem, setClickedItem] = useState("runestone");
+  const [clickedItem, setClickedItem] = useState('runestone');
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalItems = collections?.length;
+
+  const { label, setLabel } = useUserContext();
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * ItemsPerPage;
@@ -104,7 +111,35 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
       user && localStorage.setItem('subscription_status',user.subscription_status)
       const response = await API_CALL.MagicEidenData.get();
       console.log(response, "MagicEidenData");
-      setPopularCollections(response.data?.data);
+      const updatedCollections = response?.data.data.map((newSymbol: any) => {
+        const correspondingSymbol = popularCollections?.find(symbol => symbol.symbol === newSymbol.symbol);
+        // console.log(newSymbol?.floorPrice == correspondingSymbol?.floorPrice,'isTrue');
+        
+        if (correspondingSymbol) {
+          let flag : any;
+          if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
+            flag = false;
+          } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
+            flag = true;
+          } else {
+            flag = 'equal';
+          }
+          return {
+            ...newSymbol,
+            flag: flag
+          };
+        } else {
+          // If corresponding symbol not found in collections, assume flag as true
+          return {
+            ...newSymbol,
+            flag: 'equal'
+          };
+        }
+      });
+      // console.log(updatedCollections,'updated');
+      
+      setPopularCollections(updatedCollections);
+      
     } catch (error) {
       console.log(error);
     }
@@ -112,26 +147,61 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
 
   const fetchMagicEidenCollection = async () => {
     try {
-      console.log('collections'); 
+      // console.log('collections'); 
      
       user && localStorage.setItem('subscription_status',user.subscription_status)
       const response = await API_CALL.MagicEidenCollection.get();
-      console.log(response, "MagicEidenCollectios");
-      setCollections(response.data?.data);
+      // console.log(response, "MagicEidenCollectios");
+      const updatedCollections = response?.data.data.map((newSymbol: any) => {
+        const correspondingSymbol = collections?.find(symbol => symbol.symbol === newSymbol.symbol);
+        
+        // console.log(newSymbol?.floorPrice==correspondingSymbol?.floorPrice,'isTrue');
+        
+        if (correspondingSymbol) {
+          let flag : any;
+          if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
+            
+            flag = false;
+          } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
+            flag = true;
+          } else {
+            flag = 'equal';
+          }
+          return {
+            ...newSymbol,
+            flag: flag
+          };
+        } else {
+          // console.log('flag else');
+          // If corresponding symbol not found in collections, assume flag as true
+          return {
+            ...newSymbol,
+            flag: 'equal'
+          };
+        }
+      });
+      // console.log(updatedCollections,'updated');
+      
+      setCollections(updatedCollections);
     } catch (error) {
       console.log(error);
     }
   };
 
   useEffect(() => {
-     console.log(user , user?.subscription_status ,'statius');
-    
-      user && user?.subscription_status ==true? fetchMagicEidenCollection() : fetchMagicEidenData();
+   const  fetchCollectionData = ()=>{
+   
+     user && user?.subscription_status ==true? fetchMagicEidenCollection() : fetchMagicEidenData();
+   }
+   fetchCollectionData();
+    const interval  = setInterval(fetchCollectionData,1 * 60 * 1000); // fetch the data for every 15 mins
+
+    return ()=> clearInterval(interval);
      
   }, [user]);
-
+ 
   const fetchData = async (name: string) => {
-   
+    setLabel('')
     setClickedItem(name);
     setLoading(true)
     // const Text = name.replace(/\s+/g, '');
@@ -237,20 +307,28 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
         <div className=" mt-[17px] px-4 ">
           <p className="text-xs text-[#FFFFFF] font-semibold">Label</p>
           <div className="flex items-center gap-2 mt-[17px]">
-            <button className=" items-center hover:bg-[#FEC801] hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-[#000000] font-medium text-xs">
+            <button onClick={()=>{
+              return (
+                setLabel('BTCUSDT'),localStorage.setItem('symbolChange',"BTCUSDT"),setClickedItem('')
+              )
+            }} className={`items-center ${label === 'BTCUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}>
               BTC/USDT
             </button>
-            <button className="items-center hover:bg-[#FEC801] hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-[#000000] font-medium text-xs">
+            <button onClick={()=>{
+              return (
+                setLabel('ETHUSDT'),localStorage.setItem('symbolChange',"ETHUSDT"),setClickedItem('')
+              )
+            }} className={`items-center  ${label === 'ETHUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`} >
               ETH/USDT
             </button>
           </div>
         </div>
-        <div className="border-b-[1px] border-solid border-[#303030] my-[15px] w-full"></div>
+        <div className="my-[15px] w-full"></div>
         <div className="flex items-center gap-3 px-4 mb-[15px]">
           {/* <div className="">
             <input
               type="text"
-              placeholder="Login to search..."
+              placeholder="Type to search..."
               value={searchTerm}
               onChange={handleSearchChange}
               className="block w-full text-[#57472F] border-[0.5px] rounded-[2.5px]  border-[#57472F] p-[9px] text-xs font-normal text-left h-[30px] bg-transparent border-solid outline-none focus:ring-0 placeholder-[#57472F]"
@@ -281,8 +359,8 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                 <th className="text-left  pl-4 pr-2 font-semibold py-2 max-[767px]:min-w-[7rem] ">
                   Name
                 </th>
-                <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[7rem] ">
-                  Price
+                <th className="flex flex-row text-left px-2 py-2 font-semibold max-[767px]:min-w-[7rem] ">
+                  Price <span className="ml-1 mt-0.5"><FaBitcoin /></span>
                 </th>
                 <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[7rem] ">
                   Volume
@@ -295,7 +373,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                <Loader />
               ):( */}
 
-            <tbody className="my-4">
+            <tbody className="my-4 ">
               {user && user.subscription_status
                 ? displayedCollections.map((item, index) => (
                     <>
@@ -304,8 +382,8 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                         className={`${
                           clickedItem === item.symbol
                             ? "btn  border-[#57472F]"
-                            : ""
-                        }border-b-[0.5px] text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
+                            : "" 
+                        } border-b-[0.5px]   text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                       >
                         <td
                           className={`text-left pl-4 pr-2 py-2 max-[767px]:min-w-[7rem]  ${
@@ -314,20 +392,22 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                           onClick={() => fetchData(item.symbol)}
                         >
                           {item.name}
+                          {/* {label == 'ETH/USDT' && '-usdt'} */}
                         </td>
-                        <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
-                          <div className="flex items-center gap-1">
-                            {/* <span className="text-[#FF0000] text-sm font-medium">
-                            <RiArrowDownSFill />
-                          </span> */}
+                        <td className="text-left px-2  py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
+                          <div className="relative">
+                            <span className={` absolute top-[1px] left-[-19px]  ${item.flag ? 'text-green-700' : 'text-red-700' } text-sm font-medium`}>
+                           {  item.flag == true  && <BiSolidUpArrow />  }   {item.flag == false &&  <BiSolidDownArrow /> }
+                        
+                          </span>
                             <span className="text-green-600">
-                              {" "}
+                             
                               {item.floorPrice / 100000000}
                             </span>
                           </div>
                         </td>
                         <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                          {item.volume}
+                          {item.volume }
                         </td>
                       </tr>
                      
@@ -350,17 +430,18 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                       >
                         {item.name}
                       </td>
-                      <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
-                        <div className="flex items-center gap-1">
-                          {/* <span className="text-[#FF0000] text-sm font-medium">
-                            <RiArrowDownSFill />
-                          </span> */}
-                          <span className="text-green-600">
-                            {" "}
-                            {item.floorPrice / 100000000}
+                      <td className="text-left px-2  py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
+                          <div className="relative">
+                            <span className={` absolute top-[1px] left-[-19px]  ${item.flag ? 'text-green-700' : 'text-red-700' } text-sm font-medium`}>
+                            { item.flag == true  && <BiSolidUpArrow />  }   {item.flag == false &&  <BiSolidDownArrow /> }
+                        
                           </span>
-                        </div>
-                      </td>
+                            <span className="text-green-600">
+                             
+                              {item.floorPrice / 100000000}
+                            </span>
+                          </div>
+                        </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
                         {item.volume}
                       </td>

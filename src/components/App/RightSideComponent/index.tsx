@@ -1,5 +1,6 @@
+import { useUserContext } from "@/components/userContext/UserContext";
 import React, { useEffect, useState } from "react";
-const RightSideComponent = ({ loading }) => {
+const RightSideComponent = ({ loading,setLoading }) => {
 
   // interface ApiData {
   //   success: boolean,
@@ -12,9 +13,11 @@ const RightSideComponent = ({ loading }) => {
   //   message: "Not initialised",
   //   data: []
   // } });
-  console.log(loading, 'loadingmyr');
 
-
+ const {label} = useUserContext()
+ useEffect(()=>{
+  if(label.length==0) setLoading(false)
+ },[])
   return (
     <div className="relative">
       <div id='tv_chart_container' className="md:h-[500px] h-[600px] "  >
