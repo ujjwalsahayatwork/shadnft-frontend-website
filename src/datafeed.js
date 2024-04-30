@@ -87,7 +87,7 @@ export default {
             description: symbolItem.description,
             type: symbolItem.type,
             session: '24x7',
-            timezone: 'Asia/Kolkata',
+            timezone: 'Asia/Tokyo',
             exchange: symbolItem.exchange,
             intraday_multipliers:['1','5','15','30','240'],
             minmov: 1,
