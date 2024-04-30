@@ -50,7 +50,7 @@ interface MegicEden {
 }
 type HandleDataFetch = () => void;
 
-const ItemsPerPage = 15;
+const ItemsPerPage = 14;
 
 const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:any }> = ({
   handleDataFetch,setLoading
