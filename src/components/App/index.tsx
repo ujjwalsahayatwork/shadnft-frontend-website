@@ -54,7 +54,7 @@ const AppCharts = () => {
   const [symbolChange,setSymbolChange] = useState('')
   const {label} = useUserContext();
 
-  console.log(label.length,'labelpoor');
+  
   
 
   useEffect(() => {
@@ -77,7 +77,7 @@ const AppCharts = () => {
           symbol: newSymbol,
           interval: "60",
           width: "100%",
-          height: 800,
+          height: 700,
           fullscreen: false,
           container: "tv_chart_container",
           datafeed: Datafeed,
@@ -89,7 +89,7 @@ const AppCharts = () => {
             "header_indicators",
             "header_undo_redo",
             "header_quick_search",
-            "timeframes_toolbar",
+            "timeframes_toolbar", 
             // "legend_widget",
             "go_to_date",
             "edit_buttons_in_legend",
@@ -174,7 +174,7 @@ const AppCharts = () => {
               />
             
             </div>
-            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] ">
+            <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] max-[1500px]:overflow-y-auto">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 my-40px">
                 {isClient && label.length ==0 ? (
                   <>

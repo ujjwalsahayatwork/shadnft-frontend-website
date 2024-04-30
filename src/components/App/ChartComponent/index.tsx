@@ -10,20 +10,18 @@ const TradingViewWidget: React.FC<{ setLoading:any }> = ({
   const container: any = useRef();
   const [symbolChange, setSymbolChange] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  console.log("inside new pary poor");
   const router = useRouter();
   const { label, setLabel } = useUserContext();
 const handleScript=()=>{
-    console.log(label, "symbol");
     if(label){
       
-       console.log(container?.current,"<<<<<outer")
+      //  console.log(container?.current,"<<<<<outer")
     //    container.current.innerHTML="<h1> </h1>"
             // while (container?.current?.firstChild) {
             //     console.log("inner","<<<<<outer")
             //     container?.current.removeChild(container?.current.firstChild);
             // }
-            console.log(container?.current,"<<<<<outer after")
+            // console.log(container?.current,"<<<<<outer after")
             
         
        
@@ -40,7 +38,7 @@ const handleScript=()=>{
           "interval": "D",
           "timezone": "Etc/UTC",
           "width": "100%",
-          "height": 800,
+          "height": 720,
           "theme": "dark",
           "style": "1",
           "locale": "in",
