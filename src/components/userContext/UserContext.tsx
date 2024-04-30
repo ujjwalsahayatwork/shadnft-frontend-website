@@ -29,11 +29,16 @@ interface UserData {
 interface UserContextType {
     user: UserData | any;
     setUser: (userData: UserData | null) => void;
+    label: string;
+  setLabel: (label: string) => void;
 }
 
 const UserContext = createContext<UserContextType>({
     user: null,
     setUser: () => { },
+    label: '',
+  setLabel: () => {}
+
 });
 
 export const useUserContext = () => useContext(UserContext);
@@ -46,6 +51,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     let router = useRouter()
     const { pathname } = router;
     const [user, setUser] = useState<UserData | null>(null);
+    const [label, setLabel] = useState<string>(''); 
 
     const updateUser = (userData: UserData | null) => {
         if (userData) {
@@ -71,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
             if (typeof window === 'undefined') return null
             let token =  localStorage.getItem('token');
             //  let userToken = token.get('token')
-            console.log(token,'usecontext');
+            // console.log(token,'usecontext');
             
             if (!token) return handleNavigate()
             if(token){
@@ -128,8 +134,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
         // }
     }, [router.pathname]);
 
+    const handleLabelChange = (newLabel: string) => {
+        setLabel(newLabel);
+      };
+
     return (
-        <UserContext.Provider value={{ user, setUser: updateUser }}>
+        <UserContext.Provider value={{ user, setUser: updateUser, label, setLabel: handleLabelChange }}>
             {children}
         </UserContext.Provider>
     );

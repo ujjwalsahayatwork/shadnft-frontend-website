@@ -6,6 +6,7 @@ import Script from "next/script";
 import Datafeed from "../../datafeed.js";
 import { makeApiRequestLocal } from "@/helpers.js";
 import TradingViewWidget from "./ChartComponent";
+import { useUserContext } from "../userContext/UserContext";
 // const LazyRightSideComponent = React.lazy(() => import('./RightSideComponent'));
 
 interface TradingView {
@@ -50,13 +51,19 @@ const AppCharts = () => {
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(false);
   const [symbolState, setSymbolState] = useState("runestone");
+  const [symbolChange,setSymbolChange] = useState('')
+  const {label} = useUserContext();
+
+  console.log(label.length,'labelpoor');
+  
 
   useEffect(() => {
+
     if (typeof window !== "undefined") {
+     
       let newSymbol = localStorage.getItem("key");
 
-      // console.log(window.tvWidget,clicked,'window');
-
+     
       setTimeout(() => {
         // if (window.tvWidget && clicked) {
         // // if (false) {
@@ -65,7 +72,7 @@ const AppCharts = () => {
         //   // Update only the symbol without recreating the widget
         //   window.tvWidget.chart().setSymbol(newSymbol);
         // } else {
-
+          setLoading(true)
         window.tvWidget = new TradingView.widget({
           symbol: newSymbol,
           interval: "60",
@@ -110,15 +117,26 @@ const AppCharts = () => {
           drawingsAccess: { type: "black", tools: [{ name: "TrendLine" }] },
         });
         
+        setLoading(false)
       }, 1000);
+      
       setIsClient(true);
     }
-  }, []);
+  }, [label]);
+  
+  
 
   const handleDataFetch = () => {
+    
     // setClicked(!clicked);
     if (typeof window !== "undefined") {
       let newSymbol = localStorage.getItem("key");
+      // let symbolChange = localStorage.getItem('symbolChange')
+      // if ( symbolChange ){
+        
+      //    setSymbolChange(true);
+        
+      // };
       // console.log(window.tvWidget,clicked,'windowmyr');
       setSymbolState(newSymbol);
       // setTimeout(() => {
@@ -135,6 +153,10 @@ const AppCharts = () => {
       // setClicked(false);
     }
   };
+
+ useEffect(()=>{
+
+ },[label])
  
   return (
     <>
@@ -151,16 +173,18 @@ const AppCharts = () => {
             </div>
             <div className="md:w-[57%] lg:w-[66%] xl:w-[73%] w-full  md:my-[10px] ">
               <div className="h-[100%]  md:my-[80px] max-[767px]:px-4 my-40px">
-                {isClient && (
+                {isClient && label.length ==0 ? (
                   <>
                     <h1 className="text-gray-400">
                       MAGICEDEN / MAGICEDEN-{symbolState.toUpperCase()}{" "}
                       <i>(FLOOR PRICE)</i>
                     </h1>
-                    <RightSideComponent loading={loading} />
-                    {/* <TradingViewWidget /> */}
+                      <RightSideComponent loading={loading}  setLoading={setLoading}/> 
+                     
                   </>
-                )}
+                )  : (<TradingViewWidget />)  }
+                
+
               </div>
             </div>
           </div>

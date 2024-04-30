@@ -61,14 +61,16 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
   const [isChecked2, setIsChecked2] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useUserContext();
-  const [label,setLabel] = useState('BTC/USDT');
+  // const [label,setLabel] = useState('BTC/USDT');
   
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
-  const [clickedItem, setClickedItem] = useState("runestone");
+  const [clickedItem, setClickedItem] = useState('runestone');
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalItems = collections?.length;
+
+  const { label, setLabel } = useUserContext();
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * ItemsPerPage;
@@ -188,6 +190,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
 
   useEffect(() => {
    const  fetchCollectionData = ()=>{
+   
      user && user?.subscription_status ==true? fetchMagicEidenCollection() : fetchMagicEidenData();
    }
    fetchCollectionData();
@@ -196,9 +199,9 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
     return ()=> clearInterval(interval);
      
   }, [user]);
-
+ 
   const fetchData = async (name: string) => {
-   
+    setLabel('')
     setClickedItem(name);
     setLoading(true)
     // const Text = name.replace(/\s+/g, '');
@@ -304,10 +307,18 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
         <div className=" mt-[17px] px-4 ">
           <p className="text-xs text-[#FFFFFF] font-semibold">Label</p>
           <div className="flex items-center gap-2 mt-[17px]">
-            <button onClick={()=>setLabel('BTC/USDT')} className={`items-center ${label === 'BTC/USDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}>
+            <button onClick={()=>{
+              return (
+                setLabel('BTCUSDT'),localStorage.setItem('symbolChange',"BTCUSDT"),setClickedItem('')
+              )
+            }} className={`items-center ${label === 'BTCUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}>
               BTC/USDT
             </button>
-            <button onClick={()=>setLabel('ETH/USDT')} className={`items-center  ${label === 'ETH/USDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`} >
+            <button onClick={()=>{
+              return (
+                setLabel('ETHUSDT'),localStorage.setItem('symbolChange',"ETHUSDT"),setClickedItem('')
+              )
+            }} className={`items-center  ${label === 'ETHUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`} >
               ETH/USDT
             </button>
           </div>
