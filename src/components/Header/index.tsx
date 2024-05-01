@@ -44,14 +44,23 @@ const Header: React.FC = () => {
   const [showDropNav, setShowDropNav] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState<string>("home");
+  const [activeLink, setActiveLink] = useState<string>();
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [testnet, setTestnet] = useState(false);
   const router = useRouter();
 
   let {user,setUser} = useUserContext();
- 
+    useEffect(()=>{
+    if(router.pathname == '/'){
+      console.log('inside uuseee');
+      
+      setActiveLink('home')
+    }else{
+      
+      setActiveLink('app')
+    }
+    },[router.pathname])
  
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
@@ -132,7 +141,7 @@ const Header: React.FC = () => {
         >
           <div className="container mx-auto px-4 max-[767px]:hidden">
             <div className="flex  justify-between  items-center">
-              <Link href="/">
+              <Link href="/" onClick={()=>setActiveLink('home')}>
                 <Image src={Logo} alt="" className="w-[49px] " priority />
               </Link>
 

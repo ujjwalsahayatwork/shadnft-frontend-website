@@ -15,6 +15,10 @@ const tabs = [
     title: "Subscription",
     key: "subscription",
   },
+  {
+    title: "Buy Plan",
+    key: "buyplan",
+  },
 ];
 interface User {
   current_plan: {
@@ -38,7 +42,7 @@ const Profile = () => {
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
 
-  const {user }  = useUserContext();
+  const { user } = useUserContext();
 
   const [showPopuppage, setShowPopuppage] = useState(0);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +52,6 @@ const Profile = () => {
       reader.onloadend = () => {
         const imageDataUrl = reader.result as string;
         setProfile(imageDataUrl);
-
       };
       reader.readAsDataURL(file);
     }
@@ -66,9 +69,6 @@ const Profile = () => {
     profilePicture: any;
   }
 
- 
-
-
   const [formData, setFormDataCustom] = useState<FormDataCustom>({
     firstName: "",
     lastName: "",
@@ -78,39 +78,42 @@ const Profile = () => {
   });
 
   const getUserData = () => {
-    API_CALL.INFO.get().then((res) => {
-      console.log(res.data.data)
-      let { email, firstName, lastName, role, mobile, profilePicture } = res.data.data
-      if (profilePicture) {
-        setImgUrl(profilePicture);
-      }
-      else {
-        setImgUrl("")
-      }
-      setFormDataCustom((prevData) => ({
-        ...prevData,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        // role: role,
-        mobile: mobile || "",
-      }));
-    }).catch((err) => { });
-
-  }
+    API_CALL.INFO.get()
+      .then((res) => {
+        console.log(res.data.data);
+        let { email, firstName, lastName, role, mobile, profilePicture } =
+          res.data.data;
+        if (profilePicture) {
+          setImgUrl(profilePicture);
+        } else {
+          setImgUrl("");
+        }
+        setFormDataCustom((prevData) => ({
+          ...prevData,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          // role: role,
+          mobile: mobile || "",
+        }));
+      })
+      .catch((err) => {});
+  };
 
   const getPlans = () => {
-    API_CALL.PLAN.get().then((res) => {
-      setPlans(res.data.data)
-    }).catch((err) => {
-      console.log(err)
-     });
-  }
+    API_CALL.PLAN.get()
+      .then((res) => {
+        setPlans(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
-    getUserData()
-    getPlans()
-  }, [])
+    getUserData();
+    getPlans();
+  }, []);
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -129,7 +132,7 @@ const Profile = () => {
     e.preventDefault();
 
     const filteredFormDataCustom = Object.fromEntries(
-      Object.entries(formData).filter(([key, value]) => value !== '')
+      Object.entries(formData).filter(([key, value]) => value !== "")
     );
 
     // if profile is not null, update profile
@@ -137,52 +140,58 @@ const Profile = () => {
       // html form data
       const formDataCustomHtml = new FormData();
       // Add file to form data
-      formDataCustomHtml.append('profilePicture', new Blob([profile], { type: 'image/png' }), 'profile.png');
+      formDataCustomHtml.append(
+        "profilePicture",
+        new Blob([profile], { type: "image/png" }),
+        "profile.png"
+      );
 
-      API_CALL.AVATAR.put(formDataCustomHtml).then((res) => {
-        console.log(res)
-        getUserData()
-      }).catch((err) => {
-        console.log(err)
-      })
+      API_CALL.AVATAR.put(formDataCustomHtml)
+        .then((res) => {
+          console.log(res);
+          getUserData();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     // Remove empty fields
-    API_CALL.UPDATE.put(filteredFormDataCustom).then((res) => {
-      console.log(res)
-    }).catch((err) => {
-      console.log(err)
-    })
+    API_CALL.UPDATE.put(filteredFormDataCustom)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleDelete = () => {
-    API_CALL.AVATAR.delete().then((res) => {
-      console.log(res)
-      getUserData()
-    }).catch((err) => {
-      console.log(err)
-    })
-  }
+    API_CALL.AVATAR.delete()
+      .then((res) => {
+        console.log(res);
+        getUserData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-  const getDate = (date: string | number | Date)=>{
+  const getDate = (date: string | number | Date) => {
     try {
-     const expiry_date : any = new Date(date);
+      const expiry_date: any = new Date(date);
 
-     const current_Date : any = new Date();
+      const current_Date: any = new Date();
 
-     const expirationDate : any = new Date(expiry_date);
+      const expirationDate: any = new Date(expiry_date);
 
-     const timeDifferenceMs = expirationDate - current_Date;
+      const timeDifferenceMs = expirationDate - current_Date;
 
-     const daysRemaining = Math.ceil(timeDifferenceMs / (1000 * 60 * 60 * 24));
+      const daysRemaining = Math.ceil(timeDifferenceMs / (1000 * 60 * 60 * 24));
 
-
-     return daysRemaining;
-     
-      
+      return daysRemaining;
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
   return (
     <>
@@ -196,11 +205,13 @@ const Profile = () => {
                 width={0}
                 height={0}
                 sizes="100vw"
-                style={{ width: '75px', height: '75px', objectFit: 'cover' }}
+                style={{ width: "75px", height: "75px", objectFit: "cover" }}
                 className="w-[75px] border-[2px] border-solid border-[#FFB701] rounded-full"
                 priority
               />
-              <p className="text-lg text-[#FFFFFF] font-medium mt-5">{formData.firstName} {formData.lastName}</p>
+              <p className="text-lg text-[#FFFFFF] font-medium mt-5">
+                {formData.firstName} {formData.lastName}
+              </p>
               {/* <CookieComponent /> */}
             </div>
             <div className="border-b-[1px] border-solid border-[#303030]"></div>
@@ -212,10 +223,11 @@ const Profile = () => {
                       return (
                         <button
                           onClick={() => setSelectedTab(tab.key)}
-                          className={`py-3  text-left sm:text-base text-sm ${tab.key == selectedTab
-                            ? "text-[#fff] md:border-r max-[767px]:border-b border-solid border-[#FFB701] font-semibold  "
-                            : "text-[#FFFFFF33] font-semibold"
-                            }`}
+                          className={`py-3  text-left sm:text-base text-sm ${
+                            tab.key == selectedTab
+                              ? "text-[#fff] md:border-r max-[767px]:border-b border-solid border-[#FFB701] font-semibold  "
+                              : "text-[#FFFFFF33] font-semibold"
+                          }`}
                           key={index}
                         >
                           <span>{tab.title}</span>
@@ -236,7 +248,11 @@ const Profile = () => {
                           width={0}
                           height={0}
                           sizes="100vw"
-                          style={{ width: '52px', height: '52px', objectFit: 'cover' }}
+                          style={{
+                            width: "52px",
+                            height: "52px",
+                            objectFit: "cover",
+                          }}
                           className="w-[52px] rounded-full"
                           priority
                         />
@@ -248,7 +264,11 @@ const Profile = () => {
                           width={0}
                           height={0}
                           sizes="100vw"
-                          style={{ width: '52px', height: '52px', objectFit: 'cover' }}
+                          style={{
+                            width: "52px",
+                            height: "52px",
+                            objectFit: "cover",
+                          }}
                           priority
                         />
                       )}
@@ -266,7 +286,10 @@ const Profile = () => {
                     >
                       Upload new picture
                     </label>
-                    <button className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs" onClick={handleDelete}>
+                    <button
+                      className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
+                      onClick={handleDelete}
+                    >
                       Delete
                     </button>
                   </div>
@@ -318,7 +341,7 @@ const Profile = () => {
                       </div>
                       <div className="mb-4 w-[50%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
-                        Phone number
+                          Phone number
                         </span>
                         <input
                           type="text"
@@ -361,15 +384,20 @@ const Profile = () => {
               )}
               {selectedTab === "subscription" && (
                 <div className="lg:w-[82%] md:w-[80%] w-full md:px-[25px] pt-[15px]">
-                  {!user.current_plan && !showpage && <div className="flex flex-col items-center justify-center py-[50px]">
-                    <p className="text-[#FFFFFF] text-lg font-medium mb-5">
-                      Currently You don’t have any subscription
-                    </p>
-                    <button className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"  onClick={() => setShowPage(true)}>
-                      Buy plan
-                    </button>
-                  </div>}
-                  {!showpage  && user.current_plan && (
+                  {!user.current_plan && !showpage && (
+                    <div className="flex flex-col items-center justify-center py-[50px]">
+                      <p className="text-[#FFFFFF] text-lg font-medium mb-5">
+                        Currently You don’t have any subscription
+                      </p>
+                      <button
+                        className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
+                        onClick={() => setShowPage(true)}
+                      >
+                        Buy plan
+                      </button>
+                    </div>
+                  )}
+                  {!showpage && user.current_plan && (
                     <div className=" my-5">
                       <p className="text-[#FFFFFF] text-lg font-medium mb-5">
                         Your current Subscription
@@ -377,7 +405,7 @@ const Profile = () => {
                       <div className="bg-[#181818] rounded-[2.5px] sm:w-[350px]">
                         <div className="flex items-center gap-5  p-[17px]">
                           <button className=" items-center   text-[#FFB501] bg-[#292B29] border-[1px] border-solid border-[#FFB501]  rounded-[7px] px-[8px] py-[8px]   font-medium text-xs">
-                          {user.current_plan.name}
+                            {user.current_plan.name}
                           </button>
                           <div className="flex items-baseline">
                             <p className="text-[#FFFFFF] text-4xl font-normal">
@@ -390,18 +418,18 @@ const Profile = () => {
                         </div>
                         <div className="border-b-[1px] border-solid border-[#303030]"></div>
                         {/* <div className="p-[17px]"> */}
-                          {/* <p className="text-[#FFFFFF] text-xs font-normal"> */}
-                            {/* The Elites package in addition to gaining access to
+                        {/* <p className="text-[#FFFFFF] text-xs font-normal"> */}
+                        {/* The Elites package in addition to gaining access to
                             The Alpha channel within the Illuminals Discord */}
-                          {/* </p> */}
-                          {/* <div className="flex justify-end mt-5"> */}
-                            {/* <button
+                        {/* </p> */}
+                        {/* <div className="flex justify-end mt-5"> */}
+                        {/* <button
                               onClick={() => setShowPage(true)}
                               className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
                             > */}
-                              {/* Buy plan */}
-                            {/* </button> */}
-                          {/* </div> */}
+                        {/* Buy plan */}
+                        {/* </button> */}
+                        {/* </div> */}
                         {/* </div> */}
                       </div>
                     </div>
@@ -499,45 +527,89 @@ const Profile = () => {
                             </div>
                           </div>
                         </div> */}
-                        {
-                          plans?.map((item: any,index:number) => {
-                            return (
-                              <div className="bg-[#181818] rounded-[2.5px]" key={index}>
-                                <div className="flex flex-col  p-[17px]">
-                                  <button className=" items-center lg:w-[70%]  text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF]  rounded-[7px] px-[10px] py-[5px]   font-medium text-xs">
-                                    {item?.name}
-                                  </button>
-                                  <div className="flex items-baseline gap-1 mt-[11px]">
-                                    <p className="text-[#FFFFFF] lg:text-4xl  text-2xl font-normal">
-                                      ${item?.price}
-                                    </p>
-                                    <p className="text-[#FFFFFF] text-[10px] font-normal">
-                                      {item?.time}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="border-b-[1px] border-solid border-[#303030]"></div>
-                                <div className="p-[17px]">
-                                  <p className="text-[#FFFFFF] lg:text-xs text-[10px] font-normal sm:h-[80px]">
-                                    {item?.description}
+                        {plans?.map((item: any, index: number) => {
+                          return (
+                            <div
+                              className="bg-[#181818] rounded-[2.5px]"
+                              key={index}
+                            >
+                              <div className="flex flex-col  p-[17px]">
+                                <button className=" items-center lg:w-[70%]  text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF]  rounded-[7px] px-[10px] py-[5px]   font-medium text-xs">
+                                  {item?.name}
+                                </button>
+                                <div className="flex items-baseline gap-1 mt-[11px]">
+                                  <p className="text-[#FFFFFF] lg:text-4xl  text-2xl font-normal">
+                                    ${item?.price}
                                   </p>
-                                  <div className="flex justify-center mt-5">
-                                    <button
-                                      onClick={() => setShowPopuppage(Number(item?.price))}
-                                      className=" items-center w-full  text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs"
-                                    >
-                                      Buy
-                                    </button>
-                                  </div>
+                                  <p className="text-[#FFFFFF] text-[10px] font-normal">
+                                    {item?.time}
+                                  </p>
                                 </div>
                               </div>
-                            )
-                          })
-                        }
+                              <div className="border-b-[1px] border-solid border-[#303030]"></div>
+                              <div className="p-[17px]">
+                                <p className="text-[#FFFFFF] lg:text-xs text-[10px] font-normal sm:h-[80px]">
+                                  {item?.description}
+                                </p>
+                                <div className="flex justify-center mt-5">
+                                  <button
+                                    onClick={() =>
+                                      setShowPopuppage(Number(item?.price))
+                                    }
+                                    className=" items-center w-full  text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs"
+                                  >
+                                    Buy
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
                 </div>
+              )}
+              {selectedTab === "buyplan" && (
+                <>
+                 <div className=" ">
+                      <div className="grid sm:grid-cols-3 grid-cols-1 max-[420px]:grid-cols-1 gap-5 max-[767px]:my-5">
+                  {plans?.map((item: any, index: number) => (
+                    <div className="bg-[#181818] rounded-[2.5px] mx-5 width-[150px] mt-5" key={index}>
+                      <div className="flex flex-col p-[17px]">
+                        <button className="items-center lg:w-[100%] text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF] rounded-[7px] px-[10px] py-[5px] font-medium text-xs">
+                          {item?.name}
+                        </button>
+                        <div className="flex flex-col gap-1 mt-[11px]">
+                          <p className="text-[#FFFFFF] lg:text-4xl text-2xl font-normal items-center text-center">
+                            ${item?.price}
+                          </p>
+                          <p className="text-[#FFFFFF] text-[10px] font-normal">
+                            {item?.time}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="border-b-[1px] border-solid border-[#303030]"></div>
+                      <div className="p-[17px]">
+                        <p className="text-[#FFFFFF] lg:text-xs text-[10px] font-normal sm:h-[80px]">
+                          {item?.description}
+                        </p>
+                        <div className="flex justify-center mt-5">
+                          <button
+                            onClick={() =>
+                              setShowPopuppage(Number(item?.price))
+                            }
+                            className="items-center w-full text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
+                          >
+                            Buy
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  </div>
+                  </div>
+                </>
               )}
             </div>
           </div>

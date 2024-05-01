@@ -7,6 +7,8 @@ import imageAsset from "../../../public/assest/unnamed.jpg";
 import image1 from "../../../public/image.png";
 import image2 from "../../../public/image copy.png";
 import image3 from "../../../public/image copy 2.png";
+import Link from "next/link";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Home = () => {
   const [activeTab, setActiveTab] = useState<number>(0);
@@ -190,6 +192,13 @@ const Home = () => {
                     this journey together, united in our pursuit of greatness
                     and boundless achievement.
                   </p>
+                  <span>
+               <div className="mt-5">
+               <Link href='https://x.com/shadowerbtc?s=21' target="_blank">
+              <FaXTwitter className="text-[#FFFFFF] text-base" />
+              </Link>
+               </div>
+            </span>
                 </div>
               </div>
               <div className="lg:w-[55%] w-full">

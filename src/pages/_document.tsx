@@ -6,13 +6,8 @@ import Logo from "../../public/assest/Logo.png";
 export default function Document() {
   return (
     <Html lang="en">
-      <Head ><meta property="og:image" content='/Logo.png' />
-        {/* <script
-          type="text/javascript"
-          src="https://illuminals.io/chart/charting_library.js"
-        ></script> */}
-        
-
+      <Head > <link rel="icon" href="/assest/Logo.png" /> 
+          <meta property="og:image" content="/assest/Logo.png" />
 
       </Head>
       <body>
