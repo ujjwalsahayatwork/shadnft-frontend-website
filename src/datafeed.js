@@ -91,7 +91,7 @@ export default {
             exchange: symbolItem.exchange,
             intraday_multipliers:['1','5','15','30','240'],
             minmov: 1,
-            pricescale: 1000,
+            pricescale: 1000000,
             has_intraday: true,
             visible_plots_set: 'ohlc',
             has_weekly_and_monthly: false,
