@@ -154,8 +154,9 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
       // console.log(response, "MagicEidenCollectios");
       const updatedCollections = response?.data.data.map((newSymbol: any) => {
         const correspondingSymbol = collections?.find(symbol => symbol.symbol === newSymbol.symbol);
+        // console.log(newSymbol?.floorPrice,correspondingSymbol?.floorPrice,'values');
         
-        // console.log(newSymbol?.floorPrice==correspondingSymbol?.floorPrice,'isTrue');
+        console.log(newSymbol?.floorPrice==correspondingSymbol?.floorPrice,'isTrue');
         
         if (correspondingSymbol) {
           let flag : any;
@@ -353,19 +354,28 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
             </span>
           </div> */}
         </div>
-        <div className=" overflow-auto no-scrollbar h-full">
+        <div className=" overflow-auto no-scrollbar h-full w-full">
           <table className="w-full  h-full">
-            <thead>
-              <tr className="text-[11px] min-[1100px]:text-xs sticky top-0 border-t-[1px]  border-b-[1px] border-solid border-[#303030]    text-[#A0A0A0] ">
-                <th className="text-left  pl-4 pr-2 font-semibold py-2 max-[767px]:min-w-[7rem] ">
+            <thead className="">
+              <tr className="  text-[11px]  min-[1100px]:text-xs sticky top-0 border-t-[1px]  border-b-[1px] border-solid border-[#303030] text-[#A0A0A0] ">
+                <th className=" text-left  pl-4 pr-2 font-semibold py-2 max-[767px]:min-w-[8rem] ">
                   Name
                 </th>
-                <th className="flex flex-row text-left px-2 py-2 font-semibold max-[767px]:min-w-[7rem] ">
-                  Price <span className="ml-1 mt-0.5"><FaBitcoin /></span>
+                <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[5rem] ">
+                  <div className="flex items-center gap-1 justify-start">
+                    <span> Price </span>
+                    <span className=""><FaBitcoin /></span>
+                  </div>
+                 
                 </th>
-                <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[7rem] ">
-                  Volume
+                <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[8rem] ">
+                  <div className="flex items-center gap-1 justify-start">
+                    <span>  Volume </span>
+                    <span className=""><FaBitcoin /></span>
+                  </div>
+                 
                 </th>
+                
               </tr>
             </thead>
             {/* {
@@ -408,7 +418,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                           </div>
                         </td>
                         <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                          {item.volume }
+                        {(item.volume / 100000000 % 1 == 0) ? item.volume / 100000000 : Number((item.volume / 100000000).toFixed(4))}
                         </td>
                       </tr>
                      
@@ -444,7 +454,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                           </div>
                         </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                        {item.volume}
+                     { (item.volume / 100000000 % 1 == 0) ? item.volume / 100000000 : Number((item.volume / 100000000).toFixed(4))}
                       </td>
                     </tr>
                   ))}
