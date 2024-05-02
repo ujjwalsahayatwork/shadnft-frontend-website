@@ -46,26 +46,30 @@ interface MegicEden {
   floorPrice: number;
   volume: number;
   name: string;
-  flag:any;
+  flag: any;
 }
 type HandleDataFetch = () => void;
 
 const ItemsPerPage = 14;
 
-const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:any }> = ({
-  handleDataFetch,setLoading
-}) => {
+const LeftSideComponent: React.FC<{
+  handleDataFetch: HandleDataFetch;
+  setLoading: any;
+}> = ({ handleDataFetch, setLoading }) => {
   const [selectedTab, setSelectedTab] = useState("ordinal");
   const [gridSelectedTab, setGridSelectedTab] = useState("btc");
   const [isChecked1, setIsChecked1] = useState(false);
   const [isChecked2, setIsChecked2] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  // const [updatedCollection, setupdatedCollection] = useState<MegicEden[]>([]);
+  let updatedCollection: MegicEden[] = [];
+  let updatedPopularCollection:MegicEden[] = [];
   const { user } = useUserContext();
   // const [label,setLabel] = useState('BTC/USDT');
-  
+
   const [collections, setCollections] = useState<MegicEden[]>([]);
   const [popularCollections, setPopularCollections] = useState<MegicEden[]>([]);
-  const [clickedItem, setClickedItem] = useState('runestone');
+  const [clickedItem, setClickedItem] = useState("runestone");
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalItems = collections?.length;
@@ -107,39 +111,41 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
 
   const fetchMagicEidenData = async () => {
     try {
-      console.log('popoular Collectionss')
-      user && localStorage.setItem('subscription_status',user.subscription_status)
+      console.log("popoular Collectionss");
+      user &&
+        localStorage.setItem("subscription_status", user.subscription_status);
       const response = await API_CALL.MagicEidenData.get();
       console.log(response, "MagicEidenData");
       const updatedCollections = response?.data.data.map((newSymbol: any) => {
-        const correspondingSymbol = popularCollections?.find(symbol => symbol.symbol === newSymbol.symbol);
+        const correspondingSymbol = updatedPopularCollection?.find(
+          (symbol) => symbol.symbol === newSymbol.symbol
+        );
         // console.log(newSymbol?.floorPrice == correspondingSymbol?.floorPrice,'isTrue');
-        
+
         if (correspondingSymbol) {
-          let flag : any;
+          let flag: any;
           if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
             flag = false;
           } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
             flag = true;
           } else {
-            flag = 'equal';
+            flag = "equal";
           }
           return {
             ...newSymbol,
-            flag: flag
+            flag: flag,
           };
         } else {
           // If corresponding symbol not found in collections, assume flag as true
           return {
             ...newSymbol,
-            flag: 'equal'
+            flag: "equal",
           };
         }
       });
       // console.log(updatedCollections,'updated');
-      
+      updatedPopularCollection = updatedCollections;
       setPopularCollections(updatedCollections);
-      
     } catch (error) {
       console.log(error);
     }
@@ -147,42 +153,48 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
 
   const fetchMagicEidenCollection = async () => {
     try {
-      // console.log('collections'); 
-     
-      user && localStorage.setItem('subscription_status',user.subscription_status)
+      // console.log('collections');
+
+      user &&
+        localStorage.setItem("subscription_status", user.subscription_status);
       const response = await API_CALL.MagicEidenCollection.get();
-      // console.log(response, "MagicEidenCollectios");
+
       const updatedCollections = response?.data.data.map((newSymbol: any) => {
-        const correspondingSymbol = collections?.find(symbol => symbol.symbol === newSymbol.symbol);
-        // console.log(newSymbol?.floorPrice,correspondingSymbol?.floorPrice,'values');
-        
-        console.log(newSymbol?.floorPrice==correspondingSymbol?.floorPrice,'isTrue');
-        
+        const correspondingSymbol = updatedCollection?.find(
+          (symbol) => symbol.symbol == newSymbol.symbol
+        );
+
+        console.log(
+          newSymbol?.floorPrice == correspondingSymbol?.floorPrice,
+          "isTrue"
+        );
+
         if (correspondingSymbol) {
-          let flag : any;
+          let flag: any;
           if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
-            
             flag = false;
           } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
             flag = true;
           } else {
-            flag = 'equal';
+            flag = "equal";
+            // flag = true;
           }
           return {
             ...newSymbol,
-            flag: flag
+            flag: flag,
           };
         } else {
           // console.log('flag else');
           // If corresponding symbol not found in collections, assume flag as true
           return {
             ...newSymbol,
-            flag: 'equal'
+            flag: "equal",
           };
         }
       });
-      // console.log(updatedCollections,'updated');
-      
+      console.log(updatedCollections,'updated');
+      // setupdatedCollection([])
+      updatedCollection = updatedCollections;
       setCollections(updatedCollections);
     } catch (error) {
       console.log(error);
@@ -190,29 +202,34 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
   };
 
   useEffect(() => {
-   const  fetchCollectionData = ()=>{
-   
-     user && user?.subscription_status ==true? fetchMagicEidenCollection() : fetchMagicEidenData();
-   }
-   fetchCollectionData();
-    const interval  = setInterval(fetchCollectionData,1 * 60 * 1000); // fetch the data for every 15 mins
+    const fetchCollectionData = async () => {
+      try {
+        user && user?.subscription_status == true
+          ? await fetchMagicEidenCollection()
+          : await fetchMagicEidenData();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCollectionData();
+    const interval = setInterval(fetchCollectionData, 30 * 1000); // fetch the data for every 1 mins
+    // const interval  = setInterval(fetchCollectionData, 1000); // fetch the data for every 1 mins
 
-    return ()=> clearInterval(interval);
-     
+    return () => clearInterval(interval);
   }, [user]);
- 
+
   const fetchData = async (name: string) => {
-    setLabel('')
+    setLabel("");
     setClickedItem(name);
-    setLoading(true)
+    setLoading(true);
     // const Text = name.replace(/\s+/g, '');
     localStorage.setItem("key", name);
     const response = await makeApiRequestLocal();
     // console.log(response, "response");
     handleDataFetch(); // Trigger the useEffect in AppCharts
-    setTimeout(()=>{
-      setLoading(false)
-    },1000)
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   };
 
   useEffect(() => {
@@ -308,19 +325,32 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
         <div className=" mt-[17px] px-4 ">
           <p className="text-xs text-[#FFFFFF] font-semibold">Label</p>
           <div className="flex items-center gap-2 mt-[17px]">
-            <button onClick={()=>{
-              return (
-                setLabel('BTCUSDT'),
-                localStorage.setItem('symbolChange',"BTCUSDT"),setClickedItem('')
-              )
-            }} className={`items-center ${label === 'BTCUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}>
+            <button
+              onClick={() => {
+                return (
+                  setLabel("BTCUSDT"),
+                  localStorage.setItem("symbolChange", "BTCUSDT"),
+                  setClickedItem("")
+                );
+              }}
+              className={`items-center ${
+                label === "BTCUSDT" && "bg-[#FEC801] "
+              } hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}
+            >
               BTC/USDT
             </button>
-            <button onClick={()=>{
-              return (
-                setLabel('ETHUSDT'),localStorage.setItem('symbolChange',"ETHUSDT"),setClickedItem('')
-              )
-            }} className={`items-center  ${label === 'ETHUSDT'&& 'bg-[#FEC801] '} hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`} >
+            <button
+              onClick={() => {
+                return (
+                  setLabel("ETHUSDT"),
+                  localStorage.setItem("symbolChange", "ETHUSDT"),
+                  setClickedItem("")
+                );
+              }}
+              className={`items-center  ${
+                label === "ETHUSDT" && "bg-[#FEC801] "
+              } hover:border-[#FEC801] text-[#57472F] border-[0.5px] border-[#57472F] border-solid rounded-[2.5px] px-[9px] py-2  hover:text-white font-medium text-xs`}
+            >
               ETH/USDT
             </button>
           </div>
@@ -364,18 +394,19 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                 <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[5rem] ">
                   <div className="flex items-center gap-1 justify-start">
                     <span> Price </span>
-                    <span className=""><FaBitcoin /></span>
+                    <span className="">
+                      <FaBitcoin />
+                    </span>
                   </div>
-                 
                 </th>
                 <th className="text-left px-2 py-2 font-semibold max-[767px]:min-w-[8rem] ">
                   <div className="flex items-center gap-1 justify-start">
-                    <span>  Volume </span>
-                    <span className=""><FaBitcoin /></span>
+                    <span> Volume </span>
+                    <span className="">
+                      <FaBitcoin />
+                    </span>
                   </div>
-                 
                 </th>
-                
               </tr>
             </thead>
             {/* {
@@ -393,7 +424,7 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                         className={`${
                           clickedItem === item.symbol
                             ? "btn  border-[#57472F]"
-                            : "" 
+                            : ""
                         } border-b-[0.5px]   text-[#FFFFFF] border-solid border-[#303030] font-medium cursor-pointer text-[11px] `}
                       >
                         <td
@@ -407,21 +438,25 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                         </td>
                         <td className="text-left px-2  py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
                           <div className="relative">
-                            <span className={` absolute top-[1px] left-[-19px]  ${item.flag ? 'text-green-700' : 'text-red-700' } text-sm font-medium`}>
-                           {  item.flag == true  && <BiSolidUpArrow />  }   {item.flag == false &&  <BiSolidDownArrow /> }
-                        
-                          </span>
+                            <span
+                              className={` absolute top-[1px] left-[-19px]  ${
+                                item.flag ? "text-green-700" : "text-red-700"
+                              } text-sm font-medium`}
+                            >
+                              {item.flag == true && <BiSolidUpArrow />}{" "}
+                              {item.flag == false && <BiSolidDownArrow />}
+                            </span>
                             <span className="text-green-600">
-                             
                               {item.floorPrice / 100000000}
                             </span>
                           </div>
                         </td>
                         <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                        {(item.volume / 100000000 % 1 == 0) ? item.volume / 100000000 : Number((item.volume / 100000000).toFixed(4))}
+                          {(item.volume / 100000000) % 1 == 0
+                            ? item.volume / 100000000
+                            : Number((item.volume / 100000000).toFixed(4))}
                         </td>
                       </tr>
-                     
                     </>
                   ))
                 : popularCollections.map((item, index) => (
@@ -442,19 +477,24 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
                         {item.name}
                       </td>
                       <td className="text-left px-2  py-2 max-[767px]:min-w-[7rem] text-[#FF0000]">
-                          <div className="relative">
-                            <span className={` absolute top-[1px] left-[-19px]  ${item.flag ? 'text-green-700' : 'text-red-700' } text-sm font-medium`}>
-                            { item.flag == true  && <BiSolidUpArrow />  }   {item.flag == false &&  <BiSolidDownArrow /> }
-                        
+                        <div className="relative">
+                          <span
+                            className={` absolute top-[1px] left-[-19px]  ${
+                              item.flag ? "text-green-700" : "text-red-700"
+                            } text-sm font-medium`}
+                          >
+                            {item.flag == true && <BiSolidUpArrow />}{" "}
+                            {item.flag == false && <BiSolidDownArrow />}
                           </span>
-                            <span className="text-green-600">
-                             
-                              {item.floorPrice / 100000000}
-                            </span>
-                          </div>
-                        </td>
+                          <span className="text-green-600">
+                            {item.floorPrice / 100000000}
+                          </span>
+                        </div>
+                      </td>
                       <td className="text-left px-2 py-2 max-[767px]:min-w-[7rem] text-[#C83939] ">
-                     { (item.volume / 100000000 % 1 == 0) ? item.volume / 100000000 : Number((item.volume / 100000000).toFixed(4))}
+                        {(item.volume / 100000000) % 1 == 0
+                          ? item.volume / 100000000
+                          : Number((item.volume / 100000000).toFixed(4))}
                       </td>
                     </tr>
                   ))}
@@ -463,27 +503,30 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
             
             } */}
           </table>
-           {
-            collections.length >0 && (
-              <>
-               {/* Pagination controls */}
-           <div className="p-2 flex justify-center items-center flex-row mt-5 ">
-           <button onClick={prevPage} disabled={currentPage === 1} className="p-2  bg-gray-950 rounded border-[1px] border-solid border-[#303030]" >
-                        Prev
-                      </button>
-                    
-                      <button className="p-2 btn ml-2 rounded text-black border-b-[1px] border-solid border-[#303030]"
-                        onClick={nextPage}
-                        disabled={
-                          currentPage === Math.ceil(totalItems / ItemsPerPage)
-                        }
-                      >
-                        Next
-                      </button>
-                      </div>
-              </>
-            ) 
-           }
+          {collections.length > 0 && (
+            <>
+              {/* Pagination controls */}
+              <div className="p-2 flex justify-center items-center flex-row mt-5 ">
+                <button
+                  onClick={prevPage}
+                  disabled={currentPage === 1}
+                  className="p-2  bg-gray-950 rounded border-[1px] border-solid border-[#303030]"
+                >
+                  Prev
+                </button>
+
+                <button
+                  className="p-2 btn ml-2 rounded text-black border-b-[1px] border-solid border-[#303030]"
+                  onClick={nextPage}
+                  disabled={
+                    currentPage === Math.ceil(totalItems / ItemsPerPage)
+                  }
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          )}
         </div>
         {!user && (
           <div className="px-4 mt-[20px]">
@@ -494,17 +537,15 @@ const LeftSideComponent: React.FC<{ handleDataFetch: HandleDataFetch,setLoading:
             </Link>
           </div>
         )}
-        {
-          user && !user.subscription_status  && (
-            <div className="px-4 mt-[20px]">
+        {user && !user.subscription_status && (
+          <div className="px-4 mt-[20px]">
             <Link href="/profile">
               <button className="btn items-center w-full  rounded-[5px] px-3 xl:px-[15px] py-2  text-[#000000] font-medium text-sm">
-               Buy the plan to see more...
+                Buy the plan to see more...
               </button>
             </Link>
           </div>
-          )
-        }
+        )}
       </div>
     </div>
   );
@@ -514,4 +555,3 @@ export default LeftSideComponent;
 function setLoading(arg0: boolean) {
   throw new Error("Function not implemented.");
 }
-

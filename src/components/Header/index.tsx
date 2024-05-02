@@ -51,16 +51,18 @@ const Header: React.FC = () => {
   const router = useRouter();
 
   let {user,setUser} = useUserContext();
+  
+  
     useEffect(()=>{
     if(router.pathname == '/'){
-      console.log('inside uuseee');
+      // console.log('inside uuseee');
       
       setActiveLink('home')
     }else{
       
       setActiveLink('app')
     }
-    },[router.pathname])
+    },[router.pathname,activeLink])
  
   useEffect(() => {
     const handleClickOutside = (event: { target: any }) => {
@@ -171,9 +173,9 @@ const Header: React.FC = () => {
                      >
                       {
                         user && ( <Image
-                        src={Profile}
-                        alt="Profile"
-                        className="w-[30px]"
+                        src={user.profilePicture || Profile}
+                        alt="Profile" width={40} height={40}
+                        className=" rounded-full"
                         priority
                       />
                         ) 

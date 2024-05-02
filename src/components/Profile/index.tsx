@@ -41,11 +41,23 @@ const Profile = () => {
   const [imgUrl, setImgUrl] = useState("");
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
-
+  const [popularPlans, setPopularPlans] = useState([]);
   const { user } = useUserContext();
+
+  const ItemsPerPage = 3;
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalItems = plans?.length;
+
+  const startIndex = (currentPage - 1) * ItemsPerPage;
+  const endIndex = Math.min(startIndex + ItemsPerPage, totalItems);
+
+  // Slice collections array to display only items for the current page
+  const displayedCollections = plans?.slice(startIndex, endIndex);
+
 
   const [showPopuppage, setShowPopuppage] = useState(0);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+   try {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -55,6 +67,10 @@ const Profile = () => {
       };
       reader.readAsDataURL(file);
     }
+   } catch (error) {
+    console.log(error);
+    
+   }
   };
 
   interface FormDataCustom {
@@ -78,36 +94,48 @@ const Profile = () => {
   });
 
   const getUserData = () => {
+   try {
     API_CALL.INFO.get()
-      .then((res) => {
-        console.log(res.data.data);
-        let { email, firstName, lastName, role, mobile, profilePicture } =
-          res.data.data;
-        if (profilePicture) {
-          setImgUrl(profilePicture);
-        } else {
-          setImgUrl("");
-        }
-        setFormDataCustom((prevData) => ({
-          ...prevData,
-          email: email,
-          firstName: firstName,
-          lastName: lastName,
-          // role: role,
-          mobile: mobile || "",
-        }));
-      })
-      .catch((err) => {});
+    .then((res) => {
+      console.log(res.data.data);
+      let { email, firstName, lastName, role, mobile, profilePicture } =
+        res.data.data;
+      if (profilePicture) {
+        setImgUrl(profilePicture);
+      } else {
+        setImgUrl("");
+      }
+      setFormDataCustom((prevData) => ({
+        ...prevData,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        // role: role,
+        mobile: mobile || "",
+      }));
+    })
+    .catch((err) => {});
+   } catch (error) {
+    console.log(error);
+    
+   }
   };
 
   const getPlans = () => {
+   try {
     API_CALL.PLAN.get()
-      .then((res) => {
-        setPlans(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    .then((res) => {
+      console.log(res.data.data);
+      
+      setPlans(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+   } catch (error) {
+    console.log(error);
+    
+   }
   };
 
   useEffect(() => {
@@ -135,7 +163,8 @@ const Profile = () => {
       Object.entries(formData).filter(([key, value]) => value !== "")
     );
 
-    // if profile is not null, update profile
+    try {
+      // if profile is not null, update profile
     if (profile) {
       // html form data
       const formDataCustomHtml = new FormData();
@@ -163,9 +192,14 @@ const Profile = () => {
       .catch((err) => {
         console.log(err);
       });
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
   const handleDelete = () => {
-    API_CALL.AVATAR.delete()
+    try {
+      API_CALL.AVATAR.delete()
       .then((res) => {
         console.log(res);
         getUserData();
@@ -173,6 +207,10 @@ const Profile = () => {
       .catch((err) => {
         console.log(err);
       });
+    } catch (error) {
+      console.log(error);
+      
+    }
   };
 
   const getDate = (date: string | number | Date) => {
@@ -202,10 +240,10 @@ const Profile = () => {
               <Image
                 src={imgUrl || Profileimg}
                 alt="Profile"
-                width={0}
-                height={0}
-                sizes="100vw"
-                style={{ width: "75px", height: "75px", objectFit: "cover" }}
+                width={75}
+                height={75}
+                // sizes="100vw"
+                // style={{ width: "75px", height: "75px", objectFit: "cover" }}
                 className="w-[75px] border-[2px] border-solid border-[#FFB701] rounded-full"
                 priority
               />
@@ -243,7 +281,7 @@ const Profile = () => {
                     <div>
                       {profile ? (
                         <Image
-                          src={profile}
+                          src={ profile}
                           alt="Profile"
                           width={0}
                           height={0}
@@ -391,7 +429,7 @@ const Profile = () => {
                       </p>
                       <button
                         className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
-                        onClick={() => setShowPage(true)}
+                        onClick={() => setSelectedTab('buyplan')}
                       >
                         Buy plan
                       </button>
@@ -417,20 +455,20 @@ const Profile = () => {
                           </div>
                         </div>
                         <div className="border-b-[1px] border-solid border-[#303030]"></div>
-                        {/* <div className="p-[17px]"> */}
-                        {/* <p className="text-[#FFFFFF] text-xs font-normal"> */}
-                        {/* The Elites package in addition to gaining access to
-                            The Alpha channel within the Illuminals Discord */}
-                        {/* </p> */}
-                        {/* <div className="flex justify-end mt-5"> */}
-                        {/* <button
-                              onClick={() => setShowPage(true)}
-                              className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
-                            > */}
-                        {/* Buy plan */}
-                        {/* </button> */}
-                        {/* </div> */}
-                        {/* </div> */}
+                        <div className="p-[17px]">
+                        <p className="text-[#FFFFFF] text-xs font-normal">
+                        The Elites package in addition to gaining access to
+                            The Alpha channel within the Illuminals Discord
+                        </p>
+                        <div className="flex justify-end mt-5">
+                        <button
+                              onClick={() => setSelectedTab('buyplan')}
+                              className=" items-center  hover:bg-[#FFB501] hover:text-[#000000]  text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
+                            >
+                        Buy plan
+                        </button>
+                        </div>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -539,7 +577,7 @@ const Profile = () => {
                                 </button>
                                 <div className="flex items-baseline gap-1 mt-[11px]">
                                   <p className="text-[#FFFFFF] lg:text-4xl  text-2xl font-normal">
-                                    ${item?.price}
+                                    ${item?.price}<span className="text-sm ">{item.days}days</span>
                                   </p>
                                   <p className="text-[#FFFFFF] text-[10px] font-normal">
                                     {item?.time}
@@ -573,16 +611,16 @@ const Profile = () => {
               {selectedTab === "buyplan" && (
                 <>
                  <div className=" ">
-                      <div className="grid sm:grid-cols-3 grid-cols-1 max-[420px]:grid-cols-1 gap-5 max-[767px]:my-5">
-                  {plans?.map((item: any, index: number) => (
-                    <div className="bg-[#181818] rounded-[2.5px] mx-5 width-[150px] mt-5" key={index}>
+                      <div className="grid sm:grid-cols-3 grid-cols-1 max-[420px]:grid-cols-1  max-[767px]:my-5">
+                  {displayedCollections?.map((item: any, index: number) => (
+                    <div className="bg-[#181818] rounded-md mx-5 width-[150px] mt-5" key={index}>
                       <div className="flex flex-col p-[17px]">
-                        <button className="items-center lg:w-[100%] text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF] rounded-[7px] px-[10px] py-[5px] font-medium text-xs">
+                        <button className="items-start  lg:w-[100%] text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF] rounded-[7px] px-[10px] py-[5px] font-medium text-xs">
                           {item?.name}
                         </button>
-                        <div className="flex flex-col gap-1 mt-[11px]">
+                        <div className="flex flex-col  gap-1 mt-[11px]">
                           <p className="text-[#FFFFFF] lg:text-4xl text-2xl font-normal items-center text-center">
-                            ${item?.price}
+                            ${item?.price} <span className="text-sm ">{item.days}days</span>
                           </p>
                           <p className="text-[#FFFFFF] text-[10px] font-normal">
                             {item?.time}
@@ -608,6 +646,7 @@ const Profile = () => {
                     </div>
                   ))}
                   </div>
+                  
                   </div>
                 </>
               )}
