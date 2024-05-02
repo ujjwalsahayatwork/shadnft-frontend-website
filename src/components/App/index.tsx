@@ -136,8 +136,8 @@ const AppCharts = () => {
           container: "tv_chart_container",
           datafeed: Datafeed,
           withdateranges: true,
-          // library_path: 'https://illuminals.io/charting_library/charting_library.js',
-          library_path: "http://127.0.0.1:5500/charting_library.js",
+          library_path: 'https://illuminals.io/chart/charting_library.js',
+          // library_path: "http://127.0.0.1:5500/charting_library.js",
           theme: "dark",
           disabled_features: [
             "header_indicators",
