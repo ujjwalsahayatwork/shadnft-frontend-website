@@ -16,7 +16,8 @@ import Successfulpage from "../Successfulpage";
 import { API_CALL } from "@/ApiRoutes/Routes";
 interface PopuppageProps {
   isOpen: boolean;
-  stateForyrAndMnth:string,
+  stateForyrAndMnth: string;
+  planId: string;
   onClose: () => void;
   price: number;
   //setShowWalletPopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -76,19 +77,18 @@ async function usdToSatoshi(usdAmount: number): Promise<number> {
 const Popuppage: React.FC<PopuppageProps> = ({
   isOpen,
   stateForyrAndMnth,
+  planId,
   onClose,
   price,
   ///setShowWalletPopup,
 }) => {
-  // console.log(stateForyrAndMnth,'state yr na month');
-  
   const [showPopuppage, setShowPopuppage] = useState(false);
   const notify = (Msg: string, type: any) =>
     toast(Msg, {
       type: type,
     });
 
-  const payUsingWallet = async (usdAmount: number) => {
+  const payUsingWallet = async (usdAmount: number, yearOrMonth: string) => {
     console.log(usdAmount, "in payUsingWallet");
     let paymentAddress;
     // connect with wallet
@@ -130,7 +130,8 @@ const Popuppage: React.FC<PopuppageProps> = ({
         recipients: [
           {
             address: "2N5GJA2EDhnZ5vr4bRohbJQUfNngzG366Du",
-            amountSats: BigInt(await usdToSatoshi(usdAmount)),
+            // amountSats: BigInt(await usdToSatoshi(usdAmount)),
+            amountSats: BigInt(await usdToSatoshi(0.91)),
           },
         ],
         senderAddress: paymentAddress!,
@@ -151,6 +152,12 @@ const Popuppage: React.FC<PopuppageProps> = ({
           }
         />;
         // API_CALL.SavePaymentTx.post(txHash, plan Id, type(yearly or monthly))
+        let payload = {
+          txHash: response,
+          planId: planId,
+          purchaseType: yearOrMonth,
+        };
+        API_CALL.SavePaymentTx.post(payload);
       },
       onCancel: () => notify("Canceled bitcoin transaction", "error"),
     };
@@ -213,7 +220,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
 
                     <div className="px-5">
                       <div
-                        onClick={() => payUsingWallet(price)}
+                        onClick={() => payUsingWallet(price, stateForyrAndMnth)}
                         className="bg-[#181818] cursor-pointer py-[15px] flex items-center justify-center gap-[5px] my-5"
                       >
                         <p className="text-sm font-medium text-[#FFFFFF]">

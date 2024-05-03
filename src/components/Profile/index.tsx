@@ -44,9 +44,10 @@ const Profile = () => {
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
   const [popularPlans, setPopularPlans] = useState([]);
-  const { user ,setUser} = useUserContext();
-  const [imgloading,setimgLoading] = useState(false);
-  const [stateForyrAndMnth,setStateForyrandMnth] = useState('');
+  const { user, setUser } = useUserContext();
+  const [imgloading, setimgLoading] = useState(false);
+  const [stateForyrAndMnth, setStateForyrandMnth] = useState("");
+  const [planId, setPlanId] = useState("");
 
   const ItemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
@@ -95,7 +96,7 @@ const Profile = () => {
     mobile: "",
   });
 
-  const getUserData = async() => {
+  const getUserData = async () => {
     try {
       await API_CALL.INFO.get()
         .then((res) => {
@@ -156,35 +157,33 @@ const Profile = () => {
     }));
   };
 
-  const updateUser = async()=>{
+  const updateUser = async () => {
     try {
-      await API_CALL.INFO.get()
-      .then((res) => {
+      await API_CALL.INFO.get().then((res) => {
         console.log(res.data.data);
         setUser(res.data.data);
         let { email, firstName, lastName, role, mobile, profilePicture } =
-        res.data.data;
-      if (profilePicture) {
-        setImgUrl(profilePicture);
-      } else {
-        setImgUrl("");
-      }
-      setFormDataCustom((prevData) => ({
-        ...prevData,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        // role: role,
-        mobile: mobile || "",
-      }));
-      })
+          res.data.data;
+        if (profilePicture) {
+          setImgUrl(profilePicture);
+        } else {
+          setImgUrl("");
+        }
+        setFormDataCustom((prevData) => ({
+          ...prevData,
+          email: email,
+          firstName: firstName,
+          lastName: lastName,
+          // role: role,
+          mobile: mobile || "",
+        }));
+      });
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
-  const handleImageUpload = async(e:React.FormEvent)=>{
+  const handleImageUpload = async (e: React.FormEvent) => {
     try {
       if (profile) {
         // html form data
@@ -195,13 +194,13 @@ const Profile = () => {
           new Blob([profile], { type: "image/png" }),
           "profile.png"
         );
-        setimgLoading(true)
-       await API_CALL.AVATAR.put(formDataCustomHtml)
-          .then(async(res) => {
+        setimgLoading(true);
+        await API_CALL.AVATAR.put(formDataCustomHtml)
+          .then(async (res) => {
             // console.log(res,'imageres');
-          await  updateUser()
-          await  getUserData();
-            setimgLoading(false)
+            await updateUser();
+            await getUserData();
+            setimgLoading(false);
           })
           .catch((err) => {
             console.log(err);
@@ -209,9 +208,8 @@ const Profile = () => {
       }
     } catch (error) {
       console.log(error);
-      
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,7 +242,7 @@ const Profile = () => {
       // Remove empty fields
       API_CALL.UPDATE.put(filteredFormDataCustom)
         .then((res) => {
-          updateUser()
+          updateUser();
           console.log(res);
         })
         .catch((err) => {
@@ -259,9 +257,9 @@ const Profile = () => {
       API_CALL.AVATAR.delete()
         .then((res) => {
           console.log(res);
-          updateUser()
+          updateUser();
           getUserData();
-          setProfile(null)
+          setProfile(null);
         })
         .catch((err) => {
           console.log(err);
@@ -391,7 +389,8 @@ const Profile = () => {
                     <button
                       className=" items-center hover:bg-[#FFB501] hover:text-black   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
                       onClick={handleImageUpload}
-                    >{imgloading?'Uploading...':'Save'}
+                    >
+                      {imgloading ? "Uploading..." : "Save"}
                     </button>
                   </div>
                   <div className="my-5 lg:w-[900px]">
@@ -516,7 +515,7 @@ const Profile = () => {
                                 : user.current_plan.plan.monthlyPrice}
                             </p>
                             <p className="text-[#FF0000] text-[10px] font-normal ml-5">
-                            {getDate(user.expiration_date)} days left
+                              {getDate(user.expiration_date)} days left
                             </p>
                           </div>
                         </div>
@@ -530,7 +529,7 @@ const Profile = () => {
                               onClick={() => setSelectedTab("buyplan")}
                               className=" items-center  hover:bg-[#FFB501] hover:text-[#000000]  text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
                             >
-                              Buy plan
+                              Buy other plans
                             </button>
                           </div>
                         </div>
@@ -704,59 +703,77 @@ const Profile = () => {
                           <div className="border-b-[1px] border-solid border-[#303030]"></div>
                           <div className="p-[17px]">
                             <p className="text-[#FFFFFF] lg:text-xs text-[10px] text-center font-normal sm:h-[80px]">
-                              {item?.description} 
+                              {item?.description}
                             </p>
                             <div className="flex flex-col justify-center mt-10 gap-2 ">
-
-                             <div className="flex flex-row gap-5">
-                              <div className=" w-[50%] h-[50%]">
-                                <p className="text-[#FFFFFF] text-md">Yealry @<span className="text-[#FFB501]"> ${item.yearlyPrice} </span></p>
+                              <div className="flex flex-row gap-5">
+                                <div className=" w-[50%] h-[50%]">
+                                  <p className="text-[#FFFFFF] text-md">
+                                    Yealry @
+                                    <span className="text-[#FFB501]">
+                                      {" "}
+                                      ${item.yearlyPrice}{" "}
+                                    </span>
+                                  </p>
+                                </div>
+                                <div className="w-[50%] ">
+                                  <button
+                                    onClick={() => {
+                                      return (
+                                        setShowPopuppage(
+                                          Number(item?.yearlyPrice)
+                                        ),
+                                        setStateForyrandMnth("yearly"),
+                                        setPlanId(item._id)
+                                      );
+                                    }}
+                                    className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
+                                  >
+                                    Buy
+                                  </button>
+                                </div>
                               </div>
-                            <div className="w-[50%] ">
-                            <button
-                                onClick={() =>
-                                  {
-                                    return (
-                                      setShowPopuppage(Number(item?.yearlyPrice)),setStateForyrandMnth('yearly')
-                                    )
-                                  }
-                                }
-                                className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
-                              > 
-                                Buy
-                              </button>
-                            </div>
-                             </div>
-                             <div className="flex flex-row gap-5">
-                             <div className="w-[50%] ">
-                                <p className="text-[#FFFFFF]">Monthly @<span className="text-[#FFB501]"> ${item.monthlyPrice} </span></p>
+                              <div className="flex flex-row gap-5">
+                                <div className="w-[50%] ">
+                                  <p className="text-[#FFFFFF]">
+                                    Monthly @
+                                    <span className="text-[#FFB501]">
+                                      {" "}
+                                      ${item.monthlyPrice}{" "}
+                                    </span>
+                                  </p>
+                                </div>
+                                <div className="w-[50%]">
+                                  <button
+                                    onClick={() => {
+                                      return (
+                                        setShowPopuppage(
+                                          Number(item?.monthlyPrice)
+                                        ),
+                                        setStateForyrandMnth("monthly"),
+                                        setPlanId(item._id)
+                                      );
+                                    }}
+                                    className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
+                                  >
+                                    Buy
+                                  </button>
+                                </div>
                               </div>
-                            <div className="w-[50%]">
-                            <button
-                                onClick={() =>
-                                  {
-                                    return (
-                                      setShowPopuppage(Number(item?.monthlyPrice)),setStateForyrandMnth('monthly')
-                                    )
-                                  }
-                                }
-                                className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
-                              > 
-                                Buy
-                              </button>
-                            </div>
-                             </div>
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
                   </div>
-                <div className=" items-center text-center flex text-sm font-thin">
-                <div className="flex flex-row text-gray-400">
-                Swipe  <span className="mt-1 ml-1 text-white"><FaArrowRightLong/></span>
-                </div>
-                </div>
+                  <div className=" items-center text-center flex text-sm font-thin">
+                    <div className="flex flex-row text-gray-400">
+                      Swipe{" "}
+                      <span className="mt-1 ml-1 text-white">
+                        <FaArrowRightLong />
+                      </span>
+                    </div>
+                  </div>
                 </>
               )}
             </div>
@@ -765,7 +782,8 @@ const Profile = () => {
       </section>
       <Popuppage
         isOpen={showPopuppage ? true : false}
-        stateForyrAndMnth = {stateForyrAndMnth}
+        stateForyrAndMnth={stateForyrAndMnth}
+        planId = {planId}
         onClose={() => setShowPopuppage(0)}
         price={showPopuppage}
       />
