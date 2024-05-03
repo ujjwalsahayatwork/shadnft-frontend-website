@@ -72,16 +72,31 @@ const LeftSideComponent: React.FC<{
   const [clickedItem, setClickedItem] = useState("runestone");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const totalItems = collections?.length;
+  let totalItems = collections?.length;
 
   const { label, setLabel } = useUserContext();
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * ItemsPerPage;
-  const endIndex = Math.min(startIndex + ItemsPerPage, totalItems);
+  let endIndex = Math.min(startIndex + ItemsPerPage, totalItems);
 
   // Slice collections array to display only items for the current page
-  const displayedCollections = collections?.slice(startIndex, endIndex);
+  let displayedCollections = collections?.slice(startIndex, endIndex);
+
+  console.log(user,'user');
+  if(user?.current_plan?.plan.name == 'Bronze'){
+        displayedCollections = collections?.slice(0,30);
+         // Adjust totalItems based on the length of displayedCollections
+ totalItems = displayedCollections?.length || 0 ;
+
+ // Adjust endIndex based on the updated totalItems
+  endIndex = Math.min(startIndex + ItemsPerPage, totalItems);
+ 
+ // Slice displayedCollections again using the updated endIndex
+ displayedCollections = displayedCollections?.slice(startIndex, endIndex);
+  } 
+
+ 
 
   // Function to handle pagination
   const nextPage = () => {
