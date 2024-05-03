@@ -130,8 +130,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
         recipients: [
           {
             address: "2N5GJA2EDhnZ5vr4bRohbJQUfNngzG366Du",
-            // amountSats: BigInt(await usdToSatoshi(usdAmount)),
-            amountSats: BigInt(await usdToSatoshi(0.91)),
+            amountSats: BigInt(await usdToSatoshi(usdAmount)),
           },
         ],
         senderAddress: paymentAddress!,
