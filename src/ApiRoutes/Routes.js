@@ -11,13 +11,13 @@ export const API_CALL = {
     post: async (payload) => await BASE_CALL.post("/user/login", payload),
   },
   LOGOUT: {
-     get: async(payload) => await BASE_CALL.get('/user/logout',payload)
+    get: async (payload) => await BASE_CALL.get('/user/logout', payload)
   },
   UPDATE: {
     put: async (payload) => await BASE_CALL.put("/user/update", payload),
   },
 
-  GET_LOGGEDIN_USER: async (token) => await BASE_CALL.get(`/user/me`, {token}),
+  GET_LOGGEDIN_USER: async (token) => await BASE_CALL.get(`/user/me`, { token }),
 
   INFO: {
     get: async () => await BASE_CALL.get("/user/me"),
@@ -35,13 +35,16 @@ export const API_CALL = {
   RESET: {
     post: async (payload, token) => await BASE_CALL.post("/user/reset-password?token=" + token, payload),
   },
-  MagicEidenData :{
-    get:async() => await BASE_CALL.get('/ordinals/popular-collections')
+  MagicEidenData: {
+    get: async () => await BASE_CALL.get('/ordinals/popular-collections')
   },
-  MagicEidenCollection:{
-    get:async() => await BASE_CALL.get('/ordinals/collections')
+  MagicEidenCollection: {
+    get: async () => await BASE_CALL.get('/ordinals/collections')
   },
-  GetSingleMagicEden:{
-    get:async(seacrchSymbol) => await BASE_CALL.get(`/ordinals/charts-data/${seacrchSymbol}`)
+  GetSingleMagicEden: {
+    get: async (seacrchSymbol) => await BASE_CALL.get(`/ordinals/charts-data/${seacrchSymbol}`)
+  },
+  SavePaymentTx: {
+    post: async (payload) => await BASE_CALL.post("/user/subscription/hash", payload),
   }
 };
