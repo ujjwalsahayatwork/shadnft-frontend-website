@@ -45,7 +45,8 @@ const Profile = () => {
   const [plans, setPlans] = useState<any>([]);
   const [popularPlans, setPopularPlans] = useState([]);
   const { user ,setUser} = useUserContext();
-  const [imgloading,setimgLoading] = useState(false)
+  const [imgloading,setimgLoading] = useState(false);
+  const [stateForyrAndMnth,setStateForyrandMnth] = useState('');
 
   const ItemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
@@ -714,7 +715,11 @@ const Profile = () => {
                             <div className="w-[50%] ">
                             <button
                                 onClick={() =>
-                                  setShowPopuppage(Number(item?.price))
+                                  {
+                                    return (
+                                      setShowPopuppage(Number(item?.yearlyPrice)),setStateForyrandMnth('yearly')
+                                    )
+                                  }
                                 }
                                 className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
                               > 
@@ -729,7 +734,11 @@ const Profile = () => {
                             <div className="w-[50%]">
                             <button
                                 onClick={() =>
-                                  setShowPopuppage(Number(item?.price))
+                                  {
+                                    return (
+                                      setShowPopuppage(Number(item?.monthlyPrice)),setStateForyrandMnth('monthly')
+                                    )
+                                  }
                                 }
                                 className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
                               > 
@@ -756,6 +765,7 @@ const Profile = () => {
       </section>
       <Popuppage
         isOpen={showPopuppage ? true : false}
+        stateForyrAndMnth = {stateForyrAndMnth}
         onClose={() => setShowPopuppage(0)}
         price={showPopuppage}
       />

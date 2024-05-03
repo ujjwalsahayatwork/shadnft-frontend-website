@@ -13,8 +13,10 @@ import { sendBtcTransaction, BitcoinNetworkType } from "sats-connect";
 
 import { useRouter } from "next/router";
 import Successfulpage from "../Successfulpage";
+import { API_CALL } from "@/ApiRoutes/Routes";
 interface PopuppageProps {
   isOpen: boolean;
+  stateForyrAndMnth:string,
   onClose: () => void;
   price: number;
   //setShowWalletPopup: React.Dispatch<React.SetStateAction<boolean>>;
@@ -73,10 +75,13 @@ async function usdToSatoshi(usdAmount: number): Promise<number> {
 
 const Popuppage: React.FC<PopuppageProps> = ({
   isOpen,
+  stateForyrAndMnth,
   onClose,
   price,
   ///setShowWalletPopup,
 }) => {
+  // console.log(stateForyrAndMnth,'state yr na month');
+  
   const [showPopuppage, setShowPopuppage] = useState(false);
   const notify = (Msg: string, type: any) =>
     toast(Msg, {
@@ -145,6 +150,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
             "Your transaction has been initiated successfully. It will take some time to be verified. Once verified, we will send you an email."
           }
         />;
+        // API_CALL.SavePaymentTx.post(txHash, plan Id, type(yearly or monthly))
       },
       onCancel: () => notify("Canceled bitcoin transaction", "error"),
     };
