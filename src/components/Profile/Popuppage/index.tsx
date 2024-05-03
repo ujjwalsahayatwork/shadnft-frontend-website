@@ -13,6 +13,7 @@ import { sendBtcTransaction, BitcoinNetworkType } from "sats-connect";
 
 import { useRouter } from "next/router";
 import Successfulpage from "../Successfulpage";
+import { API_CALL } from "@/ApiRoutes/Routes";
 interface PopuppageProps {
   isOpen: boolean;
   onClose: () => void;
@@ -145,6 +146,7 @@ const Popuppage: React.FC<PopuppageProps> = ({
             "Your transaction has been initiated successfully. It will take some time to be verified. Once verified, we will send you an email."
           }
         />;
+        // API_CALL.SavePaymentTx.post(txHash, plan Id, type(yearly or monthly))
       },
       onCancel: () => notify("Canceled bitcoin transaction", "error"),
     };

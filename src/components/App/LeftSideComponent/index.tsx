@@ -63,7 +63,7 @@ const LeftSideComponent: React.FC<{
   const [searchTerm, setSearchTerm] = useState("");
   // const [updatedCollection, setupdatedCollection] = useState<MegicEden[]>([]);
   let updatedCollection: MegicEden[] = [];
-  let updatedPopularCollection:MegicEden[] = [];
+  let updatedPopularCollection: MegicEden[] = [];
   const { user } = useUserContext();
   // const [label,setLabel] = useState('BTC/USDT');
 
@@ -111,93 +111,196 @@ const LeftSideComponent: React.FC<{
 
   const fetchMagicEidenData = async () => {
     try {
-      console.log("popoular Collectionss");
-      user &&
-        localStorage.setItem("subscription_status", user.subscription_status);
+      console.log("Populating Collections");
+
+      const previousPopularCollections = updatedPopularCollection;
+
       const response = await API_CALL.MagicEidenData.get();
       console.log(response, "MagicEidenData");
-      const updatedCollections = response?.data.data.map((newSymbol: any) => {
-        const correspondingSymbol = updatedPopularCollection?.find(
+
+      if (!response?.data?.data) {
+        console.error("Error: Missing data in API response.");
+        return;
+      }
+
+      const newSymbols = response.data.data;
+
+      const updatedCollections = newSymbols.map((newSymbol) => {
+        const correspondingSymbol = previousPopularCollections?.find(
           (symbol) => symbol.symbol === newSymbol.symbol
         );
-        // console.log(newSymbol?.floorPrice == correspondingSymbol?.floorPrice,'isTrue');
 
+        let flag;
         if (correspondingSymbol) {
-          let flag: any;
-          if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
-            flag = false;
-          } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
-            flag = true;
+          if (newSymbol.floorPrice < correspondingSymbol.floorPrice) {
+            flag = "down";
+            console.log(
+              "inside newSymbol.floorPrice < correspondingSymbol.floorPrice"
+            );
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
+          } else if (newSymbol.floorPrice > correspondingSymbol.floorPrice) {
+            flag = "up";
+            console.log(
+              "inside newSymbol.floorPrice > correspondingSymbol.floorPrice"
+            );
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
           } else {
             flag = "equal";
+            console.log("inside else");
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
           }
-          return {
-            ...newSymbol,
-            flag: flag,
-          };
         } else {
-          // If corresponding symbol not found in collections, assume flag as true
-          return {
-            ...newSymbol,
-            flag: "equal",
-          };
+          flag = "new";
         }
+
+        return {
+          ...newSymbol,
+          flag: flag,
+        };
       });
-      // console.log(updatedCollections,'updated');
+
       updatedPopularCollection = updatedCollections;
       setPopularCollections(updatedCollections);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching MagicEidenData:", error);
     }
   };
 
+  // const fetchMagicEidenCollection = async () => {
+  //   try {
+  //     // console.log('collections');
+
+  //     user &&
+  //       localStorage.setItem("subscription_status", user.subscription_status);
+  //     const response = await API_CALL.MagicEidenCollection.get();
+
+  //     const updatedCollections = response?.data.data.map((newSymbol: any) => {
+  //       const correspondingSymbol = updatedCollection?.find(
+  //         (symbol) => symbol.symbol == newSymbol.symbol
+  //       );
+
+  //       console.log(
+  //         newSymbol?.floorPrice == correspondingSymbol?.floorPrice,
+  //         "isTrue"
+  //       );
+
+  //       if (correspondingSymbol) {
+  //         let flag: any;
+  //         if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
+  //           flag = false;
+  //         } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
+  //           flag = true;
+  //         } else {
+  //           flag = "equal";
+  //           // flag = true;
+  //         }
+  //         return {
+  //           ...newSymbol,
+  //           flag: flag,
+  //         };
+  //       } else {
+  //         // console.log('flag else');
+  //         // If corresponding symbol not found in collections, assume flag as true
+  //         return {
+  //           ...newSymbol,
+  //           flag: "equal",
+  //         };
+  //       }
+  //     });
+  //     console.log(updatedCollections, "updated");
+  //     // setupdatedCollection([])
+  //     updatedCollection = updatedCollections;
+  //     setCollections(updatedCollections);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const fetchMagicEidenCollection = async () => {
     try {
-      // console.log('collections');
+      console.log("Populating Collections");
 
-      user &&
-        localStorage.setItem("subscription_status", user.subscription_status);
+      const previousCollection = updatedCollection;
+
       const response = await API_CALL.MagicEidenCollection.get();
 
-      const updatedCollections = response?.data.data.map((newSymbol: any) => {
-        const correspondingSymbol = updatedCollection?.find(
-          (symbol) => symbol.symbol == newSymbol.symbol
+      if (!response?.data?.data) {
+        console.error("Error: Missing data in API response.");
+        return;
+      }
+
+      const newSymbols = response.data.data;
+
+      const updatedCollections = newSymbols.map((newSymbol) => {
+        const correspondingSymbol = previousCollection?.find(
+          (symbol) => symbol.symbol === newSymbol.symbol
         );
 
-        console.log(
-          newSymbol?.floorPrice == correspondingSymbol?.floorPrice,
-          "isTrue"
-        );
-
+        let flag;
         if (correspondingSymbol) {
-          let flag: any;
-          if (newSymbol.floorPrice < correspondingSymbol?.floorPrice) {
-            flag = false;
-          } else if (newSymbol.floorPrice > correspondingSymbol?.floorPrice) {
-            flag = true;
+          if (newSymbol.floorPrice < correspondingSymbol.floorPrice) {
+            flag = "down";
+            console.log(
+              "inside newSymbol.floorPrice < correspondingSymbol.floorPrice"
+            );
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
+          } else if (newSymbol.floorPrice > correspondingSymbol.floorPrice) {
+            flag = "up";
+            console.log(
+              "inside newSymbol.floorPrice > correspondingSymbol.floorPrice"
+            );
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
           } else {
             flag = "equal";
-            // flag = true;
+            console.log("inside else");
+            console.log(flag, "flag");
+            console.log(
+              newSymbol.floorPrice,
+              correspondingSymbol.floorPrice,
+              "newSymbol.floorPrice, correspondingSymbol.floorPrice"
+            );
           }
-          return {
-            ...newSymbol,
-            flag: flag,
-          };
         } else {
-          // console.log('flag else');
-          // If corresponding symbol not found in collections, assume flag as true
-          return {
-            ...newSymbol,
-            flag: "equal",
-          };
+          flag = "new";
         }
+
+        return {
+          ...newSymbol,
+          flag: flag,
+        };
       });
-      console.log(updatedCollections,'updated');
-      // setupdatedCollection([])
+
+      // Update the state with the processed data
       updatedCollection = updatedCollections;
       setCollections(updatedCollections);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching MagicEidenCollection:", error);
+      // Handle other errors as needed
     }
   };
 
@@ -212,7 +315,7 @@ const LeftSideComponent: React.FC<{
       }
     };
     fetchCollectionData();
-    const interval = setInterval(fetchCollectionData, 30 * 1000); // fetch the data for every 1 mins
+    const interval = setInterval(fetchCollectionData, 60 * 1000); // fetch the data for every 1 mins
     // const interval  = setInterval(fetchCollectionData, 1000); // fetch the data for every 1 mins
 
     return () => clearInterval(interval);
@@ -440,11 +543,15 @@ const LeftSideComponent: React.FC<{
                           <div className="relative">
                             <span
                               className={` absolute top-[1px] left-[-19px]  ${
-                                item.flag ? "text-green-700" : "text-red-700"
+                                item.flag === "up"
+                                  ? "text-green-700"
+                                  : item.flag === "down"
+                                  ? "text-red-700"
+                                  : ""
                               } text-sm font-medium`}
                             >
-                              {item.flag == true && <BiSolidUpArrow />}{" "}
-                              {item.flag == false && <BiSolidDownArrow />}
+                              {item.flag == "up" && <BiSolidUpArrow />}{" "}
+                              {item.flag == "down" && <BiSolidDownArrow />}
                             </span>
                             <span className="text-green-600">
                               {item.floorPrice / 100000000}
@@ -480,11 +587,15 @@ const LeftSideComponent: React.FC<{
                         <div className="relative">
                           <span
                             className={` absolute top-[1px] left-[-19px]  ${
-                              item.flag ? "text-green-700" : "text-red-700"
+                              item.flag === "up"
+                                ? "text-green-700"
+                                : item.flag === "down"
+                                ? "text-red-700"
+                                : ""
                             } text-sm font-medium`}
                           >
-                            {item.flag == true && <BiSolidUpArrow />}{" "}
-                            {item.flag == false && <BiSolidDownArrow />}
+                            {item.flag == "up" && <BiSolidUpArrow />}{" "}
+                            {item.flag == "down" && <BiSolidDownArrow />}
                           </span>
                           <span className="text-green-600">
                             {item.floorPrice / 100000000}
