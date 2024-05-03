@@ -66,6 +66,7 @@ const AppCharts = () => {
      
       setTimeout(() => {
        if(user?.subscription_status){
+        
          // if (window.tvWidget && clicked) {
         // // if (false) {
         //   // alert("herer")
@@ -84,6 +85,7 @@ const AppCharts = () => {
           datafeed: Datafeed,
            withdateranges: true,
           library_path: 'https://illuminals.io/chart/charting_library.js',
+          // library_path:'http://127.0.0.1:5500/charting_library.js',
           theme: "dark",
           disabled_features: [
             "header_indicators",
@@ -95,7 +97,8 @@ const AppCharts = () => {
             "edit_buttons_in_legend",
             "show_symbol_logo_for_compare_studies",
             "show_interval_dialog_on_key_press",
-
+             "localstorage",
+             'use_localstorage_for_settings',
             "header_symbol_search",
             "header_compare",
             // "symbol_search_hot_key",
@@ -145,6 +148,8 @@ const AppCharts = () => {
             "header_quick_search",
             "timeframes_toolbar", 
             // "legend_widget",
+            "localstorage",
+            'use_localstorage_for_settings',
             "go_to_date",
             "edit_buttons_in_legend",
             "show_symbol_logo_for_compare_studies",
@@ -181,7 +186,7 @@ const AppCharts = () => {
         
       }
     }
-  }, [label]);
+  }, [label,user]);
   
   
 
@@ -220,6 +225,7 @@ const AppCharts = () => {
   return (
     <>
       <Script src="https://illuminals.io/chart/charting_library.js" />
+      {/* <Script src="http://127.0.0.1:5500/charting_library.js"></Script> */}
       <section className="max-[767px]:my-[50px]">
         <div className="container mx-auto ">
           <div className="flex md:flex-row flex-col justify-between gap-5 w-full  lg:fixed ">

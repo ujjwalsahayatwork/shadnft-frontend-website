@@ -193,9 +193,9 @@ const Home = () => {
                     and boundless achievement.
                   </p>
                   <span>
-               <div className="mt-5">
-               <Link href='https://x.com/shadowerbtc?s=21' target="_blank">
-              <FaXTwitter className="text-[#FFFFFF] text-base" />
+               <div className="mt-3">
+               <Link href='https://x.com/shadowerbtc?s=21' target="_blank"  className="flex flex-row">
+               <span> - ShadowerBTC</span><FaXTwitter className="text-[#FFFFFF] text-base mt-1 ml-1" />
               </Link>
                </div>
             </span>

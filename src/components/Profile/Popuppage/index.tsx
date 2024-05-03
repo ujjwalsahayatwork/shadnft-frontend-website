@@ -37,12 +37,19 @@ interface SendBtcOptions {
   onCancel: () => void;
 }
 
-async function usdToSatoshi(usdAmount: number): Promise<number | any> {
-  // Fetching the data from the API
-  const response = await fetch(
-    "https://api.coingecko.com/api/v3/exchange_rates"
-  ).then(async (response) => {
-    const data = await response?.json();
+async function usdToSatoshi(usdAmount: number): Promise<number> {
+  try {
+    // Fetching the data from the API
+    const response = await fetch(
+      "https://api.coingecko.com/api/v3/exchange_rates"
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch exchange rates");
+    }
+
+    const data = await response.json();
+
     // Extracting the value of 1 USD in BTC
     const usdToBtc: number = data.rates.usd.value;
 
@@ -59,7 +66,9 @@ async function usdToSatoshi(usdAmount: number): Promise<number | any> {
     console.log(Math.round(satoshiAmount), "satoshiAmount");
 
     return Math.round(satoshiAmount);
-  });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 const Popuppage: React.FC<PopuppageProps> = ({
@@ -95,12 +104,15 @@ const Popuppage: React.FC<PopuppageProps> = ({
 
     try {
       await getAddress(getAddressOptions);
-    } catch (error:any) {
+    } catch (error: any) {
       console.log(error.message);
 
-      if(error.message === "No Bitcoin wallet installed"){
-        notify("You do not have the XVerse wallet installed. Please install it.",'error');
-        return
+      if (error.message === "No Bitcoin wallet installed") {
+        notify(
+          "You do not have the XVerse wallet installed. Please install it.",
+          "error"
+        );
+        return;
       }
     }
 
@@ -126,7 +138,13 @@ const Popuppage: React.FC<PopuppageProps> = ({
         );
         console.log(response, "response of sending btc");
         // send this response(txHash) to backend using API
-        <Successfulpage  isOpen={true}  onClose={() => setShowPopuppage(false)} message={'Your transaction has been initiated successfully. It will take some time to be verified. Once verified, we will send you an email.'} />
+        <Successfulpage
+          isOpen={true}
+          onClose={() => setShowPopuppage(false)}
+          message={
+            "Your transaction has been initiated successfully. It will take some time to be verified. Once verified, we will send you an email."
+          }
+        />;
       },
       onCancel: () => notify("Canceled bitcoin transaction", "error"),
     };
@@ -223,7 +241,8 @@ const Popuppage: React.FC<PopuppageProps> = ({
       </div>
       <Successfulpage
         isOpen={showPopuppage}
-        onClose={() => setShowPopuppage(false)} message={''}
+        onClose={() => setShowPopuppage(false)}
+        message={""}
       />
     </>
   );
