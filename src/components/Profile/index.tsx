@@ -5,6 +5,8 @@ import Popuppage from "./Popuppage";
 import { API_CALL } from "@/ApiRoutes/Routes";
 import CookieComponent from "./Cookie";
 import { useUserContext } from "../userContext/UserContext";
+import { FaArrowRightLong } from "react-icons/fa6";
+
 const tabs = [
   {
     title: "Edit Profile",
@@ -42,7 +44,8 @@ const Profile = () => {
   const [subscription, setSubscription] = useState<any>(null);
   const [plans, setPlans] = useState<any>([]);
   const [popularPlans, setPopularPlans] = useState([]);
-  const { user } = useUserContext();
+  const { user ,setUser} = useUserContext();
+  const [imgloading,setimgLoading] = useState(false)
 
   const ItemsPerPage = 3;
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,23 +57,21 @@ const Profile = () => {
   // Slice collections array to display only items for the current page
   const displayedCollections = plans?.slice(startIndex, endIndex);
 
-
   const [showPopuppage, setShowPopuppage] = useState(0);
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-   try {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const imageDataUrl = reader.result as string;
-        setProfile(imageDataUrl);
-      };
-      reader.readAsDataURL(file);
+    try {
+      const file = event.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const imageDataUrl = reader.result as string;
+          setProfile(imageDataUrl);
+        };
+        reader.readAsDataURL(file);
+      }
+    } catch (error) {
+      console.log(error);
     }
-   } catch (error) {
-    console.log(error);
-    
-   }
   };
 
   interface FormDataCustom {
@@ -93,49 +94,47 @@ const Profile = () => {
     mobile: "",
   });
 
-  const getUserData = () => {
-   try {
-    API_CALL.INFO.get()
-    .then((res) => {
-      console.log(res.data.data);
-      let { email, firstName, lastName, role, mobile, profilePicture } =
-        res.data.data;
-      if (profilePicture) {
-        setImgUrl(profilePicture);
-      } else {
-        setImgUrl("");
-      }
-      setFormDataCustom((prevData) => ({
-        ...prevData,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        // role: role,
-        mobile: mobile || "",
-      }));
-    })
-    .catch((err) => {});
-   } catch (error) {
-    console.log(error);
-    
-   }
+  const getUserData = async() => {
+    try {
+      await API_CALL.INFO.get()
+        .then((res) => {
+          console.log(res.data.data);
+          let { email, firstName, lastName, role, mobile, profilePicture } =
+            res.data.data;
+          if (profilePicture) {
+            setImgUrl(profilePicture);
+          } else {
+            setImgUrl("");
+          }
+          setFormDataCustom((prevData) => ({
+            ...prevData,
+            email: email,
+            firstName: firstName,
+            lastName: lastName,
+            // role: role,
+            mobile: mobile || "",
+          }));
+        })
+        .catch((err) => {});
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getPlans = () => {
-   try {
-    API_CALL.PLAN.get()
-    .then((res) => {
-      console.log(res.data.data);
-      
-      setPlans(res.data.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-   } catch (error) {
-    console.log(error);
-    
-   }
+    try {
+      API_CALL.PLAN.get()
+        .then((res) => {
+          console.log(res.data.data);
+
+          setPlans(res.data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -156,6 +155,63 @@ const Profile = () => {
     }));
   };
 
+  const updateUser = async()=>{
+    try {
+      await API_CALL.INFO.get()
+      .then((res) => {
+        console.log(res.data.data);
+        setUser(res.data.data);
+        let { email, firstName, lastName, role, mobile, profilePicture } =
+        res.data.data;
+      if (profilePicture) {
+        setImgUrl(profilePicture);
+      } else {
+        setImgUrl("");
+      }
+      setFormDataCustom((prevData) => ({
+        ...prevData,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        // role: role,
+        mobile: mobile || "",
+      }));
+      })
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
+  const handleImageUpload = async(e:React.FormEvent)=>{
+    try {
+      if (profile) {
+        // html form data
+        const formDataCustomHtml = new FormData();
+        // Add file to form data
+        formDataCustomHtml.append(
+          "profilePicture",
+          new Blob([profile], { type: "image/png" }),
+          "profile.png"
+        );
+        setimgLoading(true)
+       await API_CALL.AVATAR.put(formDataCustomHtml)
+          .then(async(res) => {
+            // console.log(res,'imageres');
+          await  updateUser()
+          await  getUserData();
+            setimgLoading(false)
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -165,51 +221,52 @@ const Profile = () => {
 
     try {
       // if profile is not null, update profile
-    if (profile) {
-      // html form data
-      const formDataCustomHtml = new FormData();
-      // Add file to form data
-      formDataCustomHtml.append(
-        "profilePicture",
-        new Blob([profile], { type: "image/png" }),
-        "profile.png"
-      );
+      // if (profile) {
+      //   // html form data
+      //   const formDataCustomHtml = new FormData();
+      //   // Add file to form data
+      //   formDataCustomHtml.append(
+      //     "profilePicture",
+      //     new Blob([profile], { type: "image/png" }),
+      //     "profile.png"
+      //   );
 
-      API_CALL.AVATAR.put(formDataCustomHtml)
+      //   API_CALL.AVATAR.put(formDataCustomHtml)
+      //     .then((res) => {
+      //       console.log(res);
+      //       getUserData();
+      //     })
+      //     .catch((err) => {
+      //       console.log(err);
+      //     });
+      // }
+      // Remove empty fields
+      API_CALL.UPDATE.put(filteredFormDataCustom)
         .then((res) => {
+          updateUser()
           console.log(res);
-          getUserData();
         })
         .catch((err) => {
           console.log(err);
         });
-    }
-    // Remove empty fields
-    API_CALL.UPDATE.put(filteredFormDataCustom)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
     } catch (error) {
       console.log(error);
-      
     }
   };
   const handleDelete = () => {
     try {
       API_CALL.AVATAR.delete()
-      .then((res) => {
-        console.log(res);
-        getUserData();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((res) => {
+          console.log(res);
+          updateUser()
+          getUserData();
+          setProfile(null)
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     } catch (error) {
       console.log(error);
-      
     }
   };
 
@@ -234,8 +291,8 @@ const Profile = () => {
   return (
     <>
       <section className="flex py-[100px] justify-center items-center min-h-[100vh] ">
-        <div className="  container px-4 lg:w-[950px]">
-          <div className="bg-[#262726]">
+        <div className="  container px-4 lg:w-[1400px] ">
+          <div className="bg-[#262726] h-[650px]">
             <div className="flex flex-col items-center justify-center p-[32px]">
               <Image
                 src={imgUrl || Profileimg}
@@ -254,7 +311,7 @@ const Profile = () => {
             </div>
             <div className="border-b-[1px] border-solid border-[#303030]"></div>
             <div className="flex w-full px-[30px] md:flex-row flex-col">
-              <div className="lg:w-[18%] md:w-[20%] w-full md:border-r max-[767px]:border-b md:h-[360px] border-solid border-[#303030]">
+              <div className="lg:w-[14%] md:w-[20%] md:border-r max-[767px]:border-b md:h-[360px] border-solid border-[#303030]">
                 <div className="">
                   <div className="flex md:flex-col mt-2 max-[767px]:gap-5 ">
                     {tabs.map((tab, index) => {
@@ -281,7 +338,7 @@ const Profile = () => {
                     <div>
                       {profile ? (
                         <Image
-                          src={ profile}
+                          src={profile}
                           alt="Profile"
                           width={0}
                           height={0}
@@ -320,20 +377,25 @@ const Profile = () => {
                     />
                     <label
                       htmlFor="upload-profile-img"
-                      className=" items-center  cursor-pointer  text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
+                      className=" items-center  cursor-pointer hover:bg-[#FFB501] hover:text-black  text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
                     >
-                      Upload new picture
+                      Upload
                     </label>
                     <button
-                      className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
+                      className=" items-center  hover:bg-[#FFB501] hover:text-black  text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
                       onClick={handleDelete}
                     >
                       Delete
                     </button>
+                    <button
+                      className=" items-center hover:bg-[#FFB501] hover:text-black   text-[#FFFFFF] bg-[#383838]  rounded-[4px] px-[8px] py-[10px]   font-normal text-xs"
+                      onClick={handleImageUpload}
+                    >{imgloading?'Uploading...':'Save'}
+                    </button>
                   </div>
-                  <div className="my-5">
+                  <div className="my-5 lg:w-[900px]">
                     <div className="flex items-center  max-[400px]:flex-col justify-between w-full min-[401px]:gap-[30px]">
-                      <div className="mb-4 w-[50%] max-[400px]:w-full">
+                      <div className="mb-4 w-[30%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
                           First Name
                         </span>
@@ -343,11 +405,11 @@ const Profile = () => {
                           value={formData.firstName}
                           onChange={handleChange}
                           placeholder=""
-                          className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
+                          className="mt-1 px-3 py-3 h-[25px] lg:h-[35px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
                           required
                         />
                       </div>
-                      <div className="mb-4 w-[50%] max-[400px]:w-full">
+                      <div className="mb-4 items-center w-[30%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
                           Last Name
                         </span>
@@ -357,13 +419,13 @@ const Profile = () => {
                           value={formData.lastName}
                           onChange={handleChange}
                           placeholder=""
-                          className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
+                          className="mt-1 px-3 py-3 h-[25px] lg:h-[35px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
                           required
                         />
                       </div>
                     </div>
                     <div className="flex items-center  max-[400px]:flex-col justify-between w-full min-[401px]:gap-[30px]">
-                      <div className="mb-4 w-[50%] max-[400px]:w-full">
+                      <div className="mb-4 w-[30%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
                           Email
                         </span>
@@ -373,11 +435,11 @@ const Profile = () => {
                           value={formData.email}
                           onChange={handleChange}
                           placeholder=""
-                          className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
+                          className="mt-1 px-3 py-3 h-[25px] lg:h-[35px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
                           required
                         />
                       </div>
-                      <div className="mb-4 w-[50%] max-[400px]:w-full">
+                      <div className="mb-4 items-center justify-center w-[30%] max-[400px]:w-full">
                         <span className="text-[#FFFFFF] text-xs font-medium">
                           Phone number
                         </span>
@@ -387,7 +449,7 @@ const Profile = () => {
                           value={formData.mobile}
                           onChange={handleChange}
                           placeholder=""
-                          className="mt-1 px-3 py-3 h-[25px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
+                          className="mt-1 px-3 py-3 h-[25px] lg:h-[35px] border-[0.5px] border-solid border-[#57472F] rounded-[5px] bg-transparent w-full text-xs font-normal text-[#fff] outline-none focus:ring-0 placeholder-[#57472F]"
                           required
                         />
                       </div>
@@ -406,7 +468,7 @@ const Profile = () => {
                         required
                       />
                     </div> */}
-                    <div className="flex items-center gap-2 justify-end mt-6">
+                    <div className="flex items-center gap-2 justify-center mt-6">
                       <button className=" items-center   text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[5px]   font-medium text-xs">
                         Cancel
                       </button>
@@ -429,7 +491,7 @@ const Profile = () => {
                       </p>
                       <button
                         className=" items-center   text-[#000000] bg-[#FFB501]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
-                        onClick={() => setSelectedTab('buyplan')}
+                        onClick={() => setSelectedTab("buyplan")}
                       >
                         Buy plan
                       </button>
@@ -443,31 +505,33 @@ const Profile = () => {
                       <div className="bg-[#181818] rounded-[2.5px] sm:w-[350px]">
                         <div className="flex items-center gap-5  p-[17px]">
                           <button className=" items-center   text-[#FFB501] bg-[#292B29] border-[1px] border-solid border-[#FFB501]  rounded-[7px] px-[8px] py-[8px]   font-medium text-xs">
-                            {user.current_plan.name}
+                            {user.current_plan.plan.name}
                           </button>
                           <div className="flex items-baseline">
                             <p className="text-[#FFFFFF] text-4xl font-normal">
-                              ${user.current_plan.price}
+                              ${" "}
+                              {user.current_plan.type == "yearly"
+                                ? user.current_plan.plan.yearlyPrice
+                                : user.current_plan.plan.monthlyPrice}
                             </p>
                             <p className="text-[#FF0000] text-[10px] font-normal ml-5">
-                              {getDate(user.expiration_date)} days left
+                            {getDate(user.expiration_date)} days left
                             </p>
                           </div>
                         </div>
                         <div className="border-b-[1px] border-solid border-[#303030]"></div>
                         <div className="p-[17px]">
-                        <p className="text-[#FFFFFF] text-xs font-normal">
-                        The Elites package in addition to gaining access to
-                            The Alpha channel within the Illuminals Discord
-                        </p>
-                        <div className="flex justify-end mt-5">
-                        <button
-                              onClick={() => setSelectedTab('buyplan')}
+                          <p className="text-[#FFFFFF] text-xs font-normal">
+                            {user.current_plan.plan.description}
+                          </p>
+                          <div className="flex justify-end mt-5">
+                            <button
+                              onClick={() => setSelectedTab("buyplan")}
                               className=" items-center  hover:bg-[#FFB501] hover:text-[#000000]  text-[#FFFFFF] bg-[#383838]  rounded-[2.5px] px-[15px] py-[8px]   font-medium text-xs"
                             >
-                        Buy plan
-                        </button>
-                        </div>
+                              Buy plan
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -577,7 +641,10 @@ const Profile = () => {
                                 </button>
                                 <div className="flex items-baseline gap-1 mt-[11px]">
                                   <p className="text-[#FFFFFF] lg:text-4xl  text-2xl font-normal">
-                                    ${item?.price}<span className="text-sm ">{item.days}days</span>
+                                    ${item?.price}
+                                    <span className="text-sm ">
+                                      {item.days}days
+                                    </span>
                                   </p>
                                   <p className="text-[#FFFFFF] text-[10px] font-normal">
                                     {item?.time}
@@ -610,44 +677,77 @@ const Profile = () => {
               )}
               {selectedTab === "buyplan" && (
                 <>
-                 <div className=" ">
-                      <div className="grid sm:grid-cols-3 grid-cols-1 max-[420px]:grid-cols-1  max-[767px]:my-5">
-                  {displayedCollections?.map((item: any, index: number) => (
-                    <div className="bg-[#181818] rounded-md mx-5 width-[150px] mt-5" key={index}>
-                      <div className="flex flex-col p-[17px]">
-                        <button className="items-start  lg:w-[100%] text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF] rounded-[7px] px-[10px] py-[5px] font-medium text-xs">
-                          {item?.name}
-                        </button>
-                        <div className="flex flex-col  gap-1 mt-[11px]">
-                          <p className="text-[#FFFFFF] lg:text-4xl text-2xl font-normal items-center text-center">
-                            ${item?.price} <span className="text-sm ">{item.days}days</span>
-                          </p>
-                          <p className="text-[#FFFFFF] text-[10px] font-normal">
-                            {item?.time}
-                          </p>
+                  <div className="lg:w-[82%] md:w-[80%] w-full md:px-[25px] pb-[15px] ">
+                    <div className=" flex items-center max-[420px]:grid-cols-1 overflow-x-auto w-full max-[767px]:my-5">
+                      {plans?.map((item: any, index: number) => (
+                        <div
+                          className="bg-[#181818] rounded-md mx-5  mt-5  w-[100%] h-[100%]"
+                          key={index}
+                        >
+                          <div className="flex flex-col p-[17px] w-[300px] h-[80px]">
+                            <button className="items-start  lg:w-[100%] text-[#FFFFFF] bg-[#292B29] border-[0.5px] border-solid border-[#FFFFFF] rounded-[7px] px-[10px] py-[10px] font-medium text-xs">
+                              {item?.name}
+                            </button>
+                            <div className="flex flex-col  gap-1 mt-[11px]">
+                              {/* <p className="text-[#FFFFFF] lg:text-4xl text-2xl font-normal items-center text-center">
+                                ${item?.price}{" "}
+                                <span className="text-sm ">
+                                  {item.days}days
+                                </span>
+                              </p> */}
+                              <p className="text-[#FFFFFF] text-[10px] font-normal">
+                                {item?.time}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="border-b-[1px] border-solid border-[#303030]"></div>
+                          <div className="p-[17px]">
+                            <p className="text-[#FFFFFF] lg:text-xs text-[10px] text-center font-normal sm:h-[80px]">
+                              {item?.description} 
+                            </p>
+                            <div className="flex flex-col justify-center mt-10 gap-2 ">
+
+                             <div className="flex flex-row gap-5">
+                              <div className=" w-[50%] h-[50%]">
+                                <p className="text-[#FFFFFF] text-md">Yealry @<span className="text-[#FFB501]"> ${item.yearlyPrice} </span></p>
+                              </div>
+                            <div className="w-[50%] ">
+                            <button
+                                onClick={() =>
+                                  setShowPopuppage(Number(item?.price))
+                                }
+                                className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
+                              > 
+                                Buy
+                              </button>
+                            </div>
+                             </div>
+                             <div className="flex flex-row gap-5">
+                             <div className="w-[50%] ">
+                                <p className="text-[#FFFFFF]">Monthly @<span className="text-[#FFB501]"> ${item.monthlyPrice} </span></p>
+                              </div>
+                            <div className="w-[50%]">
+                            <button
+                                onClick={() =>
+                                  setShowPopuppage(Number(item?.price))
+                                }
+                                className="w-full h-full items-center text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
+                              > 
+                                Buy
+                              </button>
+                            </div>
+                             </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="border-b-[1px] border-solid border-[#303030]"></div>
-                      <div className="p-[17px]">
-                        <p className="text-[#FFFFFF] lg:text-xs text-[10px] font-normal sm:h-[80px]">
-                          {item?.description}
-                        </p>
-                        <div className="flex justify-center mt-5">
-                          <button
-                            onClick={() =>
-                              setShowPopuppage(Number(item?.price))
-                            }
-                            className="items-center w-full text-[#FFFFFF] hover:bg-[#FFB501] hover:text-[#000000] bg-[#383838] rounded-[2.5px] px-[15px] py-[5px] font-medium text-xs"
-                          >
-                            Buy
-                          </button>
-                        </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
                   </div>
-                  
-                  </div>
+                <div className=" items-center text-center flex text-sm font-thin">
+                <div className="flex flex-row text-gray-400">
+                Swipe  <span className="mt-1 ml-1 text-white"><FaArrowRightLong/></span>
+                </div>
+                </div>
                 </>
               )}
             </div>

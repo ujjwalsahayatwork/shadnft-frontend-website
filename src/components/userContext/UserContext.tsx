@@ -77,7 +77,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
     )
       router.push("/signin");
   };
-  const getUserFromToken = async () => {
+   const getUserFromToken = async () => {
     try {
       if (typeof window === "undefined") return null;
       let token = localStorage.getItem("token");
