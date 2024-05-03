@@ -96,8 +96,6 @@ const LeftSideComponent: React.FC<{
  displayedCollections = displayedCollections?.slice(startIndex, endIndex);
   } 
 
- 
-
   // Function to handle pagination
   const nextPage = () => {
     setCurrentPage((prevPage) => prevPage + 1);
