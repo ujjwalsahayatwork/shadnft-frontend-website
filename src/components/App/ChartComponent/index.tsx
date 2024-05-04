@@ -13,49 +13,54 @@ const TradingViewWidget: React.FC<{ setLoading:any }> = ({
   const router = useRouter();
   const { label, setLabel } = useUserContext();
 const handleScript=()=>{
-    if(label){
+    try {
+      if(label){
       
-      //  console.log(container?.current,"<<<<<outer")
-    //    container.current.innerHTML="<h1> </h1>"
-            // while (container?.current?.firstChild) {
-            //     console.log("inner","<<<<<outer")
-            //     container?.current.removeChild(container?.current.firstChild);
-            // }
-            // console.log(container?.current,"<<<<<outer after")
-            
-        
-       
-
-    const script = document.createElement("script");
-    script.src =
-      "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    script.type = "text/javascript";
-    script.async = true;
-    script.innerHTML = `
-        {
-          "autosize": true,
-          "symbol": "BINANCE:${label}",
-          "interval": "D",
-          "timezone": "Etc/UTC",
-          "width": "100%",
-          "height": 720,
-          "theme": "dark",
-          "style": "1",
-          "locale": "in",
-          "enable_publishing": false,
-          "allow_symbol_change": true,
-          "calendar": false,
-          "support_host": "https://www.tradingview.com"
-        }`;
-
-        setTimeout(() => {
-            if(container.current.firstChild){
-                container.current.innerHTML="<div> </div>"
-                container?.current?.appendChild(script);
-            }else{
-                container?.current?.appendChild(script);
-            }
-        }, 1);
+        //  console.log(container?.current,"<<<<<outer")
+      //    container.current.innerHTML="<h1> </h1>"
+              // while (container?.current?.firstChild) {
+              //     console.log("inner","<<<<<outer")
+              //     container?.current.removeChild(container?.current.firstChild);
+              // }
+              // console.log(container?.current,"<<<<<outer after")
+              
+          
+         
+  
+      const script = document.createElement("script");
+      script.src =
+        "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      script.type = "text/javascript";
+      script.async = true;
+      script.innerHTML = `
+          {
+            "autosize": true,
+            "symbol": "BINANCE:${label}",
+            "interval": "D",
+            "timezone": "Etc/UTC",
+            "width": "100%",
+            "height": 720,
+            "theme": "dark",
+            "style": "1",
+            "locale": "in",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "calendar": false,
+            "support_host": "https://www.tradingview.com"
+          }`;
+  
+          setTimeout(() => {
+              if(container.current.firstChild){
+                  container.current.innerHTML="<div> </div>"
+                  container?.current?.appendChild(script);
+              }else{
+                  container?.current?.appendChild(script);
+              }
+          }, 1);
+      }
+    } catch (error) {
+      console.log(error);
+      
     }
    
 }

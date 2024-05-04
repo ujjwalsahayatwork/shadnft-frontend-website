@@ -65,119 +65,124 @@ const AppCharts = () => {
 
      
       setTimeout(() => {
-       if(user?.subscription_status){
+        try {
+          if(user?.subscription_status){
         
-         // if (window.tvWidget && clicked) {
-        // // if (false) {
-        //   // alert("herer")
-
-        //   // Update only the symbol without recreating the widget
-        //   window.tvWidget.chart().setSymbol(newSymbol);
-        // } else {
-          setLoading(true)
-        window.tvWidget = new TradingView.widget({
-          symbol: newSymbol,
-          interval: "60",
-          width: "100%",
-          height: 700,
-          fullscreen: false,
-          container: "tv_chart_container",
-          datafeed: Datafeed,
-           withdateranges: true,
-          // library_path: 'https://illuminals.io/chart/charting_library.js',
-          library_path:'http://127.0.0.1:5500/charting_library.js',
-          theme: "dark",
-          disabled_features: [
-            "header_indicators",
-            "header_undo_redo",
-            "header_quick_search",
-            "timeframes_toolbar", 
-            // "legend_widget",
-            "go_to_date",
-            "edit_buttons_in_legend",
-            "show_symbol_logo_for_compare_studies",
-            "show_interval_dialog_on_key_press",
-             "localstorage",
-             'use_localstorage_for_settings',
-            "header_symbol_search",
-            "header_compare",
-            // "symbol_search_hot_key",
-            // "main_series_scale_menu",
-            // "display_market_status",
-            "uppercase_instrument_names",
-            "vert_touch_drag_scroll",
-            "hide_side_toolbar"
-            // "header_in_fullscreen_mode",
-            // "withdateranges",
-            // "show_zoom_and_move_buttons_on_touch",
-            // "hide_side_toolbar", // Remove bottom toolbar
-          ],
-          enabled_features: [],
-          overrides: {
-            "paneProperties.background": "black",
-            "paneProperties.backgroundType": "solid",
-          },
-          drawingsAccess: { type: "black", tools: [{ name: "TrendLine" }] },
-        });
-        
-        setLoading(false)
-       }else{
-         // if (window.tvWidget && clicked) {
-        // // if (false) {
-        //   // alert("herer")
-
-        //   // Update only the symbol without recreating the widget
-        //   window.tvWidget.chart().setSymbol(newSymbol);
-        // } else {
-          setLoading(true)
-        window.tvWidget = new TradingView.widget({
-          symbol: newSymbol,
-          interval: "60",
-          width: "100%",
-          height: 700,
-          fullscreen: false,
-          container: "tv_chart_container",
-          datafeed: Datafeed,
-          withdateranges: true,
-          // library_path: 'https://illuminals.io/charting_library/charting_library.js',
-          library_path: "http://127.0.0.1:5500/charting_library.js",
-          theme: "dark",
-          disabled_features: [
-            "header_indicators",
-            "header_undo_redo",
-            "header_quick_search",
-            "timeframes_toolbar", 
-            // "legend_widget",
-            "localstorage",
-            'use_localstorage_for_settings',
-            "go_to_date",
-            "edit_buttons_in_legend",
-            "show_symbol_logo_for_compare_studies",
-            "show_interval_dialog_on_key_press",
-
-            "header_symbol_search",
-            "header_compare",
-            // "symbol_search_hot_key",
-            // "main_series_scale_menu",
-            // "display_market_status",
-            "uppercase_instrument_names",
-            "vert_touch_drag_scroll",
-            "left_toolbar"
-            // "header_in_fullscreen_mode",
-            // "withdateranges",
-            // "show_zoom_and_move_buttons_on_touch",
-            // "hide_side_toolbar", // Remove bottom toolbar
-          ],
-          enabled_features: [],
-          overrides: {
-            "paneProperties.background": "black",
-            "paneProperties.backgroundType": "solid",
-          },
-          drawingsAccess: { type: "black", tools: [{ name: "TrendLine" }] },
-        });
-        
-        setLoading(false)
-       }
+            // if (window.tvWidget && clicked) {
+           // // if (false) {
+           //   // alert("herer")
+   
+           //   // Update only the symbol without recreating the widget
+           //   window.tvWidget.chart().setSymbol(newSymbol);
+           // } else {
+             setLoading(true)
+           window.tvWidget = new TradingView.widget({
+             symbol: newSymbol,
+             interval: "60",
+             width: "100%",
+             height: 700,
+             fullscreen: false,
+             container: "tv_chart_container",
+             datafeed: Datafeed,
+              withdateranges: true,
+             // library_path: 'https://illuminals.io/chart/charting_library.js',
+             library_path:'http://127.0.0.1:5500/charting_library.js',
+             theme: "dark",
+             disabled_features: [
+               "header_indicators",
+               "header_undo_redo",
+               "header_quick_search",
+               "timeframes_toolbar", 
+               // "legend_widget",
+               "go_to_date",
+               "edit_buttons_in_legend",
+               "show_symbol_logo_for_compare_studies",
+               "show_interval_dialog_on_key_press",
+               //  "localstorage",
+               //  'use_localstorage_for_settings',
+               "header_symbol_search",
+               "header_compare",
+               // "symbol_search_hot_key",
+               // "main_series_scale_menu",
+               // "display_market_status",
+               "uppercase_instrument_names",
+               "vert_touch_drag_scroll",
+               "hide_side_toolbar"
+               // "header_in_fullscreen_mode",
+               // "withdateranges",
+               // "show_zoom_and_move_buttons_on_touch",
+               // "hide_side_toolbar", // Remove bottom toolbar
+             ],
+             enabled_features: [],
+             overrides: {
+               "paneProperties.background": "black",
+               "paneProperties.backgroundType": "solid",
+             },
+             drawingsAccess: { type: "black", tools: [{ name: "TrendLine" }] },
+           });
+           
+           setLoading(false)
+          }else{
+            // if (window.tvWidget && clicked) {
+           // // if (false) {
+           //   // alert("herer")
+   
+           //   // Update only the symbol without recreating the widget
+           //   window.tvWidget.chart().setSymbol(newSymbol);
+           // } else {
+             setLoading(true)
+           window.tvWidget = new TradingView.widget({
+             symbol: newSymbol,
+             interval: "60",
+             width: "100%",
+             height: 700,
+             fullscreen: false,
+             container: "tv_chart_container",
+             datafeed: Datafeed,
+             withdateranges: true,
+             // library_path: 'https://illuminals.io/charting_library/charting_library.js',
+             library_path: "http://127.0.0.1:5500/charting_library.js",
+             theme: "dark",
+             disabled_features: [
+               "header_indicators",
+               "header_undo_redo",
+               "header_quick_search",
+               "timeframes_toolbar", 
+               // "legend_widget",
+               // "localstorage",
+               // 'use_localstorage_for_settings',
+               "go_to_date",
+               "edit_buttons_in_legend",
+               "show_symbol_logo_for_compare_studies",
+               "show_interval_dialog_on_key_press",
+   
+               "header_symbol_search",
+               "header_compare",
+               // "symbol_search_hot_key",
+               // "main_series_scale_menu",
+               // "display_market_status",
+               "uppercase_instrument_names",
+               "vert_touch_drag_scroll",
+               "left_toolbar"
+               // "header_in_fullscreen_mode",
+               // "withdateranges",
+               // "show_zoom_and_move_buttons_on_touch",
+               // "hide_side_toolbar", // Remove bottom toolbar
+             ],
+             enabled_features: [],
+             overrides: {
+               "paneProperties.background": "black",
+               "paneProperties.backgroundType": "solid",
+             },
+             drawingsAccess: { type: "black", tools: [{ name: "TrendLine" }] },
+           });
+           
+           setLoading(false)
+          }
+        } catch (error) {
+          console.log(error);
+          
+        }
       }, 1000);
       
       setIsClient(true);
