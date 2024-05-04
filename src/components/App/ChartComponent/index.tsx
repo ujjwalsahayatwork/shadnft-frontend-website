@@ -50,7 +50,7 @@ const handleScript=()=>{
           }`;
   
           setTimeout(() => {
-              if(container.current.firstChild){
+              if(container?.current?.firstChild){
                   container.current.innerHTML="<div> </div>"
                   container?.current?.appendChild(script);
               }else{
