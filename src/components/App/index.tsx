@@ -193,28 +193,32 @@ const AppCharts = () => {
 
   const handleDataFetch = () => {
     // setClicked(!clicked);
-    if (typeof window !== "undefined") {
-      let newSymbol = localStorage.getItem("key");
-      // let symbolChange = localStorage.getItem('symbolChange')
-      // if ( symbolChange ){
-
-      //    setSymbolChange(true);
-
-      // };
-      // console.log(window.tvWidget,clicked,'windowmyr');
-      setSymbolState(newSymbol);
-      // setTimeout(() => {
-
-      if (window.tvWidget) {
-        // console.log('hello');
-        // setLoading(true)
-        // if (false) {
-        // Update only the symbol without recreating the widget
-        window.tvWidget.chart().setSymbol(newSymbol);
-        // setLoading(false)
+    try {
+      if (typeof window !== "undefined") {
+        let newSymbol = localStorage.getItem("key");
+        // let symbolChange = localStorage.getItem('symbolChange')
+        // if ( symbolChange ){
+  
+        //    setSymbolChange(true);
+  
+        // };
+        // console.log(window.tvWidget,clicked,'windowmyr');
+        setSymbolState(newSymbol);
+        // setTimeout(() => {
+  
+        if (window?.tvWidget) {
+          // console.log('hello');
+          // setLoading(true)
+          // if (false) {
+          // Update only the symbol without recreating the widget
+          window?.tvWidget?.chart().setSymbol(newSymbol);
+          // setLoading(false)
+        }
+        // },1000)
+        // setClicked(false);
       }
-      // },1000)
-      // setClicked(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
